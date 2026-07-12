@@ -12,6 +12,7 @@ interface NavigationProps {
 export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // ── Scroll-aware navbar visibility ──────────────────────────────────────────
   const [navVisible, setNavVisible] = useState(true);
@@ -28,6 +29,8 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
       requestAnimationFrame(() => {
         const currentY = window.scrollY;
         const delta = currentY - lastScrollY.current;
+
+        setIsScrolled(currentY > 15);
 
         if (currentY <= HIDE_THRESHOLD) {
           setNavVisible(true);
@@ -81,9 +84,13 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
   return (
     <>
       <header
-        className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-neutral-100 flex items-center justify-between px-6 md:px-12 h-[76px] transition-transform duration-300"
+        className={`fixed inset-x-0 z-50 flex items-center justify-between transition-all duration-500 ease-out ${
+          isScrolled
+            ? 'top-0 w-full h-[70px] bg-white shadow-md border-b border-neutral-100 px-6 md:px-12'
+            : 'top-4 mx-auto max-w-[1280px] w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] h-[76px] bg-white/95 backdrop-blur-md border border-neutral-200/50 rounded-[20px] shadow-[0_12px_40px_rgba(0,0,0,0.06)] px-6 md:px-10'
+        }`}
         style={{
-          transform: navVisible ? 'translateY(0)' : 'translateY(-100%)',
+          transform: navVisible ? 'translateY(0)' : 'translateY(-120%)',
         }}
       >
         {/* Left Side: Logo */}
