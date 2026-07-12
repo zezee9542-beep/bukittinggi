@@ -228,9 +228,11 @@ export function BudayaPage() {
     }
   };
 
+  const lastScrollTimeRef = useRef(0);
+
   /**
-   * Continuous Wheel-event scroll-lock:
-   * Translates slides continuously based on wheel velocity.
+   * Snapping Wheel-event scroll-lock:
+   * Advances directly to the next/prev slide on wheel scroll with a cooldown.
    */
   useEffect(() => {
     // How close to viewport top (px) the section must be to activate lock
@@ -249,26 +251,34 @@ export function BudayaPage() {
       if (!active) return;
 
       const cur = activeProgressRef.current;
+      const now = Date.now();
 
-      // SpeedFactor: controls how fast the slides move with the scroll wheel.
-      // 0.002 gives a super elegant, responsive, and tactile feel.
-      const speedFactor = 0.002;
-      const delta = e.deltaY * speedFactor;
-      const target = Math.max(0, Math.min(slides.length - 1, cur + delta));
+      // Check if we are inside the 850ms transition lock window
+      if (now - lastScrollTimeRef.current < 850) {
+        // Block default scrolling if we are not at the boundaries of the carousel
+        if ((e.deltaY > 0 && cur < slides.length - 1) || (e.deltaY < 0 && cur > 0)) {
+          e.preventDefault();
+        }
+        return;
+      }
 
-      if (e.deltaY > 0) {
-        // Scrolling DOWN
+      if (e.deltaY > 15) {
+        // Scrolling DOWN -> Next Slide
         if (cur < slides.length - 1) {
           e.preventDefault();
-          activeProgressRef.current = target;
-          setActiveProgress(target);
+          const next = Math.round(cur) + 1;
+          activeProgressRef.current = next;
+          setActiveProgress(next);
+          lastScrollTimeRef.current = now;
         }
-      } else if (e.deltaY < 0) {
-        // Scrolling UP
+      } else if (e.deltaY < -15) {
+        // Scrolling UP -> Prev Slide
         if (cur > 0) {
           e.preventDefault();
-          activeProgressRef.current = target;
-          setActiveProgress(target);
+          const prev = Math.round(cur) - 1;
+          activeProgressRef.current = prev;
+          setActiveProgress(prev);
+          lastScrollTimeRef.current = now;
         }
       }
     };
@@ -393,7 +403,7 @@ export function BudayaPage() {
           }`}
         >
           <div
-            className="flex transition-transform duration-[450ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
+            className="flex transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
             style={{ transform: `translateX(-${activeProgress * 100}%)` }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}

@@ -12,6 +12,7 @@ interface NavigationProps {
 export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+
   const [isScrolled, setIsScrolled] = useState(false);
 
   // ── Scroll-aware navbar visibility ──────────────────────────────────────────
@@ -30,7 +31,7 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
         const currentY = window.scrollY;
         const delta = currentY - lastScrollY.current;
 
-        setIsScrolled(currentY > 15);
+        setIsScrolled(currentY > 20);
 
         if (currentY <= HIDE_THRESHOLD) {
           setNavVisible(true);
@@ -84,13 +85,13 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
   return (
     <>
       <header
-        className={`fixed inset-x-0 z-50 flex items-center justify-between transition-all duration-500 ease-out ${
+        className={`fixed z-50 bg-white/95 backdrop-blur-md flex items-center justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isScrolled
-            ? 'top-0 w-full h-[70px] bg-white shadow-md border-b border-neutral-100 px-6 md:px-12'
-            : 'top-4 mx-auto max-w-[1280px] w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] h-[76px] bg-white/95 backdrop-blur-md border border-neutral-200/50 rounded-[20px] shadow-[0_12px_40px_rgba(0,0,0,0.06)] px-6 md:px-10'
+            ? 'top-4 inset-x-4 md:inset-x-8 lg:inset-x-12 h-[60px] rounded-full shadow-lg shadow-neutral-100/90 px-8 border border-neutral-200/50 max-w-[1280px] mx-auto'
+            : 'top-0 inset-x-0 h-[76px] px-6 md:px-12 border-b border-neutral-100'
         }`}
         style={{
-          transform: navVisible ? 'translateY(0)' : 'translateY(-120%)',
+          transform: navVisible ? 'translateY(0)' : 'translateY(-140%)',
         }}
       >
         {/* Left Side: Logo */}
@@ -98,7 +99,9 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
           <img
             src={logoSvg}
             alt="Bukittinggi Heritage"
-            className="h-[52px] sm:h-[60px] w-auto object-contain cursor-pointer"
+            className={`w-auto object-contain cursor-pointer transition-all duration-500 ${
+              isScrolled ? 'h-[40px] sm:h-[44px]' : 'h-[52px] sm:h-[60px]'
+            }`}
             onClick={() => handleNavClick('home')}
           />
         </div>
