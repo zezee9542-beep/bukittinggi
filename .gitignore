@@ -23,19 +23,47 @@ dist-ssr
 *.sln
 *.sw?
 
-# Images & media assets (jangan push ke repo)
-*.png
-*.jpg
-*.jpeg
-*.webp
-*.gif
-*.bmp
-*.tiff
-*.ico
-*.mp4
-*.webm
-*.mov
-*.avi
-*.svg
-public/assets/
-src/assets/
+# Ignore all assets in public/assets except folders
+public/assets/*
+!public/assets/.gitkeep
+
+# Ignore all assets in src/assets
+src/assets/*
+
+# Exceptions - Allow specific files in src/assets that are statically imported
+!src/assets/01.webp
+!src/assets/02.webp
+!src/assets/03.webp
+!src/assets/04.webp
+!src/assets/05.webp
+!src/assets/06.webp
+!src/assets/11.webp
+!src/assets/12.webp
+!src/assets/13.webp
+!src/assets/14.webp
+!src/assets/15.webp
+!src/assets/bg.webp
+!src/assets/menara.webp
+!src/assets/imgg.webp
+!src/assets/gunung.webp
+!src/assets/frame.svg
+!src/assets/gadang.svg
+!src/assets/segitiga.svg
+!src/assets/maps.svg
+!src/assets/minNG.svg
+!src/assets/logo.svg
+!src/assets/1.svg
+!src/assets/2.svg
+!src/assets/3.svg
+!src/assets/4.svg
+!src/assets/5.svg
+!src/assets/6.svg
+!src/assets/7.svg
+!src/assets/Rectangle 1385 (2).svg
+!src/assets/Rectangle 1385 (3).svg
+!src/assets/Rectangle 1385 (4).svg
+!src/assets/Rectangle 1385 (5).svg
+!src/assets/Rectangle 1385 (6).svg
+!src/assets/Rectangle 1385 (7).svg
+!src/assets/Rectangle 1385 (8).svg
+

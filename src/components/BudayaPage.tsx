@@ -3,7 +3,6 @@ import frameSvg from '../assets/frame.svg';
 import gadangSvg from '../assets/gadang.svg';
 import segitigaSvg from '../assets/segitiga.svg';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import budaya4kVideo from '../assets/Budaya 4k.mp4';
 import mapsSvg from '../assets/maps.svg';
 
 // Grid card images — Panduan Budaya section
@@ -304,7 +303,7 @@ export function BudayaPage() {
       >
         <video
           ref={videoRef}
-          src={budaya4kVideo}
+          src="/assets/Budaya 4k.mp4"
           autoPlay
           loop
           muted
