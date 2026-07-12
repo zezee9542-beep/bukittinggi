@@ -6,7 +6,6 @@ import { HistoryPage } from './components/HistoryPage';
 import { BudayaPage } from './components/BudayaPage';
 import { ParijsSection } from './components/ParijsSection';
 import { HeritageSection } from './components/HeritageSection';
-import menaraSvg from './assets/menara.webp';
 
 type Page = 'home' | 'history' | 'budaya';
 

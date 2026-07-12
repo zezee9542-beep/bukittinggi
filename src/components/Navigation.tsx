@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { siteContent } from '../data/stories';
 import logoSvg from '../assets/logo.svg';
 import { MenuOverlay } from './MenuOverlay';
 
@@ -11,7 +10,6 @@ interface NavigationProps {
 }
 
 export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
-  const { nav } = siteContent;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 

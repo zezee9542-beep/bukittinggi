@@ -16,40 +16,6 @@ export function HeritageSection() {
     { title: 'Peta', img: imgPeta },
   ];
 
-  const CardItem = ({ card, idx }: { card: typeof cards[0]; idx: number }) => (
-    <div
-      className="relative overflow-hidden flex-shrink-0 transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]"
-      style={{
-        width: 'clamp(260px, 72vw, 320px)',
-        height: 'clamp(336px, 93vw, 413px)',
-        // on md+ override via CSS classes below
-        transitionDelay: `${idx * 120}ms`,
-        transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(48px) scale(0.96)',
-        opacity: isVisible ? 1 : 0,
-        borderRadius: '20px 0px 20px 20px',
-        border: '1.5px solid #F9CE65',
-        boxShadow: '0 8px 40px rgba(0,0,0,0.28)',
-      }}
-    >
-      <img
-        src={card.img}
-        alt={card.title}
-        className="w-full h-full object-cover select-none"
-        loading="lazy"
-        draggable={false}
-      />
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-[#6E1F1F] via-[#6E1F1F]/40 to-transparent"
-          style={{ borderRadius: '0px 0px 20px 20px' }}
-        />
-        <h3 className="absolute bottom-[8%] left-[8%] font-corinthia text-white text-[42px] font-bold leading-none select-none z-10">
-          {card.title}
-        </h3>
-      </div>
-    </div>
-  );
 
   return (
     <section
