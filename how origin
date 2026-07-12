@@ -1,0 +1,10 @@
+* [33ma262a19[m[33m ([m[1;32mtemp-main[m[33m)[m deploy: initial clean deployment package
+* [33m21cef91[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m style(HeroSection): set imgg.webp as background, BUKITTINGGI as text layer, gunung.webp as foreground at front, remove tower overlay, and redesign Navigation with inline links + dark mode toggle
+* [33me593eae[m feat(HeroSection): redesign HeroSection with gunung.png background, 3D BUKITTINGGI text layer, and floating island imgg.png
+* [33mea2fcee[m style(HeritageSection): shrink card title font sizes to clamp and push changes
+* [33madd7eff[m fix(index.html): update preload to bg.webp+menara.webp; chore(assets): delete 26 unused asset files (~43MB saved)
+* [33mf6c5841[m perf(assets): extract SVG-wrapped base64 images to standalone WebP files for hero bg, menara, and heritage cards
+* [33m4d760d2[m perf(landing): compress landing page SVG base64 images to optimized WebP format
+* [33mf0cb014[m perf(BudayaPage, assets): convert card images to WebP, optimize embedded SVG base64 sizes, increase carousel spacing, and fix card corner gaps
+* [33md5850cf[m fix(BudayaPage): use PNG images for grid cards, optimize video looping, and improve scroll reveal animations
+* [33md3219ea[m fix(BudayaPage): make grid cards fully responsive and fix image sizing to fill card exactly
