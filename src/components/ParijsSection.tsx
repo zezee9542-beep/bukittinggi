@@ -29,6 +29,7 @@ export function ParijsSection() {
           loop
           muted
           playsInline
+          preload="none"
           className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
           style={{
             transform: 'rotate(-6deg) scale(1.18)',

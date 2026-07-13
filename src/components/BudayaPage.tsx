@@ -184,8 +184,12 @@ export function BudayaPage() {
   // Scroll accumulator — tracks partial scroll momentum before triggering a slide change
   const scrollAccRef = useRef(0);
 
-  // Whether the carousel section is currently the active scroll-jacker
-  const isLockedRef = useRef(false);
+  // Whether the carousel is actively intercepting wheel scroll
+  const carouselActiveRef = useRef(false);
+  // Whether the carousel has been snapped into view (to avoid re-snapping)
+  const snapDoneRef = useRef(false);
+  // Blocks locking if user has already scrolled past slide 8 once during this visit
+  const hasCompletedLockRef = useRef(false);
 
   // Touch swipe state
   const touchStartRef = useRef({ x: 0, y: 0, slide: 0 });
@@ -217,7 +221,6 @@ export function BudayaPage() {
 
     if (isSwipingRef.current) {
       if (e.cancelable) e.preventDefault();
-      // Map 60% of screen width = 1 slide
       const screenW = window.innerWidth;
       const rawSlide = start.slide + deltaX / (screenW * 0.6);
       const clamped = Math.max(0, Math.min(slides.length - 1, rawSlide));
@@ -236,58 +239,106 @@ export function BudayaPage() {
   };
 
   /**
-   * Snapping Wheel-event scroll-lock:
-   * Advances directly to the next/prev slide on wheel scroll with a cooldown.
+   * IntersectionObserver: smoothly snap carousel into view when it enters viewport,
+   * then activate the scroll lock. Only snaps ONCE per traversal through the section.
+   */
+  useEffect(() => {
+    const section = containerRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Only lock on initial scroll down and if they haven't finished slides yet
+        if (
+          entry.isIntersecting && 
+          entry.intersectionRatio >= 0.4 && 
+          !snapDoneRef.current && 
+          !hasCompletedLockRef.current
+        ) {
+          // Single smooth snap — section glides into view naturally
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          snapDoneRef.current = true;
+          // Activate lock after snap animation settles (~600ms)
+          setTimeout(() => {
+            carouselActiveRef.current = true;
+          }, 650);
+        }
+        if (!entry.isIntersecting) {
+          // Reset when section leaves viewport entirely
+          carouselActiveRef.current = false;
+          snapDoneRef.current = false;
+          scrollAccRef.current = 0;
+        }
+      },
+      { threshold: [0, 0.4, 1.0] }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  /**
+   * Wheel handler — only active when carouselActiveRef is true.
+   * No window.scrollTo() calls here — eliminates jank entirely.
    */
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
-      const section = containerRef.current;
-      if (!section) return;
+      // If lock was already completed, behave like a normal page
+      if (hasCompletedLockRef.current) return;
+      if (!carouselActiveRef.current) return;
 
-      const rect = section.getBoundingClientRect();
-      const cur = activeSlideRef.current;
-      const curInt = Math.round(cur);
+      const curInt = Math.round(activeSlideRef.current);
 
-      const middleInView = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
-
-      const goingDownAndNotEnd = e.deltaY > 0 && curInt < slides.length - 1;
-      const goingUpAndNotStart = e.deltaY < 0 && curInt > 0;
-
-      const shouldLock = middleInView && (goingDownAndNotEnd || goingUpAndNotStart);
-
-      if (shouldLock) {
+      // Support horizontal scroll (deltaX) from trackpads or advanced mice
+      const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (isHorizontal) {
         e.preventDefault();
-        
-        if (Math.abs(rect.top) > 1) {
-          window.scrollTo({
-            top: window.scrollY + rect.top,
-            behavior: 'auto',
-          });
-        }
-        
-        isLockedRef.current = true;
-      } else {
-        isLockedRef.current = false;
-        scrollAccRef.current = 0;
-        return;
-      }
+        scrollAccRef.current += e.deltaX;
 
-      scrollAccRef.current += e.deltaY;
-
-      if (e.deltaY > 0) {
-        if (scrollAccRef.current >= SCROLL_THRESHOLD) {
+        if (e.deltaX > 0 && scrollAccRef.current >= SCROLL_THRESHOLD) {
           const next = Math.min(slides.length - 1, curInt + 1);
           scrollAccRef.current = 0;
           activeSlideRef.current = next;
           setActiveSlide(next);
-        }
-      } else {
-        if (scrollAccRef.current <= -SCROLL_THRESHOLD) {
+        } else if (e.deltaX < 0 && scrollAccRef.current <= -SCROLL_THRESHOLD) {
           const next = Math.max(0, curInt - 1);
           scrollAccRef.current = 0;
           activeSlideRef.current = next;
           setActiveSlide(next);
         }
+        return;
+      }
+
+      // At last slide scrolling down → release lock permanently, let page continue
+      if (e.deltaY > 0 && curInt >= slides.length - 1) {
+        carouselActiveRef.current = false;
+        snapDoneRef.current = false;
+        scrollAccRef.current = 0;
+        hasCompletedLockRef.current = true; // Mark as done, no more locks when scrolling back up!
+        return;
+      }
+
+      // At first slide scrolling up → release lock without marking completed, let page scroll back up
+      if (e.deltaY < 0 && curInt <= 0) {
+        carouselActiveRef.current = false;
+        snapDoneRef.current = false;
+        scrollAccRef.current = 0;
+        return;
+      }
+
+      // Lock vertical scroll: consume this scroll event
+      e.preventDefault();
+      scrollAccRef.current += e.deltaY;
+
+      if (e.deltaY > 0 && scrollAccRef.current >= SCROLL_THRESHOLD) {
+        const next = Math.min(slides.length - 1, curInt + 1);
+        scrollAccRef.current = 0;
+        activeSlideRef.current = next;
+        setActiveSlide(next);
+      } else if (e.deltaY < 0 && scrollAccRef.current <= -SCROLL_THRESHOLD) {
+        const next = Math.max(0, curInt - 1);
+        scrollAccRef.current = 0;
+        activeSlideRef.current = next;
+        setActiveSlide(next);
       }
     };
 
@@ -295,21 +346,17 @@ export function BudayaPage() {
     return () => window.removeEventListener('wheel', handleWheel);
   }, []);
 
+  // Reset lock when user scrolls back to top
   useEffect(() => {
-    const section = containerRef.current;
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && Math.round(activeSlideRef.current) < slides.length - 1) {
-          // Snap page to carousel section top when it enters view
-          section.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
-        }
-      },
-      { threshold: 0.95 }
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
+    const handleScrollReset = () => {
+      if (window.scrollY <= 10) {
+        hasCompletedLockRef.current = false;
+        activeSlideRef.current = 0;
+        setActiveSlide(0);
+      }
+    };
+    window.addEventListener('scroll', handleScrollReset);
+    return () => window.removeEventListener('scroll', handleScrollReset);
   }, []);
 
   // SCROLL button — advance one slide
@@ -342,7 +389,7 @@ export function BudayaPage() {
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           onTimeUpdate={(e) => {
             const v = e.currentTarget;
@@ -372,7 +419,7 @@ export function BudayaPage() {
         />
 
         <div
-          className={`relative z-30 flex flex-col items-center justify-end text-center w-full px-6 pb-20 md:pb-28 transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`relative z-30 flex flex-col items-center justify-center text-center w-full px-6 transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             heroVisible ? 'translate-y-0 opacity-100 scale-100 blur-none' : 'translate-y-10 opacity-0 scale-[0.98] blur-[3px]'
           }`}
           style={{ minHeight: '100svh' }}
@@ -442,7 +489,7 @@ export function BudayaPage() {
             {slides.map((slide, idx) => (
               <article
                 key={slide.id}
-                className="w-full flex-shrink-0 flex flex-col md:flex-row gap-6 md:gap-10 items-start justify-start"
+                className="w-full flex-shrink-0 flex flex-col md:flex-row gap-6 md:gap-10 items-start justify-start pr-12 md:pr-0"
                 style={{ width: '100%' }}
               >
                 {/* ── LEFT Image ── */}
@@ -544,50 +591,49 @@ export function BudayaPage() {
       </section>
 
 
-      {/* ── Panduan Budaya Grid Section ── */}
       <section
         ref={gridRef}
-        className="w-full px-4 md:px-6 pt-16 pb-20 md:pt-24 md:pb-28 flex justify-center"
+        className="w-full px-4 md:px-6 pt-10 pb-14 md:pt-16 md:pb-20 flex justify-center"
         aria-labelledby="budaya-panduan"
       >
         <div
-          className={`w-full max-w-[1387px] bg-[#652626] rounded-[40px] md:rounded-[64px] px-4 py-8 md:px-8 md:pt-10 md:pb-8 flex flex-col justify-start transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`w-full max-w-[1160px] bg-[#652626] rounded-[32px] md:rounded-[48px] px-4 py-6 md:px-8 md:pt-8 md:pb-6 flex flex-col justify-start transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             gridVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
           }`}
         >
           {/* Guide Pill Button Container */}
-          <div className="w-full max-w-[1323px] mx-auto flex flex-col items-start mb-4 md:mb-5">
+          <div className="w-full max-w-[1100px] mx-auto flex flex-col items-start mb-3 md:mb-4">
             {/* Guide Pill Button */}
-            <div className="inline-flex items-center gap-3.5 px-8 py-3.5 rounded-full border-[1.5px] border-[#F9CE65] text-white font-poppins font-semibold tracking-[0.2em] text-[13px] sm:text-[14px] uppercase select-none">
-              <img src={mapsSvg} alt="Guide Icon" className="w-4.5 h-4.5 sm:w-5 sm:h-5 object-contain brightness-0 invert opacity-100" />
+            <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full border-[1.5px] border-[#F9CE65] text-white font-poppins font-semibold tracking-[0.2em] text-[12px] sm:text-[13px] uppercase select-none">
+              <img src={mapsSvg} alt="Guide Icon" className="w-4 h-4 object-contain brightness-0 invert opacity-100" />
               <span className="leading-none mt-[1px]">GUIDE</span>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 w-full max-w-[1323px] mx-auto mb-3 md:mb-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 w-full max-w-[1100px] mx-auto mb-3 md:mb-4">
             <div className="text-left">
               <h2
                 id="budaya-panduan"
                 className="font-corinthia font-bold leading-none inline-block border-b-2 border-[#D4A853] pb-1"
-                style={{ color: '#D4A853', fontSize: 'clamp(64px, 7vw, 104px)' }}
+                style={{ color: '#D4A853', fontSize: 'clamp(48px, 5.5vw, 80px)' }}
               >
                 Panduan Budaya
               </h2>
               <p
-                className="font-cormorant font-medium uppercase tracking-[0.15em] mt-2.5 text-white"
-                style={{ fontSize: 'clamp(20px, 2.4vw, 34px)', lineHeight: 1.2 }}
+                className="font-cormorant font-medium uppercase tracking-[0.15em] mt-2 text-white"
+                style={{ fontSize: 'clamp(16px, 2vw, 26px)', lineHeight: 1.2 }}
               >
                 KENALI BUDAYA SEBELUM BERKUNJUNG
               </p>
             </div>
             {/* Gold line on the right side from the mockup */}
-            <div className="hidden md:block w-[140px] h-[1.5px] bg-[#D4A853] mb-4 opacity-85" />
+            <div className="hidden md:block w-[120px] h-[1.5px] bg-[#D4A853] mb-3 opacity-85" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-[1323px] mx-auto mt-0 mb-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-w-[1100px] mx-auto mt-0 mb-0">
             {gridItems.map((item, idx) => (
               <div key={item.title} className="flex justify-center sm:block">
-                <div className="w-full max-w-[420px] sm:max-w-none">
+                <div className="w-full max-w-[400px] sm:max-w-none">
                   <GridCard item={item} index={idx} isVisible={gridVisible} />
                 </div>
               </div>
@@ -622,24 +668,12 @@ export function BudayaPage() {
           >
             Falsafah yang menjadi landasan utama kehidupan masyarakat Minangkabau. Nilai-nilai adat dijalankan selaras dengan ajaran agama, sehingga budaya dan spiritualitas berjalan berdampingan dalam kehidupan sehari-hari.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-4 flex items-center justify-center">
             <img
               src={tigaSvg}
-              alt="Ornamen Tiga 1"
-              className="opacity-70"
-              style={{ width: 22, height: 22 }}
-            />
-            <img
-              src={tigaSvg}
-              alt="Ornamen Tiga 2"
-              className="opacity-40"
-              style={{ width: 16, height: 16 }}
-            />
-            <img
-              src={tigaSvg}
-              alt="Ornamen Tiga 3"
-              className="opacity-20"
-              style={{ width: 11, height: 11 }}
+              alt="Ornamen"
+              className="opacity-85"
+              style={{ width: 164, height: 22 }}
             />
           </div>
         </div>
@@ -690,22 +724,22 @@ function GridCard({
         draggable={false}
       />
 
-      {/* ── Resting Gradient Overlay: matching #652626 background but transparent enough to see the photo ── */}
+      {/* ── Resting Gradient Overlay: matching #8A1A1A background but transparent enough to see the photo ── */}
       <div
         className="absolute inset-x-0 bottom-0 pointer-events-none transition-opacity duration-500"
         style={{
           height: '42%',
-          background: 'linear-gradient(to top, rgba(101, 38, 38, 0.85) 0%, rgba(101, 38, 38, 0.45) 50%, transparent 100%)',
+          background: 'linear-gradient(to top, rgba(138, 26, 26, 0.85) 0%, rgba(138, 26, 26, 0.4) 50%, transparent 100%)',
           borderRadius: '0 0 5.81% 0 / 0 0 4.35% 0',
         }}
       />
 
-      {/* ── Active Gradient Overlay: deeper, but still transparent to reveal photo details ── */}
+      {/* ── Active Gradient Overlay: deeper, richer red gradient to make text stand out ── */}
       <div
         className="absolute inset-x-0 bottom-0 pointer-events-none transition-opacity duration-500 opacity-0 group-hover:opacity-100 group-[.mobile-active]:opacity-100"
         style={{
           height: '56%',
-          background: 'linear-gradient(to top, rgba(101, 38, 38, 0.95) 0%, rgba(101, 38, 38, 0.82) 25%, rgba(101, 38, 38, 0.4) 65%, transparent 100%)',
+          background: 'linear-gradient(to top, rgba(138, 26, 26, 0.98) 0%, rgba(125, 20, 20, 0.85) 25%, rgba(110, 15, 15, 0.4) 65%, transparent 100%)',
           borderRadius: '0 0 5.81% 0 / 0 0 4.35% 0',
         }}
       />

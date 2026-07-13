@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import imgSejarah from '../assets/11.webp';
 import imgBudaya from '../assets/12.webp';
 import imgKuliner from '../assets/13.webp';
@@ -7,6 +8,8 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export function HeritageSection() {
   const { ref: sectionRef, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.05 });
+  const [activeMobileIdx, setActiveMobileIdx] = useState(0);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
 
   const cards = [
     { title: 'Sejarah', img: imgSejarah },
@@ -16,6 +19,45 @@ export function HeritageSection() {
     { title: 'Peta', img: imgPeta },
   ];
 
+  // Track active slide index during scroll swipe on mobile
+  const handleScroll = () => {
+    const container = mobileScrollRef.current;
+    if (!container) return;
+
+    const children = container.children;
+    if (!children || children.length === 0) return;
+
+    const containerCenter = container.scrollLeft + container.offsetWidth / 2;
+    let closestIdx = 0;
+    let minDistance = Infinity;
+
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i] as HTMLElement;
+      const childCenter = child.offsetLeft + child.offsetWidth / 2;
+      const distance = Math.abs(containerCenter - childCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIdx = i;
+      }
+    }
+    setActiveMobileIdx(closestIdx);
+  };
+
+  // Smooth scroll container to target card when clicking dots
+  const scrollToCard = (idx: number) => {
+    const container = mobileScrollRef.current;
+    if (!container) return;
+
+    const children = container.children;
+    if (children && children[idx]) {
+      const child = children[idx] as HTMLElement;
+      container.scrollTo({
+        left: child.offsetLeft - (container.offsetWidth - child.offsetWidth) / 2,
+        behavior: 'smooth',
+      });
+      setActiveMobileIdx(idx);
+    }
+  };
 
   return (
     <section
@@ -25,8 +67,8 @@ export function HeritageSection() {
     >
       {/* Heading */}
       <div
-        className={`text-center mb-10 md:mb-16 px-6 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isVisible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-8 opacity-0 blur-[3px]'
+        className={`text-center mb-10 md:mb-16 px-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isVisible ? 'translate-y-0 opacity-100 blur-0 scale-100' : 'translate-y-8 opacity-0 blur-[3px] scale-[0.98]'
         }`}
       >
         <h2
@@ -43,7 +85,9 @@ export function HeritageSection() {
       {/* ── MOBILE: Horizontal swipe scroll ── */}
       <div className="md:hidden">
         <div
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar touch-scroll"
+          ref={mobileScrollRef}
+          onScroll={handleScroll}
+          className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar touch-scroll scroll-smooth"
           style={{
             paddingLeft: '1.25rem',
             paddingRight: '1.25rem',
@@ -53,11 +97,11 @@ export function HeritageSection() {
           {cards.map((card, idx) => (
             <div key={card.title} className="snap-center flex-shrink-0">
               <div
-                className="relative overflow-hidden transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                className="relative overflow-hidden transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
                 style={{
                   width: 'clamp(220px, 68vw, 290px)',
                   height: 'clamp(293px, 90vw, 386px)',
-                  transitionDelay: `${idx * 100}ms`,
+                  transitionDelay: `${idx * 80}ms`,
                   transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(32px) scale(0.97)',
                   opacity: isVisible ? 1 : 0,
                   borderRadius: '18px 0px 18px 18px', // Top-Right corner 0px
@@ -68,7 +112,7 @@ export function HeritageSection() {
                 <img
                   src={card.img}
                   alt={card.title}
-                  className="w-full h-full object-cover select-none"
+                  className="w-full h-full object-cover select-none transition-transform duration-700 ease-out hover:scale-105"
                   loading="lazy"
                   draggable={false}
                 />
@@ -95,10 +139,23 @@ export function HeritageSection() {
           ))}
         </div>
         {/* Swipe indicator dots */}
-        <div className="flex justify-center gap-1.5 mt-4">
-          {cards.map((card) => (
-            <div key={card.title} className="w-1.5 h-1.5 rounded-full bg-[#6E1F1F]/30" />
-          ))}
+        <div className="flex justify-center items-center gap-2 mt-5">
+          {cards.map((card, idx) => {
+            const isActive = idx === activeMobileIdx;
+            return (
+              <button
+                key={card.title}
+                onClick={() => scrollToCard(idx)}
+                type="button"
+                className={`transition-all duration-300 rounded-full focus:outline-none cursor-pointer ${
+                  isActive
+                    ? 'w-4 h-2 bg-[#6E1F1F]'
+                    : 'w-2 h-2 bg-[#6E1F1F]/30 hover:bg-[#6E1F1F]/70'
+                }`}
+                aria-label={`Slide ${idx + 1}`}
+              />
+            );
+          })}
         </div>
       </div>
 
