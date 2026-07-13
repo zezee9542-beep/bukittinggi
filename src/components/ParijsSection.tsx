@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import videoSrc from '../assets/Bukittinggi 4K.mp4';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export function ParijsSection() {
@@ -23,7 +24,7 @@ export function ParijsSection() {
       {shouldLoadVideo ? (
         <video
           ref={videoRef}
-          src="/assets/Bukittinggi 4K.mp4"
+          src={videoSrc}
           autoPlay
           loop
           muted

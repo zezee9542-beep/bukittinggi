@@ -4,6 +4,8 @@ import gadangSvg from '../assets/gadang.svg';
 import segitigaSvg from '../assets/segitiga.svg';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import mapsSvg from '../assets/maps.svg';
+import tigaSvg from '../assets/tiga.svg';
+import budaya4kVideo from '../assets/Budaya 4k.mp4';
 
 // Grid card images — Panduan Budaya section
 import grid1 from '../assets/01.webp';
@@ -163,6 +165,8 @@ const gridItems = [
   },
 ];
 
+const SCROLL_THRESHOLD = 120;
+
 export function BudayaPage() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollReveal<HTMLElement>();
   const { ref: featureRef, isVisible: featureVisible } = useScrollReveal<HTMLDivElement>();
@@ -173,12 +177,18 @@ export function BudayaPage() {
   const containerRef = useRef<HTMLElement>(null);
   // Video ref for manual loop control (prevents black flash on loop boundary)
   const videoRef = useRef<HTMLVideoElement>(null);
-  // Carousel active progress (continuous value from 0 to 7)
-  const [activeProgress, setActiveProgress] = useState(0);
-  const activeProgressRef = useRef(0);
+  // Carousel slide index (integer 0-7)
+  const [activeSlide, setActiveSlide] = useState(0);
+  const activeSlideRef = useRef(0);
 
-  // Touch swipe states
-  const touchStartRef = useRef({ x: 0, y: 0, progress: 0 });
+  // Scroll accumulator — tracks partial scroll momentum before triggering a slide change
+  const scrollAccRef = useRef(0);
+
+  // Whether the carousel section is currently the active scroll-jacker
+  const isLockedRef = useRef(false);
+
+  // Touch swipe state
+  const touchStartRef = useRef({ x: 0, y: 0, slide: 0 });
   const isSwipingRef = useRef(false);
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -187,7 +197,7 @@ export function BudayaPage() {
     touchStartRef.current = {
       x: touch.clientX,
       y: touch.clientY,
-      progress: activeProgressRef.current,
+      slide: activeSlideRef.current,
     };
     isSwipingRef.current = false;
   };
@@ -200,85 +210,83 @@ export function BudayaPage() {
     const deltaX = start.x - touch.clientX;
     const deltaY = start.y - touch.clientY;
 
+    // Prefer horizontal swipe
     if (!isSwipingRef.current && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 8) {
       isSwipingRef.current = true;
     }
 
     if (isSwipingRef.current) {
-      if (e.cancelable) {
-        e.preventDefault();
-      }
-      const container = containerRef.current;
-      const width = container?.offsetWidth || window.innerWidth;
-      const swipeSensitivity = 1.05;
-      const target = Math.max(
-        0,
-        Math.min(slides.length - 1, start.progress + (deltaX / width) * swipeSensitivity)
-      );
-      activeProgressRef.current = target;
-      setActiveProgress(target);
+      if (e.cancelable) e.preventDefault();
+      // Map 60% of screen width = 1 slide
+      const screenW = window.innerWidth;
+      const rawSlide = start.slide + deltaX / (screenW * 0.6);
+      const clamped = Math.max(0, Math.min(slides.length - 1, rawSlide));
+      activeSlideRef.current = clamped;
+      setActiveSlide(clamped);
     }
   };
 
   const handleTouchEnd = () => {
     if (isSwipingRef.current) {
-      const target = Math.max(0, Math.min(slides.length - 1, Math.round(activeProgressRef.current)));
-      activeProgressRef.current = target;
-      setActiveProgress(target);
+      const snapped = Math.max(0, Math.min(slides.length - 1, Math.round(activeSlideRef.current)));
+      activeSlideRef.current = snapped;
+      setActiveSlide(snapped);
+      isSwipingRef.current = false;
     }
   };
-
-  const lastScrollTimeRef = useRef(0);
 
   /**
    * Snapping Wheel-event scroll-lock:
    * Advances directly to the next/prev slide on wheel scroll with a cooldown.
    */
   useEffect(() => {
-    // How close to viewport top (px) the section must be to activate lock
-    const TOLERANCE = 120;
-
     const handleWheel = (e: WheelEvent) => {
       const section = containerRef.current;
       if (!section) return;
 
       const rect = section.getBoundingClientRect();
-      const active =
-        rect.top >= -TOLERANCE &&
-        rect.top <= TOLERANCE &&
-        rect.height >= window.innerHeight * 0.7;
+      const cur = activeSlideRef.current;
+      const curInt = Math.round(cur);
 
-      if (!active) return;
+      const middleInView = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
 
-      const cur = activeProgressRef.current;
-      const now = Date.now();
+      const goingDownAndNotEnd = e.deltaY > 0 && curInt < slides.length - 1;
+      const goingUpAndNotStart = e.deltaY < 0 && curInt > 0;
 
-      // Check if we are inside the 850ms transition lock window
-      if (now - lastScrollTimeRef.current < 850) {
-        // Block default scrolling if we are not at the boundaries of the carousel
-        if ((e.deltaY > 0 && cur < slides.length - 1) || (e.deltaY < 0 && cur > 0)) {
-          e.preventDefault();
+      const shouldLock = middleInView && (goingDownAndNotEnd || goingUpAndNotStart);
+
+      if (shouldLock) {
+        e.preventDefault();
+        
+        if (Math.abs(rect.top) > 1) {
+          window.scrollTo({
+            top: window.scrollY + rect.top,
+            behavior: 'auto',
+          });
         }
+        
+        isLockedRef.current = true;
+      } else {
+        isLockedRef.current = false;
+        scrollAccRef.current = 0;
         return;
       }
 
-      if (e.deltaY > 15) {
-        // Scrolling DOWN -> Next Slide
-        if (cur < slides.length - 1) {
-          e.preventDefault();
-          const next = Math.round(cur) + 1;
-          activeProgressRef.current = next;
-          setActiveProgress(next);
-          lastScrollTimeRef.current = now;
+      scrollAccRef.current += e.deltaY;
+
+      if (e.deltaY > 0) {
+        if (scrollAccRef.current >= SCROLL_THRESHOLD) {
+          const next = Math.min(slides.length - 1, curInt + 1);
+          scrollAccRef.current = 0;
+          activeSlideRef.current = next;
+          setActiveSlide(next);
         }
-      } else if (e.deltaY < -15) {
-        // Scrolling UP -> Prev Slide
-        if (cur > 0) {
-          e.preventDefault();
-          const prev = Math.round(cur) - 1;
-          activeProgressRef.current = prev;
-          setActiveProgress(prev);
-          lastScrollTimeRef.current = now;
+      } else {
+        if (scrollAccRef.current <= -SCROLL_THRESHOLD) {
+          const next = Math.max(0, curInt - 1);
+          scrollAccRef.current = 0;
+          activeSlideRef.current = next;
+          setActiveSlide(next);
         }
       }
     };
@@ -287,19 +295,35 @@ export function BudayaPage() {
     return () => window.removeEventListener('wheel', handleWheel);
   }, []);
 
-  // "SCROLL" button manually advances to the next integer slide
+  useEffect(() => {
+    const section = containerRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && Math.round(activeSlideRef.current) < slides.length - 1) {
+          // Snap page to carousel section top when it enters view
+          section.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
+        }
+      },
+      { threshold: 0.95 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // SCROLL button — advance one slide
   const handleNextSlide = () => {
-    const cur = activeProgressRef.current;
+    const cur = Math.round(activeSlideRef.current);
     if (cur < slides.length - 1) {
-      const nextSlide = Math.floor(cur) + 1;
-      activeProgressRef.current = nextSlide;
-      setActiveProgress(nextSlide);
+      const next = cur + 1;
+      activeSlideRef.current = next;
+      setActiveSlide(next);
     }
   };
 
-  // Convert progress into the active integer slide number
-  const activeSlide = Math.min(Math.max(0, Math.round(activeProgress)), slides.length - 1);
-  const progressPercent = ((activeProgress + 1) / slides.length) * 100;
+  const activeSlideInt = Math.min(Math.max(0, Math.round(activeSlide)), slides.length - 1);
+  const progressPercent = ((activeSlideInt + 1) / slides.length) * 100;
 
   return (
     <div className="relative min-h-screen bg-[#3A0D0D] text-white overflow-x-hidden">
@@ -313,7 +337,7 @@ export function BudayaPage() {
       >
         <video
           ref={videoRef}
-          src="/assets/Budaya 4k.mp4"
+          src={budaya4kVideo}
           autoPlay
           loop
           muted
@@ -389,10 +413,10 @@ export function BudayaPage() {
         </div>
       </section>
 
-      {/* ── Featured Interactive Carousel Section (Wheel-lock: advances slides on scroll) ── */}
+      {/* ── Featured Carousel Section — Full Scroll-Jacked (slides 1-8) ── */}
       <section
         ref={containerRef}
-        className="w-full bg-[#3A0D0D] flex flex-col justify-center py-10"
+        className="relative w-full bg-[#3A0D0D] flex flex-col items-center justify-center"
         style={{ minHeight: '100svh' }}
         aria-labelledby="carousel-title-label"
       >
@@ -402,24 +426,31 @@ export function BudayaPage() {
             featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
           }`}
         >
+          {/* ── Slide Track ── */}
           <div
-            className="flex transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-            style={{ transform: `translateX(-${activeProgress * 100}%)` }}
+            className="flex"
+            style={{
+              transform: `translateX(-${activeSlide * 100}%)`,
+              transition: isSwipingRef.current
+                ? 'none'
+                : 'transform 700ms cubic-bezier(0.16,1,0.3,1)',
+            }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {slides.map((slide) => (
+            {slides.map((slide, idx) => (
               <article
                 key={slide.id}
-                className="w-[108%] md:w-[112%] flex-shrink-0 flex flex-col md:flex-row gap-6 md:gap-10 items-start justify-start pl-1 pr-[8%] md:pr-[12%]"
+                className="w-full flex-shrink-0 flex flex-col md:flex-row gap-6 md:gap-10 items-start justify-start"
+                style={{ width: '100%' }}
               >
                 {/* ── LEFT Image ── */}
                 <img
                   src={slide.img}
                   alt={slide.title}
                   className="w-full md:w-[695px] h-auto md:h-[521px] object-cover rounded-[24px] shadow-[0_16px_56px_rgba(0,0,0,0.45)] flex-shrink-0"
-                  loading="lazy"
+                  loading={idx === 0 ? 'eager' : 'lazy'}
                 />
 
                 {/* ── RIGHT Content ── */}
@@ -432,7 +463,7 @@ export function BudayaPage() {
                   </p>
 
                   <h2
-                    id="carousel-title-label"
+                    id={idx === activeSlideInt ? 'carousel-title-label' : undefined}
                     className="font-cormorant font-bold text-white leading-tight"
                     style={{ fontSize: 'clamp(28px, 3.5vw, 44px)' }}
                   >
@@ -440,10 +471,7 @@ export function BudayaPage() {
                   </h2>
 
                   <div className="flex gap-4">
-                    <div
-                      className="flex-shrink-0 w-[2px] rounded-full"
-                      style={{ background: '#F9CE65' }}
-                    />
+                    <div className="flex-shrink-0 w-[2px] rounded-full" style={{ background: '#F9CE65' }} />
                     <p
                       className="font-poppins italic text-white leading-relaxed"
                       style={{ fontSize: 'clamp(13px, 1.2vw, 15px)' }}
@@ -457,7 +485,8 @@ export function BudayaPage() {
                       <li key={i} className="flex items-start gap-4">
                         <img
                           src={segitigaSvg}
-                          alt="Bullet Icon"
+                          alt=""
+                          aria-hidden="true"
                           className="flex-shrink-0 mt-[4px]"
                           style={{ width: 14, height: 16 }}
                         />
@@ -475,30 +504,26 @@ export function BudayaPage() {
             ))}
           </div>
 
-          {/* ── Scroll Progress Bar ── */}
+          {/* ── Progress Bar + Controls ── */}
           <div
-            className={`mx-auto mt-12 flex items-center justify-between gap-4 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`mx-auto mt-10 flex items-center justify-between gap-4 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               featureVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
-            style={{ maxWidth: '100%' }}
           >
             <span
-              className="font-poppins font-medium flex-shrink-0 select-none"
+              className="font-poppins font-medium flex-shrink-0 select-none tabular-nums"
               style={{ color: '#F9CE65', fontSize: 13, letterSpacing: '0.08em' }}
             >
-              0{activeSlide + 1}/08
+              0{activeSlideInt + 1}/08
             </span>
 
-            <div
-              className="relative h-[1.5px] flex-1 bg-white/10"
-              style={{ maxWidth: '100%', borderRadius: 'full' }}
-            >
+            <div className="relative h-[1.5px] flex-1 bg-white/10 rounded-full">
               <div
                 className="absolute left-0 top-0 h-full rounded-full"
                 style={{
                   width: `${progressPercent}%`,
                   background: '#F9CE65',
-                  transition: 'width 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+                  transition: 'width 0.5s cubic-bezier(0.16,1,0.3,1)',
                   boxShadow: '0 0 8px rgba(249,206,101,0.5)',
                 }}
               />
@@ -507,11 +532,12 @@ export function BudayaPage() {
             <button
               onClick={handleNextSlide}
               type="button"
-              className="font-poppins uppercase tracking-[0.22em] flex-shrink-0 cursor-pointer focus:outline-none transition-transform duration-300 hover:scale-105 active:scale-95 select-none"
+              disabled={activeSlideInt >= slides.length - 1}
+              className="font-poppins uppercase tracking-[0.22em] flex-shrink-0 cursor-pointer focus:outline-none transition-all duration-300 hover:scale-105 active:scale-95 select-none disabled:opacity-30 disabled:cursor-not-allowed"
               style={{ color: '#F9CE65', fontSize: 12, fontWeight: 500 }}
-              aria-label="Berikutnya"
+              aria-label="Slide berikutnya"
             >
-              SCROLL
+              {activeSlideInt < slides.length - 1 ? 'SCROLL ↓' : 'SELESAI'}
             </button>
           </div>
         </div>
@@ -596,11 +622,24 @@ export function BudayaPage() {
           >
             Falsafah yang menjadi landasan utama kehidupan masyarakat Minangkabau. Nilai-nilai adat dijalankan selaras dengan ajaran agama, sehingga budaya dan spiritualitas berjalan berdampingan dalam kehidupan sehari-hari.
           </p>
-          <div className="mt-8 flex items-center justify-center">
+          <div className="mt-8 flex items-center justify-center gap-3">
             <img
-              src={segitigaSvg}
-              alt="Ornamen Segitiga"
-              className="h-4 w-auto object-contain opacity-75"
+              src={tigaSvg}
+              alt="Ornamen Tiga 1"
+              className="opacity-70"
+              style={{ width: 22, height: 22 }}
+            />
+            <img
+              src={tigaSvg}
+              alt="Ornamen Tiga 2"
+              className="opacity-40"
+              style={{ width: 16, height: 16 }}
+            />
+            <img
+              src={tigaSvg}
+              alt="Ornamen Tiga 3"
+              className="opacity-20"
+              style={{ width: 11, height: 11 }}
             />
           </div>
         </div>

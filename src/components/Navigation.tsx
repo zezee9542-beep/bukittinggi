@@ -85,13 +85,15 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
   return (
     <>
       <header
-        className={`fixed z-50 bg-white/95 backdrop-blur-md flex items-center justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`fixed z-50 inset-x-0 mx-auto bg-white/95 backdrop-blur-md flex items-center justify-between transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
           isScrolled
-            ? 'top-4 inset-x-4 md:inset-x-8 lg:inset-x-12 h-[60px] rounded-full shadow-lg shadow-neutral-100/90 px-8 border border-neutral-200/50 max-w-[1280px] mx-auto'
-            : 'top-0 inset-x-0 h-[76px] px-6 md:px-12 border-b border-neutral-100'
+            ? 'top-4 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] max-w-[1200px] h-[58px] rounded-full px-8 border border-neutral-200/80'
+            : 'top-0 w-full h-[76px] px-6 md:px-12 border-b border-neutral-100'
         }`}
         style={{
-          transform: navVisible ? 'translateY(0)' : 'translateY(-140%)',
+          transform: navVisible
+            ? 'translateY(0)'
+            : 'translateY(-150%)',
         }}
       >
         {/* Left Side: Logo */}
