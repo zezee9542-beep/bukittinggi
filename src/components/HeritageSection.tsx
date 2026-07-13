@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import imgSejarah from '../assets/11.webp';
 import imgBudaya from '../assets/12.webp';
 import imgKuliner from '../assets/13.webp';
