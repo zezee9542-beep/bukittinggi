@@ -329,3 +329,58 @@ body {
   background: linear-gradient(to right, transparent, rgba(255,255,255,0.5));
   pointer-events: none;
 }
+
+/* ── Heritage Premium Card: arrow bounce animation ── */
+@keyframes arrowBounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+/* ── Heritage Premium Card: 2-phase diagonal tear (top-right → bottom-left) ── */
+
+/* Phase 1: bottom-right corner swings to bottom-left (diagonal tear line appears)   */
+/* Phase 2: remaining upper triangle collapses to top-left corner (image disappears) */
+@keyframes imgTearOpen {
+  0%   { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
+  58%  { clip-path: polygon(0% 0%, 100% 0%, 0%   100%, 0% 100%); }
+  100% { clip-path: polygon(0% 0%, 0%   0%, 0%   0%,   0% 0%  ); }
+}
+
+/* Reverse: from collapsed → upper triangle re-appears → full image */
+@keyframes imgTearClose {
+  0%   { clip-path: polygon(0% 0%, 0%   0%, 0%   0%,   0% 0%  ); }
+  42%  { clip-path: polygon(0% 0%, 100% 0%, 0%   100%, 0% 100%); }
+  100% { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
+}
+
+.img-tear-open {
+  animation: imgTearOpen 950ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+.img-tear-close {
+  animation: imgTearClose 850ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* One-shot shine sweep on card enter */
+@keyframes shinePass {
+  from { left: -70%; }
+  to   { left: 130%; }
+}
+
+/* ── Seamless Horizontal Marquee Ticker ── */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee-scroll 45s linear infinite;
+}
+
+.marquee-content {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

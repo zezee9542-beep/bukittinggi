@@ -1,18 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import logoSvg from '../assets/logo.svg';
 import { MenuOverlay } from './MenuOverlay';
 
-type Page = 'home' | 'history' | 'budaya';
-
-interface NavigationProps {
-  currentPage: Page;
-  setCurrentPage: (page: Page) => void;
-}
-
-export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
+export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // ── Scroll-aware navbar visibility ──────────────────────────────────────────
   const [navVisible, setNavVisible] = useState(true);
@@ -65,27 +62,40 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
     }
   };
 
-  const handleNavClick = (page: Page, sectionId?: string) => {
-    setCurrentPage(page);
-    if (sectionId) {
-      setTimeout(() => {
+  const handleNavClick = (path: string, sectionId?: string) => {
+    if (location.pathname === path) {
+      if (sectionId) {
         const element = document.getElementById(sectionId);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }, 150);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate(path);
+      if (sectionId) {
+        setTimeout(() => {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 350);
+      } else {
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 320);
+      }
     }
   };
 
   const navLinks = [
-    { label: 'Beranda', page: 'home' as Page },
-    { label: 'Sejarah', page: 'history' as Page },
-    { label: 'Budaya', page: 'budaya' as Page },
-    { label: 'Kuliner', page: 'home' as Page, targetId: 'heritage-heading' },
-    { label: 'Pariwisata', page: 'home' as Page, targetId: 'heritage-heading' },
-    { label: 'Peta', page: 'home' as Page, targetId: 'heritage-heading' },
+    { label: 'Beranda', path: '/' },
+    { label: 'Sejarah', path: '/sejarah' },
+    { label: 'Budaya', path: '/budaya' },
+    { label: 'Kuliner', path: '/', targetId: 'heritage-heading' },
+    { label: 'Pariwisata', path: '/', targetId: 'heritage-heading' },
+    { label: 'Peta', path: '/', targetId: 'heritage-heading' },
   ];
 
   return (
@@ -114,7 +124,7 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
             className={`w-auto object-contain cursor-pointer transition-all duration-500 hover-spring ${
               isScrolled ? 'h-[40px] sm:h-[44px]' : 'h-[52px] sm:h-[60px]'
             }`}
-            onClick={() => handleNavClick('home')}
+            onClick={() => handleNavClick('/')}
             style={{ display: 'block' }}
           />
         </div>
@@ -122,11 +132,11 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
         {/* Center: Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-8" aria-label="Navigasi utama">
           {navLinks.map((link, idx) => {
-            const isPageActive = currentPage === link.page && !link.targetId;
+            const isPageActive = location.pathname === link.path && !link.targetId;
             return (
               <button
                 key={link.label}
-                onClick={() => handleNavClick(link.page, link.targetId)}
+                onClick={() => handleNavClick(link.path, link.targetId)}
                 className={`relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-colors duration-300 cursor-pointer magnetic-link ripple-btn ${
                   isPageActive ? 'text-[#6E1F1F] font-semibold' : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F]'
                 }`}
@@ -184,14 +194,10 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
 
       {isMenuOpen && (
         <MenuOverlay
-          currentPage={currentPage}
           onClose={() => setIsMenuOpen(false)}
-          onNavigate={(page) => {
-            setCurrentPage(page);
-            setIsMenuOpen(false);
-          }}
         />
       )}
     </>
   );
 }
+

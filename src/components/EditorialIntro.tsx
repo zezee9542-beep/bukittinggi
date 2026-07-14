@@ -1,5 +1,6 @@
 import { siteContent } from '../data/stories';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import menaraPng from '../assets/menara.png';
 
 export function EditorialIntro() {
   const { intro } = siteContent;
@@ -8,7 +9,7 @@ export function EditorialIntro() {
   return (
     <section
       ref={ref}
-      className="relative z-20 bg-white pb-24 pt-28 md:pb-32 md:pt-36 overflow-hidden"
+      className="relative z-20 bg-white py-16 md:py-36 min-h-[650px] md:min-h-[850px] overflow-hidden flex items-center"
       aria-labelledby="intro-heading"
     >
       {/* ── Decorative background circles — subtle depth ── */}
@@ -29,45 +30,59 @@ export function EditorialIntro() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto flex w-full max-w-6xl flex-row items-center px-6 z-20">
-        {/* Spacer to push content right, clear of the tower in the left corner */}
-        <div className="hidden md:block md:w-[280px] lg:w-[380px] xl:w-[460px] flex-shrink-0" />
+      {/* ── Tall Jam Gadang tower image (menara.png) stretching from top to bottom ── */}
+      <div
+        className={`absolute top-0 bottom-0 left-0 md:left-[4%] lg:left-[8%] w-full md:w-[42%] flex items-end justify-center pointer-events-none transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isVisible ? 'translate-x-0 opacity-15 md:opacity-100' : '-translate-x-16 opacity-0'
+        }`}
+        style={{ zIndex: 10 }}
+      >
+        <img
+          src={menaraPng}
+          alt="Jam Gadang Tower"
+          className="w-auto h-full max-h-none object-contain select-none filter drop-shadow-[0_16px_40px_rgba(0,0,0,0.12)]"
+          draggable={false}
+        />
+      </div>
 
-        {/* Right side content */}
+      {/* ── Layout container with text aligned to the Right ── */}
+      <div className="relative mx-auto flex flex-col md:flex-row items-center justify-end w-full max-w-[1280px] px-6 md:px-12 z-20">
+        
+        {/* Spacer for absolute left tower */}
+        <div className="hidden md:block md:w-[45%] lg:w-[42%] flex-shrink-0" />
+
+        {/* Right column: Content Text Block */}
         <div
-          className={`flex-1 flex flex-col items-center text-center transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`flex-1 flex flex-col items-center md:items-start text-center md:text-left transition-all duration-[1300ms] delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isVisible
               ? 'translate-y-0 opacity-100 blur-0'
-              : 'translate-y-4 opacity-0 blur-[2px]'
+              : 'translate-y-6 opacity-0 blur-[3px]'
           }`}
         >
-          {/* Script Title — with shimmer gold effect */}
+          {/* Cursive script title with double underline style */}
           <div
-            className={`mb-4 inline-block border-b border-[#6E1F1F]/40 pb-2 px-6 transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`relative mb-4 inline-block transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
             style={{ transitionDelay: '100ms' }}
           >
             <span
-              className="font-corinthia text-[64px] font-bold leading-none md:text-[86px]"
+              className="font-corinthia text-[82px] sm:text-[98px] md:text-[124px] font-bold leading-none"
               style={{ color: '#6E1F1F' }}
             >
               {intro.scriptTitle}
             </span>
+            {/* Double underline decoration */}
+            <div className="absolute left-0 bottom-[-6px] w-full flex flex-col gap-[3px]">
+              <div className="h-[2px] bg-[#6E1F1F]/60 w-full" />
+              <div className="h-[2px] bg-[#6E1F1F]/60 w-full" />
+            </div>
           </div>
 
-          {/* Animated divider line */}
-          <div
-            className={`h-[1.5px] mb-6 shimmer-line transition-all duration-[1000ms] ${
-              isVisible ? 'w-24 opacity-100' : 'w-0 opacity-0'
-            }`}
-            style={{ transitionDelay: '200ms' }}
-            aria-hidden="true"
-          />
-
+          {/* Subtitle - capitalized, bold cormorant */}
           <h2
             id="intro-heading"
-            className={`font-cormorant mb-6 text-[24px] font-bold tracking-[0.1em] text-[#6E1F1F] md:text-[34px] leading-tight transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`font-cormorant mt-6 mb-8 text-[28px] sm:text-[36px] md:text-[46px] font-bold tracking-[0.15em] text-[#6E1F1F] leading-tight transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
             }`}
             style={{ transitionDelay: '250ms' }}
@@ -75,11 +90,12 @@ export function EditorialIntro() {
             {intro.heading}
           </h2>
 
-          <div className="max-w-[520px] mx-auto leading-relaxed text-neutral-700 flex flex-col items-center">
+          {/* Paragraph description - centered text inside container */}
+          <div className="w-full max-w-[620px] mx-auto md:mx-0 leading-relaxed text-neutral-800 text-center flex flex-col items-center">
             {intro.paragraphs.map((paragraph, idx) => (
               <p
                 key={paragraph.slice(0, 24)}
-                className={`font-poppins mb-4 text-[14px] font-normal leading-[1.8] text-inherit md:text-[15px] last:mb-0 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                className={`font-poppins mb-6 text-[15px] sm:text-[16px] md:text-[18px] font-normal leading-[1.85] text-[#222222] last:mb-0 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
                   isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                 }`}
                 style={{ transitionDelay: `${350 + idx * 120}ms` }}
@@ -89,34 +105,19 @@ export function EditorialIntro() {
             ))}
           </div>
 
-          {/* Ornament icons with staggered float animation */}
+          {/* Staggered decorative bottom separator line */}
           <div
-            className={`mt-10 flex items-center justify-center gap-4 transition-all duration-[800ms] delay-200 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+            className={`mt-10 flex justify-center w-full md:justify-start transition-all duration-[800ms] delay-200 ease-[cubic-bezier(0.32,0.72,0,1)] ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
             style={{ transitionDelay: '600ms' }}
             aria-hidden="true"
           >
-            {Array.from({ length: 3 }).map((_, index) => (
-              <svg
-                key={index}
-                width="28"
-                height="21"
-                viewBox="0 0 32 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="text-[#6E1F1F] animate-ornament"
-                style={{ animationDelay: `${index * 400}ms` }}
-              >
-                <path
-                  d="M16 12C18.5 10 22 7 24 2C24.5 5.5 23 9 20.5 11.5C24.5 12 28 14 29.5 15.5C25.5 16.5 21 17 16 17C11 17 6.5 16.5 2.5 15.5C4 14 7.5 12 11.5 11.5C9 9 7.5 5.5 8 2C10 7 13.5 10 16 12Z"
-                  fill="currentColor"
-                />
-              </svg>
-            ))}
+            <div className="h-[1.5px] w-24 bg-[#6E1F1F]/20" />
           </div>
         </div>
       </div>
     </section>
+
   );
 }

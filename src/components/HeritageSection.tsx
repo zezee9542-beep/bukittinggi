@@ -5,12 +5,12 @@ import imgKuliner from '../assets/13.webp';
 import imgPariwisata from '../assets/14.webp';
 import imgPeta from '../assets/15.webp';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { HeritagePremiumCard } from './HeritagePremiumCard';
 
 export function HeritageSection() {
   const { ref: sectionRef, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.05 });
   const [activeMobileIdx, setActiveMobileIdx] = useState(0);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   const cards = [
     { title: 'Sejarah', img: imgSejarah },
@@ -20,18 +20,14 @@ export function HeritageSection() {
     { title: 'Peta', img: imgPeta },
   ];
 
-  // Track active slide index during scroll swipe on mobile
   const handleScroll = () => {
     const container = mobileScrollRef.current;
     if (!container) return;
-
     const children = container.children;
     if (!children || children.length === 0) return;
-
     const containerCenter = container.scrollLeft + container.offsetWidth / 2;
     let closestIdx = 0;
     let minDistance = Infinity;
-
     for (let i = 0; i < children.length; i++) {
       const child = children[i] as HTMLElement;
       const childCenter = child.offsetLeft + child.offsetWidth / 2;
@@ -44,11 +40,9 @@ export function HeritageSection() {
     setActiveMobileIdx(closestIdx);
   };
 
-  // Smooth scroll container to target card when clicking dots
   const scrollToCard = (idx: number) => {
     const container = mobileScrollRef.current;
     if (!container) return;
-
     const children = container.children;
     if (children && children[idx]) {
       const child = children[idx] as HTMLElement;
@@ -82,26 +76,15 @@ export function HeritageSection() {
           isVisible ? 'translate-y-0 opacity-100 blur-0 scale-100' : 'translate-y-8 opacity-0 blur-[3px] scale-[0.98]'
         }`}
       >
-        {/* Animated label above heading */}
         <div
           className={`inline-flex items-center gap-2 mb-4 transition-all duration-[800ms] ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           }`}
           style={{ transitionDelay: '100ms' }}
         >
-          <div
-            className="h-[1px] w-8 animate-line-grow"
-            style={{ background: '#D4A853', transitionDelay: '200ms' }}
-            aria-hidden="true"
-          />
-          <span className="font-poppins text-[11px] tracking-[0.28em] text-[#6E1F1F]/60 uppercase">
-            Temukan Lebih
-          </span>
-          <div
-            className="h-[1px] w-8 animate-line-grow"
-            style={{ background: '#D4A853', animationDelay: '200ms' }}
-            aria-hidden="true"
-          />
+          <div className="h-[1px] w-8 animate-line-grow" style={{ background: '#D4A853' }} aria-hidden="true" />
+          <span className="font-poppins text-[11px] tracking-[0.28em] text-[#6E1F1F]/60 uppercase">Temukan Lebih</span>
+          <div className="h-[1px] w-8 animate-line-grow" style={{ background: '#D4A853', animationDelay: '200ms' }} aria-hidden="true" />
         </div>
 
         <h2
@@ -111,7 +94,6 @@ export function HeritageSection() {
           JELAJAHI WARISAN BUKITTINGGI
         </h2>
 
-        {/* Animated shimmer gold divider */}
         <div
           className={`mx-auto h-[2px] shimmer-line mb-4 transition-all duration-[1000ms] ${
             isVisible ? 'w-24 opacity-100' : 'w-0 opacity-0'
@@ -139,49 +121,20 @@ export function HeritageSection() {
         >
           {cards.map((card, idx) => (
             <div key={card.title} className="snap-center flex-shrink-0">
-              <div
-                className="relative overflow-hidden group img-zoom"
-                style={{
-                  width: 'clamp(220px, 68vw, 290px)',
-                  height: 'clamp(293px, 90vw, 386px)',
-                  transitionDelay: `${idx * 80}ms`,
-                  transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(32px) scale(0.97)',
-                  opacity: isVisible ? 1 : 0,
-                  transition: 'transform 1000ms cubic-bezier(0.16,1,0.3,1), opacity 1000ms cubic-bezier(0.16,1,0.3,1)',
-                  borderRadius: '18px 0px 18px 18px',
-                  border: '1.5px solid #F9CE65',
-                  boxShadow: '0 6px 28px rgba(0,0,0,0.25)',
-                }}
-              >
-                <img
-                  src={card.img}
-                  alt={card.title}
-                  className="w-full h-full object-cover select-none transition-transform duration-700 ease-out"
-                  loading="lazy"
-                  draggable={false}
-                />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div
-                    className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-[#6E1F1F] via-[#6E1F1F]/40 to-transparent"
-                    style={{ borderRadius: '0px 0px 18px 18px' }}
-                  />
-                  <div className="absolute left-[8%] right-[8%] bottom-[8%] flex flex-col items-start text-left pointer-events-none">
-                    <h3 className="font-corinthia text-white text-[36px] font-bold leading-none select-none">
-                      {card.title}
-                    </h3>
-                    <div className="w-[84%] h-[1px] bg-[#D4A853]/60 my-2 shimmer-line" />
-                    <p className="font-poppins text-white/95 text-[10px] font-semibold tracking-[0.18em] flex items-center gap-1 uppercase leading-none">
-                      Mulai Jelajah <span className="text-[12px] font-normal">↗</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <HeritagePremiumCard
+                title={card.title}
+                img={card.img}
+                isVisible={isVisible}
+                revealDelay={idx * 80}
+                width="clamp(220px, 68vw, 290px)"
+                height="clamp(293px, 90vw, 386px)"
+                borderRadius="18px 0px 18px 18px"
+              />
             </div>
           ))}
         </div>
 
-        {/* Swipe indicator dots with animated active state */}
+        {/* Swipe indicator dots */}
         <div className="flex justify-center items-center gap-2 mt-5">
           {cards.map((card, idx) => {
             const isActive = idx === activeMobileIdx;
@@ -202,140 +155,38 @@ export function HeritageSection() {
         </div>
       </div>
 
-      {/* ── DESKTOP/TABLET: Grid layout with hover tilt effect ── */}
+      {/* ── DESKTOP/TABLET: Grid layout with premium hover cards ── */}
       <div className="hidden md:block mx-auto max-w-[1512px] px-6">
         <div className="flex flex-col items-center gap-4">
           {/* Row 1 */}
           <div className="flex flex-wrap justify-center gap-4 w-full">
             {cards.slice(0, 3).map((card, idx) => (
-              <div
+              <HeritagePremiumCard
                 key={card.title}
-                className="relative overflow-hidden group img-zoom hover-lift cursor-pointer"
-                onMouseEnter={() => setHoveredIdx(idx)}
-                onMouseLeave={() => setHoveredIdx(null)}
-                style={{
-                  width: 'clamp(320px, 28vw, 477px)',
-                  height: 'clamp(413px, 36vw, 616px)',
-                  transitionDelay: `${idx * 130}ms`,
-                  transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(48px) scale(0.95)',
-                  opacity: isVisible ? 1 : 0,
-                  transition:
-                    'transform 1000ms cubic-bezier(0.16,1,0.3,1), opacity 1000ms cubic-bezier(0.16,1,0.3,1), box-shadow 350ms ease',
-                  borderRadius: '24px 0px 24px 24px',
-                  border: `1.5px solid ${hoveredIdx === idx ? '#F9CE65' : 'rgba(249,206,101,0.6)'}`,
-                  boxShadow:
-                    hoveredIdx === idx
-                      ? '0 24px 60px rgba(0,0,0,0.38), 0 0 0 2px rgba(249,206,101,0.3)'
-                      : '0 8px 40px rgba(0,0,0,0.28)',
-                }}
-              >
-                <img
-                  src={card.img}
-                  alt={card.title}
-                  className="w-full h-full object-cover select-none"
-                  loading="lazy"
-                  draggable={false}
-                />
-                <div className="absolute inset-0 pointer-events-none">
-                  <div
-                    className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-[#6E1F1F] via-[#6E1F1F]/40 to-transparent"
-                    style={{ borderRadius: '0px 0px 24px 24px' }}
-                  />
-                  <div className="absolute left-[8%] right-[8%] bottom-[8%] flex flex-col items-start text-left pointer-events-none">
-                    <h3 className="font-corinthia text-white text-[46px] md:text-[54px] font-bold leading-none select-none mb-1 transition-transform duration-500 group-hover:-translate-y-1">
-                      {card.title}
-                    </h3>
-                    <div
-                      className={`h-[1px] bg-[#D4A853]/60 my-2 transition-all duration-500 ${
-                        hoveredIdx === idx ? 'w-[90%] shimmer-line' : 'w-[84%]'
-                      }`}
-                    />
-                    <p className="font-poppins text-white/95 text-[11px] md:text-[12px] font-semibold tracking-[0.18em] flex items-center gap-1.5 uppercase leading-none transition-all duration-400 group-hover:tracking-[0.25em]">
-                      Mulai Jelajah{' '}
-                      <span className="text-[13px] md:text-[15px] font-normal transition-transform duration-400 group-hover:translate-x-1">
-                        ↗
-                      </span>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Corner accent glow on hover */}
-                <div
-                  className="absolute top-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{
-                    background:
-                      'radial-gradient(circle at top right, rgba(249,206,101,0.35), transparent 70%)',
-                  }}
-                  aria-hidden="true"
-                />
-              </div>
+                title={card.title}
+                img={card.img}
+                isVisible={isVisible}
+                revealDelay={idx * 130}
+                width="clamp(320px, 28vw, 477px)"
+                height="clamp(413px, 36vw, 616px)"
+                borderRadius="24px 0px 24px 24px"
+              />
             ))}
           </div>
 
           {/* Row 2 */}
           <div className="flex flex-wrap justify-center gap-4 w-full">
             {cards.slice(3, 5).map((card, idx) => (
-              <div
+              <HeritagePremiumCard
                 key={card.title}
-                className="relative overflow-hidden group img-zoom hover-lift cursor-pointer"
-                onMouseEnter={() => setHoveredIdx(idx + 3)}
-                onMouseLeave={() => setHoveredIdx(null)}
-                style={{
-                  width: 'clamp(320px, 28vw, 477px)',
-                  height: 'clamp(413px, 36vw, 616px)',
-                  transitionDelay: `${(idx + 3) * 130}ms`,
-                  transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(48px) scale(0.95)',
-                  opacity: isVisible ? 1 : 0,
-                  transition:
-                    'transform 1000ms cubic-bezier(0.16,1,0.3,1), opacity 1000ms cubic-bezier(0.16,1,0.3,1), box-shadow 350ms ease',
-                  borderRadius: '24px 0px 24px 24px',
-                  border: `1.5px solid ${hoveredIdx === idx + 3 ? '#F9CE65' : 'rgba(249,206,101,0.6)'}`,
-                  boxShadow:
-                    hoveredIdx === idx + 3
-                      ? '0 24px 60px rgba(0,0,0,0.38), 0 0 0 2px rgba(249,206,101,0.3)'
-                      : '0 8px 40px rgba(0,0,0,0.28)',
-                }}
-              >
-                <img
-                  src={card.img}
-                  alt={card.title}
-                  className="w-full h-full object-cover select-none"
-                  loading="lazy"
-                  draggable={false}
-                />
-                <div className="absolute inset-0 pointer-events-none">
-                  <div
-                    className="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-[#6E1F1F] via-[#6E1F1F]/40 to-transparent"
-                    style={{ borderRadius: '0px 0px 24px 24px' }}
-                  />
-                  <div className="absolute left-[8%] right-[8%] bottom-[8%] flex flex-col items-start text-left pointer-events-none">
-                    <h3 className="font-corinthia text-white text-[46px] md:text-[54px] font-bold leading-none select-none mb-1 transition-transform duration-500 group-hover:-translate-y-1">
-                      {card.title}
-                    </h3>
-                    <div
-                      className={`h-[1px] bg-[#D4A853]/60 my-2 transition-all duration-500 ${
-                        hoveredIdx === idx + 3 ? 'w-[90%] shimmer-line' : 'w-[84%]'
-                      }`}
-                    />
-                    <p className="font-poppins text-white/95 text-[11px] md:text-[12px] font-semibold tracking-[0.18em] flex items-center gap-1.5 uppercase leading-none transition-all duration-400 group-hover:tracking-[0.25em]">
-                      Mulai Jelajah{' '}
-                      <span className="text-[13px] md:text-[15px] font-normal transition-transform duration-400 group-hover:translate-x-1">
-                        ↗
-                      </span>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Corner accent glow on hover */}
-                <div
-                  className="absolute top-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{
-                    background:
-                      'radial-gradient(circle at top right, rgba(249,206,101,0.35), transparent 70%)',
-                  }}
-                  aria-hidden="true"
-                />
-              </div>
+                title={card.title}
+                img={card.img}
+                isVisible={isVisible}
+                revealDelay={(idx + 3) * 130}
+                width="clamp(320px, 28vw, 477px)"
+                height="clamp(413px, 36vw, 616px)"
+                borderRadius="24px 0px 24px 24px"
+              />
             ))}
           </div>
         </div>

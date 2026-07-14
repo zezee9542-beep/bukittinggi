@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import logoSvg from '../assets/logo.svg';
-
-type Page = 'home' | 'history' | 'budaya';
 
 interface MenuOverlayProps {
   onClose: () => void;
-  onNavigate: (page: Page) => void;
-  currentPage: Page;
 }
 
-export function MenuOverlay({ onClose, onNavigate, currentPage }: MenuOverlayProps) {
+export function MenuOverlay({ onClose }: MenuOverlayProps) {
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Prevent scrolling on body when overlay is active
   useEffect(() => {
@@ -28,17 +28,18 @@ export function MenuOverlay({ onClose, onNavigate, currentPage }: MenuOverlayPro
     setTimeout(() => onClose(), 420);
   };
 
-  const handleNavigate = (page: Page) => {
+  const handleNavigate = (path: string) => {
     setClosing(true);
     setTimeout(() => {
-      onNavigate(page);
+      navigate(path);
+      onClose();
     }, 380);
   };
 
   const navItems = [
-    { page: 'home' as Page, label: 'BERANDA', sub: 'Kembali ke Halaman Utama' },
-    { page: 'history' as Page, label: 'SEJARAH', sub: 'Menelusuri Linimasa Sejarah' },
-    { page: 'budaya' as Page, label: 'BUDAYA', sub: 'Warisan Budaya Minangkabau' },
+    { path: '/', label: 'BERANDA', sub: 'Kembali ke Halaman Utama' },
+    { path: '/sejarah', label: 'SEJARAH', sub: 'Menelusuri Linimasa Sejarah' },
+    { path: '/budaya', label: 'BUDAYA', sub: 'Warisan Budaya Minangkabau' },
   ];
 
   return (
@@ -144,12 +145,12 @@ export function MenuOverlay({ onClose, onNavigate, currentPage }: MenuOverlayPro
       {/* Menu items container */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
         <nav className="flex flex-col gap-8 md:gap-11" aria-label="Menu navigasi overlay">
-          {navItems.map(({ page, label, sub }, idx) => {
-            const isActive = currentPage === page;
+          {navItems.map(({ path, label, sub }, idx) => {
+            const isActive = location.pathname === path;
             return (
               <button
-                key={page}
-                onClick={() => handleNavigate(page)}
+                key={path}
+                onClick={() => handleNavigate(path)}
                 className="group flex flex-col items-center focus:outline-none cursor-pointer"
                 style={{
                   opacity: mounted && !closing ? 1 : 0,
@@ -198,3 +199,4 @@ export function MenuOverlay({ onClose, onNavigate, currentPage }: MenuOverlayPro
     </div>
   );
 }
+

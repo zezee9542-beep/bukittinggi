@@ -135,27 +135,25 @@ export function ParijsSection() {
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
-          background: 'rgba(0,0,0,0.35)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
+          background: 'rgba(0,0,0,0.45)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
           transitionDelay: '800ms',
         }}
         aria-hidden="true"
       >
-        <div className="flex overflow-hidden py-2.5">
-          {/* Duplicate the text to make seamless loop */}
+        <div className="flex overflow-hidden py-3">
           <div className="marquee-track">
-            {[...Array(4)].map((_, i) => (
-              <span
-                key={i}
-                className="font-poppins text-[11px] tracking-[0.22em] text-white/50 uppercase px-2 flex-shrink-0"
-              >
-                {MARQUEE_TEXT}
-              </span>
-            ))}
+            <span className="marquee-content font-poppins text-[11px] sm:text-[12px] tracking-[0.25em] text-white/60 uppercase">
+              {MARQUEE_TEXT} {MARQUEE_TEXT} {MARQUEE_TEXT}
+            </span>
+            <span className="marquee-content font-poppins text-[11px] sm:text-[12px] tracking-[0.25em] text-white/60 uppercase">
+              {MARQUEE_TEXT} {MARQUEE_TEXT} {MARQUEE_TEXT}
+            </span>
           </div>
         </div>
       </div>
+
     </section>
   );
 }
