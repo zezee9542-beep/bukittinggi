@@ -12,13 +12,19 @@ interface NavigationProps {
 export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-
   const [isScrolled, setIsScrolled] = useState(false);
 
   // ── Scroll-aware navbar visibility ──────────────────────────────────────────
   const [navVisible, setNavVisible] = useState(true);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
+  const [navMounted, setNavMounted] = useState(false);
+
+  // Mount animation
+  useEffect(() => {
+    const t = setTimeout(() => setNavMounted(true), 80);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const HIDE_THRESHOLD = 80;
@@ -92,37 +98,43 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
         }`}
         style={{
           transform: navVisible
-            ? 'translateY(0)'
+            ? navMounted ? 'translateY(0)' : 'translateY(-100%)'
             : 'translateY(-150%)',
+          transition: navMounted
+            ? 'transform 0.4s cubic-bezier(0.2,0.8,0.2,1), width 0.3s ease, top 0.3s ease, height 0.3s ease, border-radius 0.3s ease'
+            : 'transform 0.55s cubic-bezier(0.16,1,0.3,1)',
+          boxShadow: isScrolled ? '0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)' : 'none',
         }}
       >
-        {/* Left Side: Logo */}
+        {/* Left Side: Logo with hover spring */}
         <div className="flex items-center">
           <img
             src={logoSvg}
             alt="Bukittinggi Heritage"
-            className={`w-auto object-contain cursor-pointer transition-all duration-500 ${
+            className={`w-auto object-contain cursor-pointer transition-all duration-500 hover-spring ${
               isScrolled ? 'h-[40px] sm:h-[44px]' : 'h-[52px] sm:h-[60px]'
             }`}
             onClick={() => handleNavClick('home')}
+            style={{ display: 'block' }}
           />
         </div>
 
         {/* Center: Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-8" aria-label="Navigasi utama">
-          {navLinks.map((link) => {
+          {navLinks.map((link, idx) => {
             const isPageActive = currentPage === link.page && !link.targetId;
             return (
               <button
                 key={link.label}
                 onClick={() => handleNavClick(link.page, link.targetId)}
-                className={`relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-colors duration-300 cursor-pointer ${
+                className={`relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-colors duration-300 cursor-pointer magnetic-link ripple-btn ${
                   isPageActive ? 'text-[#6E1F1F] font-semibold' : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F]'
                 }`}
+                style={{ animationDelay: `${idx * 60}ms` }}
               >
                 {link.label}
                 {isPageActive && (
-                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#6E1F1F] rounded-full" />
+                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#6E1F1F] rounded-full animate-line-grow" />
                 )}
               </button>
             );
@@ -135,7 +147,7 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
           <button
             onClick={toggleDarkMode}
             type="button"
-            className="relative w-12 h-[26px] rounded-full bg-[#6E1F1F] transition-colors duration-300 focus:outline-none cursor-pointer flex items-center p-0.5"
+            className="relative w-12 h-[26px] rounded-full bg-[#6E1F1F] transition-colors duration-300 focus:outline-none cursor-pointer flex items-center p-0.5 ripple-btn"
             aria-label="Toggle Dark Mode"
           >
             <div
@@ -149,8 +161,9 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
           <button
             onClick={() => setIsMenuOpen(true)}
             type="button"
-            className="lg:hidden flex items-center justify-center p-1.5 text-[#6E1F1F] transition-transform active:scale-95 cursor-pointer"
+            className="lg:hidden flex items-center justify-center p-1.5 text-[#6E1F1F] transition-transform active:scale-95 cursor-pointer hover:scale-110"
             aria-label="Buka menu"
+            style={{ transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)' }}
           >
             <svg
               width="24"
@@ -182,4 +195,3 @@ export function Navigation({ currentPage, setCurrentPage }: NavigationProps) {
     </>
   );
 }
-

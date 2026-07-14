@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import logoSvg from '../assets/logo.svg';
 
 type Page = 'home' | 'history' | 'budaya';
@@ -10,18 +10,80 @@ interface MenuOverlayProps {
 }
 
 export function MenuOverlay({ onClose, onNavigate, currentPage }: MenuOverlayProps) {
+  const [mounted, setMounted] = useState(false);
+  const [closing, setClosing] = useState(false);
+
   // Prevent scrolling on body when overlay is active
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    const t = setTimeout(() => setMounted(true), 30);
     return () => {
       document.body.style.overflow = '';
+      clearTimeout(t);
     };
   }, []);
 
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => onClose(), 420);
+  };
+
+  const handleNavigate = (page: Page) => {
+    setClosing(true);
+    setTimeout(() => {
+      onNavigate(page);
+    }, 380);
+  };
+
+  const navItems = [
+    { page: 'home' as Page, label: 'BERANDA', sub: 'Kembali ke Halaman Utama' },
+    { page: 'history' as Page, label: 'SEJARAH', sub: 'Menelusuri Linimasa Sejarah' },
+    { page: 'budaya' as Page, label: 'BUDAYA', sub: 'Warisan Budaya Minangkabau' },
+  ];
+
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-[#FAF8F5]/98 backdrop-blur-xl animate-fade-in">
-      {/* Header matching the Navigation bar position */}
-      <div className="mx-auto flex h-[100px] w-full max-w-[924px] items-center justify-between px-4 mt-[21px]">
+    <div
+      className="fixed inset-0 z-[100] flex flex-col overflow-hidden"
+      style={{
+        background: '#FAF8F5',
+        opacity: mounted && !closing ? 1 : 0,
+        transition: 'opacity 0.4s cubic-bezier(0.16,1,0.3,1)',
+      }}
+    >
+      {/* Animated background geometric decoration */}
+      <div
+        className="absolute -top-32 -right-32 w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(110,31,31,0.06) 0%, transparent 70%)',
+          transform: mounted && !closing ? 'scale(1) rotate(0deg)' : 'scale(0) rotate(-45deg)',
+          transition: 'transform 0.8s cubic-bezier(0.34,1.56,0.64,1)',
+          transitionDelay: '100ms',
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute -bottom-20 -left-20 w-[320px] h-[320px] rounded-full pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(212,168,83,0.07) 0%, transparent 70%)',
+          transform: mounted && !closing ? 'scale(1)' : 'scale(0)',
+          transition: 'transform 0.8s cubic-bezier(0.34,1.56,0.64,1)',
+          transitionDelay: '200ms',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Header */}
+      <div
+        className="mx-auto flex h-[100px] w-full max-w-[924px] items-center justify-between px-4 mt-[21px]"
+        style={{
+          opacity: mounted && !closing ? 1 : 0,
+          transform: mounted && !closing ? 'translateY(0)' : 'translateY(-20px)',
+          transition: 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1)',
+          transitionDelay: '80ms',
+        }}
+      >
         <div className="flex items-center pl-6">
           <img
             src={logoSvg}
@@ -30,15 +92,18 @@ export function MenuOverlay({ onClose, onNavigate, currentPage }: MenuOverlayPro
           />
         </div>
         <button
-          onClick={onClose}
+          onClick={handleClose}
           type="button"
-          className="mr-6 flex items-center gap-3 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] cursor-pointer"
+          className="mr-6 flex items-center gap-3 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] cursor-pointer hover:scale-105"
           aria-label="Tutup menu"
         >
           <span className="font-cormorant text-[22px] font-bold tracking-wide text-[#6E1F1F]">
             TUTUP
           </span>
-          <span className="flex h-[24px] w-[24px] items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:rotate-90">
+          <span
+            className="flex h-[24px] w-[24px] items-center justify-center hover:rotate-90"
+            style={{ transition: 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)' }}
+          >
             <svg
               width="22"
               height="22"
@@ -55,67 +120,79 @@ export function MenuOverlay({ onClose, onNavigate, currentPage }: MenuOverlayPro
         </button>
       </div>
 
+      {/* Animated horizontal rule */}
+      <div
+        className="mx-auto w-full max-w-[924px] px-10"
+        style={{
+          opacity: mounted && !closing ? 1 : 0,
+          transition: 'opacity 0.4s ease',
+          transitionDelay: '150ms',
+        }}
+        aria-hidden="true"
+      >
+        <div
+          className="h-[1px] shimmer-line"
+          style={{
+            transform: mounted && !closing ? 'scaleX(1)' : 'scaleX(0)',
+            transformOrigin: 'left center',
+            transition: 'transform 0.8s cubic-bezier(0.16,1,0.3,1)',
+            transitionDelay: '150ms',
+          }}
+        />
+      </div>
+
       {/* Menu items container */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
         <nav className="flex flex-col gap-8 md:gap-11" aria-label="Menu navigasi overlay">
-          {/* Link 1: Beranda */}
-          <button
-            onClick={() => onNavigate('home')}
-            className="group flex flex-col items-center focus:outline-none cursor-pointer"
-          >
-            <span className={`font-cormorant text-[36px] md:text-[52px] font-bold tracking-[0.2em] transition-all duration-500 group-hover:scale-105 ${
-              currentPage === 'home' ? 'text-[#6E1F1F]' : 'text-[#6E1F1F]/60'
-            }`}>
-              BERANDA
-            </span>
-            <span className="font-poppins mt-2 text-[12px] md:text-[14px] font-normal tracking-wider text-neutral-500 uppercase transition-all duration-500 group-hover:text-[#6E1F1F]/80">
-              Kembali ke Halaman Utama
-            </span>
-            <span className={`mt-3 h-[2px] bg-[#6E1F1F] transition-all duration-500 ${
-              currentPage === 'home' ? 'w-12' : 'w-0 group-hover:w-8'
-            }`} />
-          </button>
-
-          {/* Link 2: Sejarah */}
-          <button
-            onClick={() => onNavigate('history')}
-            className="group flex flex-col items-center focus:outline-none cursor-pointer"
-          >
-            <span className={`font-cormorant text-[36px] md:text-[52px] font-bold tracking-[0.2em] transition-all duration-500 group-hover:scale-105 ${
-              currentPage === 'history' ? 'text-[#6E1F1F]' : 'text-[#6E1F1F]/60'
-            }`}>
-              SEJARAH
-            </span>
-            <span className="font-poppins mt-2 text-[12px] md:text-[14px] font-normal tracking-wider text-neutral-500 uppercase transition-all duration-500 group-hover:text-[#6E1F1F]/80">
-              Menelusuri Linimasa Sejarah
-            </span>
-            <span className={`mt-3 h-[2px] bg-[#6E1F1F] transition-all duration-500 ${
-              currentPage === 'history' ? 'w-12' : 'w-0 group-hover:w-8'
-            }`} />
-          </button>
-
-          {/* Link 3: Budaya */}
-          <button
-            onClick={() => onNavigate('budaya')}
-            className="group flex flex-col items-center focus:outline-none cursor-pointer"
-          >
-            <span className={`font-cormorant text-[36px] md:text-[52px] font-bold tracking-[0.2em] transition-all duration-500 group-hover:scale-105 ${
-              currentPage === 'budaya' ? 'text-[#6E1F1F]' : 'text-[#6E1F1F]/60'
-            }`}>
-              BUDAYA
-            </span>
-            <span className="font-poppins mt-2 text-[12px] md:text-[14px] font-normal tracking-wider text-neutral-500 uppercase transition-all duration-500 group-hover:text-[#6E1F1F]/80">
-              Warisan Budaya Minangkabau
-            </span>
-            <span className={`mt-3 h-[2px] bg-[#6E1F1F] transition-all duration-500 ${
-              currentPage === 'budaya' ? 'w-12' : 'w-0 group-hover:w-8'
-            }`} />
-          </button>
+          {navItems.map(({ page, label, sub }, idx) => {
+            const isActive = currentPage === page;
+            return (
+              <button
+                key={page}
+                onClick={() => handleNavigate(page)}
+                className="group flex flex-col items-center focus:outline-none cursor-pointer"
+                style={{
+                  opacity: mounted && !closing ? 1 : 0,
+                  transform:
+                    mounted && !closing
+                      ? 'translateX(0)'
+                      : `translateX(${idx % 2 === 0 ? '-' : ''}40px)`,
+                  transition:
+                    'opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)',
+                  transitionDelay: `${200 + idx * 100}ms`,
+                }}
+              >
+                <span
+                  className={`font-cormorant text-[36px] md:text-[52px] font-bold tracking-[0.2em] transition-all duration-500 group-hover:scale-105 group-hover:tracking-[0.28em] ${
+                    isActive ? 'text-[#6E1F1F]' : 'text-[#6E1F1F]/60'
+                  }`}
+                >
+                  {label}
+                </span>
+                <span className="font-poppins mt-2 text-[12px] md:text-[14px] font-normal tracking-wider text-neutral-500 uppercase transition-all duration-500 group-hover:text-[#6E1F1F]/80 group-hover:tracking-[0.22em]">
+                  {sub}
+                </span>
+                <span
+                  className={`mt-3 h-[2px] bg-[#6E1F1F] transition-all duration-500 ${
+                    isActive ? 'w-12' : 'w-0 group-hover:w-8'
+                  }`}
+                />
+              </button>
+            );
+          })}
         </nav>
       </div>
 
       {/* Decorative footer */}
-      <div className="pb-12 text-center text-[11px] font-poppins tracking-[0.15em] text-neutral-400 uppercase">
+      <div
+        className="pb-12 text-center text-[11px] font-poppins tracking-[0.15em] text-neutral-400 uppercase"
+        style={{
+          opacity: mounted && !closing ? 1 : 0,
+          transform: mounted && !closing ? 'translateY(0)' : 'translateY(12px)',
+          transition: 'opacity 0.5s ease, transform 0.5s ease',
+          transitionDelay: '500ms',
+        }}
+      >
         Bukittinggi Heritage &copy; {new Date().getFullYear()}
       </div>
     </div>
