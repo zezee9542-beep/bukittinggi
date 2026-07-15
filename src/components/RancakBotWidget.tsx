@@ -404,9 +404,7 @@ function TiltableCharacter({
   };
 
   const handleSingleClickAction = () => {
-    if (isOpen) {
-      onClick();
-    }
+    onClick();
   };
 
   // Click → single/double click handler
