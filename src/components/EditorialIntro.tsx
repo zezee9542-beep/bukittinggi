@@ -1,6 +1,6 @@
 import { siteContent } from '../data/stories';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import menaraPng from '../assets/menara.png';
+import menaraPng from '../assets/menara.webp';
 
 export function EditorialIntro() {
   const { intro } = siteContent;
