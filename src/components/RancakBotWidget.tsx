@@ -347,7 +347,7 @@ function TiltableCharacter({
   const hiTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasDragged = useRef(false);
 
-  const MAX_TILT = 22; // degrees
+  const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const applyTilt = (clientX: number, clientY: number) => {
     const el = wrapperRef.current;
@@ -355,11 +355,21 @@ function TiltableCharacter({
     const rect = el.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    const nx = (clientX - cx) / (rect.width / 2);  // -1 to 1
-    const ny = (clientY - cy) / (rect.height / 2); // -1 to 1
+
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+
+    // Calculate angle in degrees for 360-degree Y rotation
+    const angleRad = Math.atan2(dx, -dy);
+    const angleDeg = angleRad * (180 / Math.PI);
+
+    // Calculate X tilt (limited lookup/lookdown tilt)
+    const ny = dy / (window.innerHeight / 2);
+    const tiltX = Math.max(-25, Math.min(25, -ny * 25));
+
     setTilt({
-      x: -ny * MAX_TILT,   // rotateX: look up/down
-      y:  nx * MAX_TILT,   // rotateY: look left/right
+      x: tiltX,
+      y: angleDeg,
     });
     setIsTilting(true);
   };
@@ -384,18 +394,37 @@ function TiltableCharacter({
   };
   const onTouchEnd = () => { if (!dragging.current) resetTilt(); };
 
-  // Click → show Hi
-  const handleClick = () => {
-    if (hasDragged.current) {
-      return;
-    }
+  const handleDoubleClickAction = () => {
     setShowHi(false);
     requestAnimationFrame(() => {
       setShowHi(true);
       if (hiTimer.current) clearTimeout(hiTimer.current);
       hiTimer.current = setTimeout(() => setShowHi(false), 2500);
     });
-    onClick();
+  };
+
+  const handleSingleClickAction = () => {
+    if (isOpen) {
+      onClick();
+    }
+  };
+
+  // Click → single/double click handler
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (hasDragged.current) {
+      return;
+    }
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current);
+      clickTimeout.current = null;
+      handleDoubleClickAction();
+    } else {
+      clickTimeout.current = setTimeout(() => {
+        clickTimeout.current = null;
+        handleSingleClickAction();
+      }, 220);
+    }
   };
 
   const startDrag = (clientX: number, clientY: number) => {

@@ -75,16 +75,16 @@ export function ModeProvider({ children }: { children: React.ReactNode }) {
   // Synchronize visual mode with musicPlaying and current page route
   useEffect(() => {
     if (location.pathname === '/') {
-      setModeState(musicPlaying ? 'explorer' : 'heritage');
+      setModeState(musicPlaying ? 'heritage' : 'explorer');
     } else {
-      setModeState('heritage');
+      setModeState('explorer');
     }
   }, [musicPlaying, location.pathname]);
 
   const setMode = (newMode: Mode) => {
     setModeState(newMode);
     if (location.pathname === '/') {
-      setMusicPlaying(newMode === 'explorer');
+      setMusicPlaying(newMode === 'heritage');
     }
   };
 
