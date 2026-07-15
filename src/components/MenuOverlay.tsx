@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import logoSvg from '../assets/logo.svg';
+import { useMode } from '../context/ModeContext';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface MenuOverlayProps {
   onClose: () => void;
@@ -9,9 +11,13 @@ interface MenuOverlayProps {
 export function MenuOverlay({ onClose }: MenuOverlayProps) {
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
+  const { mode } = useMode();
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const isExplorer = mode === 'explorer';
+  const { t } = useTranslation();
 
   // Prevent scrolling on body when overlay is active
   useEffect(() => {
@@ -37,26 +43,27 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
   };
 
   const navItems = [
-    { path: '/', label: 'BERANDA', sub: 'Kembali ke Halaman Utama' },
-    { path: '/sejarah', label: 'SEJARAH', sub: 'Menelusuri Linimasa Sejarah' },
-    { path: '/budaya', label: 'BUDAYA', sub: 'Warisan Budaya Minangkabau' },
+    { path: '/', label: t('nav_home'), sub: t('nav_back_home') },
+    { path: '/sejarah', label: t('nav_history'), sub: t('nav_history_sub') },
+    { path: '/budaya', label: t('nav_culture'), sub: t('nav_culture_sub') },
   ];
 
   return (
     <div
       className="fixed inset-0 z-[100] flex flex-col overflow-hidden"
       style={{
-        background: '#FAF8F5',
+        background: isExplorer ? '#1E0505' : '#FAF8F5',
         opacity: mounted && !closing ? 1 : 0,
-        transition: 'opacity 0.4s cubic-bezier(0.16,1,0.3,1)',
+        transition: 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), background-color 0.4s ease',
       }}
     >
       {/* Animated background geometric decoration */}
       <div
         className="absolute -top-32 -right-32 w-[400px] h-[400px] rounded-full pointer-events-none"
         style={{
-          background:
-            'radial-gradient(circle, rgba(110,31,31,0.06) 0%, transparent 70%)',
+          background: isExplorer
+            ? 'radial-gradient(circle, rgba(249,206,101,0.06) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(110,31,31,0.06) 0%, transparent 70%)',
           transform: mounted && !closing ? 'scale(1) rotate(0deg)' : 'scale(0) rotate(-45deg)',
           transition: 'transform 0.8s cubic-bezier(0.34,1.56,0.64,1)',
           transitionDelay: '100ms',
@@ -66,8 +73,9 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
       <div
         className="absolute -bottom-20 -left-20 w-[320px] h-[320px] rounded-full pointer-events-none"
         style={{
-          background:
-            'radial-gradient(circle, rgba(212,168,83,0.07) 0%, transparent 70%)',
+          background: isExplorer
+            ? 'radial-gradient(circle, rgba(249,206,101,0.07) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(212,168,83,0.07) 0%, transparent 70%)',
           transform: mounted && !closing ? 'scale(1)' : 'scale(0)',
           transition: 'transform 0.8s cubic-bezier(0.34,1.56,0.64,1)',
           transitionDelay: '200ms',
@@ -90,6 +98,9 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
             src={logoSvg}
             alt="Bukittinggi Heritage"
             className="h-[76px] w-auto object-contain"
+            style={{
+              filter: isExplorer ? 'brightness(0) invert(1)' : 'none'
+            }}
           />
         </div>
         <button
@@ -98,8 +109,11 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
           className="mr-6 flex items-center gap-3 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] cursor-pointer hover:scale-105"
           aria-label="Tutup menu"
         >
-          <span className="font-cormorant text-[22px] font-bold tracking-wide text-[#6E1F1F]">
-            TUTUP
+          <span
+            className="font-cormorant text-[22px] font-bold tracking-wide transition-colors duration-300"
+            style={{ color: isExplorer ? '#F9CE65' : '#6E1F1F' }}
+          >
+            {t('nav_close')}
           </span>
           <span
             className="flex h-[24px] w-[24px] items-center justify-center hover:rotate-90"
@@ -110,7 +124,7 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
               height="22"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#6E1F1F"
+              stroke={isExplorer ? '#F9CE65' : '#6E1F1F'}
               strokeWidth="2"
               strokeLinecap="round"
             >
@@ -138,6 +152,9 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
             transformOrigin: 'left center',
             transition: 'transform 0.8s cubic-bezier(0.16,1,0.3,1)',
             transitionDelay: '150ms',
+            background: isExplorer
+              ? 'linear-gradient(to right, rgba(249,206,101,0) 0%, rgba(249,206,101,0.4) 50%, rgba(249,206,101,0) 100%)'
+              : 'linear-gradient(to right, rgba(110,31,31,0) 0%, rgba(110,31,31,0.4) 50%, rgba(110,31,31,0) 100%)'
           }}
         />
       </div>
@@ -147,6 +164,11 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
         <nav className="flex flex-col gap-8 md:gap-11" aria-label="Menu navigasi overlay">
           {navItems.map(({ path, label, sub }, idx) => {
             const isActive = location.pathname === path;
+            const activeColor = isExplorer ? 'text-[#F9CE65]' : 'text-[#6E1F1F]';
+            const inactiveColor = isExplorer ? 'text-[#FFEAA7]/65 hover:text-[#F9CE65]' : 'text-[#6E1F1F]/60 hover:text-[#6E1F1F]';
+            const subtitleColor = isExplorer ? 'text-[#FFEAA7]/40 group-hover:text-[#FFEAA7]/70' : 'text-neutral-500 group-hover:text-[#6E1F1F]/80';
+            const underlineColor = isExplorer ? 'bg-[#F9CE65]' : 'bg-[#6E1F1F]';
+
             return (
               <button
                 key={path}
@@ -165,16 +187,18 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
               >
                 <span
                   className={`font-cormorant text-[36px] md:text-[52px] font-bold tracking-[0.2em] transition-all duration-500 group-hover:scale-105 group-hover:tracking-[0.28em] ${
-                    isActive ? 'text-[#6E1F1F]' : 'text-[#6E1F1F]/60'
+                    isActive ? activeColor : inactiveColor
                   }`}
                 >
                   {label}
                 </span>
-                <span className="font-poppins mt-2 text-[12px] md:text-[14px] font-normal tracking-wider text-neutral-500 uppercase transition-all duration-500 group-hover:text-[#6E1F1F]/80 group-hover:tracking-[0.22em]">
+                <span
+                  className={`font-poppins mt-2 text-[12px] md:text-[14px] font-normal tracking-wider uppercase transition-all duration-500 ${subtitleColor}`}
+                >
                   {sub}
                 </span>
                 <span
-                  className={`mt-3 h-[2px] bg-[#6E1F1F] transition-all duration-500 ${
+                  className={`mt-3 h-[2px] transition-all duration-500 ${underlineColor} ${
                     isActive ? 'w-12' : 'w-0 group-hover:w-8'
                   }`}
                 />
@@ -186,12 +210,13 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
 
       {/* Decorative footer */}
       <div
-        className="pb-12 text-center text-[11px] font-poppins tracking-[0.15em] text-neutral-400 uppercase"
+        className="pb-12 text-center text-[11px] font-poppins tracking-[0.15em] uppercase"
         style={{
           opacity: mounted && !closing ? 1 : 0,
           transform: mounted && !closing ? 'translateY(0)' : 'translateY(12px)',
           transition: 'opacity 0.5s ease, transform 0.5s ease',
           transitionDelay: '500ms',
+          color: isExplorer ? '#FFEAA7/40' : '#A3A3A3'
         }}
       >
         Bukittinggi Heritage &copy; {new Date().getFullYear()}

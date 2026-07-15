@@ -8,6 +8,7 @@ import { BudayaPage } from './components/BudayaPage';
 import { ParijsSection } from './components/ParijsSection';
 import { HeritageSection } from './components/HeritageSection';
 import { RancakBotWidget } from './components/RancakBotWidget';
+import { useMode } from './context/ModeContext';
 
 
 function HomePage() {
@@ -29,6 +30,14 @@ function App() {
   const [displayLocation, setDisplayLocation] = useState(location);
   const [transitioning, setTransitioning] = useState(false);
   const isFirstMount = useRef(true);
+  const { setMode } = useMode();
+
+  // Reset to heritage mode on navigating away from home page
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setMode('heritage');
+    }
+  }, [location.pathname, setMode]);
 
   useEffect(() => {
     if (isFirstMount.current) {
