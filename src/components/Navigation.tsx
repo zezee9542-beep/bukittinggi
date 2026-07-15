@@ -7,7 +7,7 @@ import { useTranslation } from '../hooks/useTranslation';
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { mode, musicPlaying, setMusicPlaying } = useMode();
+  const { musicPlaying, setMusicPlaying } = useMode();
   const [isScrolled, setIsScrolled] = useState(false);
 
   const location = useLocation();
@@ -93,7 +93,6 @@ export function Navigation() {
     { label: t('nav_map'), path: '/', targetId: 'heritage-heading' },
   ];
 
-  const isExplorer = mode === 'explorer';
 
   // Shared structural classes — background/color handled via inline style for smooth CSS transition
   const headerClass = isScrolled
@@ -112,16 +111,12 @@ export function Navigation() {
     'border-radius 0.3s ease',
   ].join(', ');
 
-  // Inline styles for smooth bg/color/border transitions
+  // Inline styles for smooth bg/color/border transitions (always identical to Heritage / Mode OFF)
   const headerStyle: React.CSSProperties = {
     transition: navMounted ? smoothTransition : 'transform 0.55s cubic-bezier(0.16,1,0.3,1)',
-    ...(isExplorer
-      ? isScrolled
-        ? { backgroundColor: 'rgba(30,5,5,0.78)', borderColor: 'rgba(249,206,101,0.2)', color: '#FFEAA7', boxShadow: '0 4px 32px rgba(0,0,0,0.45)' }
-        : { backgroundColor: 'transparent', borderColor: 'transparent', color: '#FFEAA7' }
-      : isScrolled
-        ? { backgroundColor: 'rgba(255,255,255,0.95)', borderColor: 'rgba(229,229,229,0.8)', color: '#6E1F1F', boxShadow: '0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)' }
-        : { backgroundColor: '#ffffff', borderColor: '#f5f5f5', color: '#6E1F1F' }
+    ...(isScrolled
+      ? { backgroundColor: 'rgba(255,255,255,0.95)', borderColor: 'rgba(229,229,229,0.8)', color: '#6E1F1F', boxShadow: '0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)' }
+      : { backgroundColor: '#ffffff', borderColor: '#f5f5f5', color: '#6E1F1F' }
     ),
   };
 
@@ -147,7 +142,7 @@ export function Navigation() {
             onClick={() => handleNavClick('/')}
             style={{
               display: 'block',
-              filter: isExplorer ? 'brightness(0) invert(1)' : 'none',
+              filter: 'none',
               transition: 'filter 0.65s cubic-bezier(0.4,0,0.2,1)',
             }}
           />
@@ -157,9 +152,9 @@ export function Navigation() {
         <nav className="hidden lg:flex items-center gap-8" aria-label="Navigasi utama">
           {navLinks.map((link, idx) => {
             const isPageActive = location.pathname === link.path && !link.targetId;
-            const activeColor = isExplorer ? 'text-[#F9CE65]' : 'text-[#6E1F1F]';
-            const inactiveColor = isExplorer ? 'text-[#FFEAA7]/75 hover:text-[#F9CE65]' : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F]';
-            const lineColor = isExplorer ? 'bg-[#F9CE65]' : 'bg-[#6E1F1F]';
+            const activeColor = 'text-[#6E1F1F]';
+            const inactiveColor = 'text-[#6E1F1F]/70 hover:text-[#6E1F1F]';
+            const lineColor = 'bg-[#6E1F1F]';
 
             return (
               <button
@@ -231,7 +226,7 @@ export function Navigation() {
             aria-label="Buka menu"
             style={{
               transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)',
-              color: isExplorer ? '#FFEAA7' : '#6E1F1F'
+              color: '#6E1F1F'
             }}
           >
             <svg

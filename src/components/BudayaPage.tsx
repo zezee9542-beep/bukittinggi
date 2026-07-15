@@ -6,7 +6,6 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import mapsSvg from '../assets/maps.svg';
 import tigaSvg from '../assets/tiga.svg';
 import budaya4kVideo from '../assets/Budaya 4k.mp4';
-import bgWebp from '../assets/bg.webp';
 
 
 // Grid card images — Panduan Budaya section
@@ -186,15 +185,7 @@ export function BudayaPage() {
   const touchStartYRef = useRef(0);
   const touchStartSlideRef = useRef(0);
 
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Screen size check
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
 
   // ── Scroll position reset and lock trigger ─────────────────────────────
   useEffect(() => {
@@ -344,38 +335,29 @@ export function BudayaPage() {
         style={{ minHeight: '90svh' }}
         aria-labelledby="budaya-heading"
       >
-        {isMobile ? (
-          <div
-            className="absolute inset-0 bg-cover bg-center pointer-events-none"
-            style={{
-              backgroundImage: `url(${bgWebp})`,
-            }}
-          />
-        ) : (
-          <video
-            ref={videoRef}
-            src={budaya4kVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            onTimeUpdate={(e) => {
-              const v = e.currentTarget;
-              // Preemptively loop 0.25 seconds before the video ends to avoid a black flash/gap
-              if (v.duration && v.currentTime >= v.duration - 0.25) {
-                v.currentTime = 0;
-                void v.play().catch(() => {});
-              }
-            }}
-            onEnded={(e) => {
-              const v = e.currentTarget;
+        <video
+          ref={videoRef}
+          src={budaya4kVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          onTimeUpdate={(e) => {
+            const v = e.currentTarget;
+            // Preemptively loop 0.25 seconds before the video ends to avoid a black flash/gap
+            if (v.duration && v.currentTime >= v.duration - 0.25) {
               v.currentTime = 0;
               void v.play().catch(() => {});
-            }}
-          />
-        )}
+            }
+          }}
+          onEnded={(e) => {
+            const v = e.currentTarget;
+            v.currentTime = 0;
+            void v.play().catch(() => {});
+          }}
+        />
         <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/60 to-transparent z-10 pointer-events-none" />
         {/* Warm reddish-brown tint matching design reference */}
         <div className="absolute inset-0 bg-[#6B1C0C]/35 mix-blend-multiply z-10 pointer-events-none" />
