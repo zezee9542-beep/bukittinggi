@@ -180,80 +180,86 @@ export function BudayaPage() {
   const [activeSlide, setActiveSlide] = useState(0);
   const activeSlideRef = useRef(0);
   const isLockedRef = useRef(false);          // true when this section is scroll-locked
+  const sectionInViewRef = useRef(false);     // true when section is intersecting viewport
   const hasLockedThisPass = useRef(false);    // lock only once per descent
   const deltaAccRef  = useRef(0);             // accumulated wheel delta
   const touchStartYRef = useRef(0);
   const touchStartSlideRef = useRef(0);
 
-
-
-  // ── Scroll position reset and lock trigger ─────────────────────────────
+  // ── IntersectionObserver — reliably detect when section enters/leaves viewport ──
   useEffect(() => {
-    const handleScroll = () => {
-      const el = sectionRef.current;
-      if (!el) return;
+    const el = sectionRef.current;
+    if (!el) return;
 
-      const rect = el.getBoundingClientRect();
-      const scrollY = window.scrollY;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        sectionInViewRef.current = entry!.isIntersecting;
 
-      // Reset slides and lock flag when scrolling back up near the hero section
-      if (scrollY < 180) {
-        if (hasLockedThisPass.current || activeSlideRef.current !== 0) {
+        // When section leaves viewport entirely upward, reset everything
+        if (!entry!.isIntersecting && entry!.boundingClientRect.bottom < 0) {
           hasLockedThisPass.current = false;
           isLockedRef.current = false;
           activeSlideRef.current = 0;
           deltaAccRef.current = 0;
           setActiveSlide(0);
         }
-      }
+      },
+      { threshold: 0.05 }
+    );
 
-      // Lock only when scrolling down and section top reaches the centering threshold
-      if (!hasLockedThisPass.current && rect.top <= 60 && rect.top > -50) {
-        isLockedRef.current = true;
-        hasLockedThisPass.current = true;
-        deltaAccRef.current = 0;
-
-        // Center the section instantly to prevent smooth scroll conflicts/glitches
-        window.scrollTo(0, el.offsetTop);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   // ── Scroll-lock wheel and touch gesture absorption ───────────────────────
   useEffect(() => {
-    const PIXELS_PER_SLIDE = 320; // how many px of delta = one full slide advance
+    const PIXELS_PER_SLIDE = 320;
     const clampSlide = (v: number) => Math.max(0, Math.min(slides.length - 1, v));
 
-    const handleWheel = (e: WheelEvent) => {
-      if (!isLockedRef.current) return;
+    const engageLock = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+      isLockedRef.current = true;
+      hasLockedThisPass.current = true;
+      deltaAccRef.current = 0;
+      // Snap page scroll to top of section so it sits flush
+      window.scrollTo({ top: el.offsetTop, behavior: 'instant' as ScrollBehavior });
+    };
 
+    const handleWheel = (e: WheelEvent) => {
       const cur = activeSlideRef.current;
 
-      // Already past last slide scrolling down — release lock
+      // Engage lock when section is in view and we haven't locked this pass yet
+      if (!isLockedRef.current && sectionInViewRef.current && !hasLockedThisPass.current) {
+        if (e.deltaY > 0) { // Only lock on downward scroll
+          engageLock();
+        } else {
+          return;
+        }
+      }
+
+      if (!isLockedRef.current) return;
+
+      // Release lock: past last slide scrolling down
       if (cur >= slides.length - 1 && e.deltaY > 0) {
         isLockedRef.current = false;
         return;
       }
-      // Already at first slide scrolling up — release lock
+      // Release lock: at first slide scrolling up
       if (cur <= 0 && e.deltaY < 0) {
         isLockedRef.current = false;
+        hasLockedThisPass.current = false;
         return;
       }
 
-      // Lock scroll and absorb
       e.preventDefault();
       deltaAccRef.current += e.deltaY;
 
       const rawSlide = deltaAccRef.current / PIXELS_PER_SLIDE;
       const clamped = clampSlide(rawSlide);
-
       activeSlideRef.current = clamped;
       setActiveSlide(clamped);
 
-      // Snap to integer once user stops (debounce 120ms)
       clearTimeout((handleWheel as any)._t);
       (handleWheel as any)._t = setTimeout(() => {
         const snapped = clampSlide(Math.round(activeSlideRef.current));
@@ -264,9 +270,13 @@ export function BudayaPage() {
     };
 
     const handleTouchStart = (e: TouchEvent) => {
-      if (!isLockedRef.current) return;
       touchStartYRef.current = e.touches[0]!.clientY;
       touchStartSlideRef.current = activeSlideRef.current;
+
+      // Engage lock on downward touch when section is in view
+      if (!isLockedRef.current && sectionInViewRef.current && !hasLockedThisPass.current) {
+        engageLock();
+      }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -280,6 +290,7 @@ export function BudayaPage() {
       }
       if (cur <= 0 && dy < 0) {
         isLockedRef.current = false;
+        hasLockedThisPass.current = false;
         return;
       }
 
@@ -420,7 +431,7 @@ export function BudayaPage() {
       >
           <div
             ref={featureRef}
-            className={`w-full max-w-[1160px] mx-auto px-6 pt-4 md:pt-6 pb-8 overflow-hidden transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`w-full max-w-[1160px] mx-auto px-6 pt-10 md:pt-14 pb-8 overflow-hidden transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
             }`}
           >
@@ -436,7 +447,7 @@ export function BudayaPage() {
               {slides.map((slide, idx) => (
                 <article
                   key={slide.id}
-                  className="w-full flex-shrink-0 flex flex-col md:flex-row gap-6 md:gap-10 items-start justify-start pr-12 md:pr-0"
+                  className="w-full flex-shrink-0 flex flex-col md:flex-row gap-8 md:gap-14 items-start justify-start pr-12 md:pr-0"
                   style={{ width: '100%' }}
                 >
                   {/* ── LEFT Image ── */}
@@ -448,7 +459,7 @@ export function BudayaPage() {
                   />
 
                   {/* ── RIGHT Content ── */}
-                  <div className="flex-1 flex flex-col justify-start min-w-0 pt-2 gap-4">
+                  <div className="flex-1 flex flex-col justify-start min-w-0 pt-2 gap-6">
                     <p
                       className="font-poppins uppercase tracking-[0.28em]"
                       style={{ color: '#F9CE65', fontSize: 11, fontWeight: 500 }}
