@@ -11,7 +11,7 @@ export function HeroSection() {
   return (
     <section
       ref={ref}
-      className="relative w-full bg-white pt-24 sm:pt-28 md:pt-32 pb-12 md:pb-16 flex justify-center items-center overflow-visible px-2 sm:px-3"
+      className="relative w-full bg-white pt-24 sm:pt-28 md:pt-32 pb-12 md:pb-16 flex justify-center items-center overflow-visible px-3 sm:px-4 md:px-5"
       aria-label="Hero Bukittinggi Heritage"
     >
       {/* ── The Card Container (Responsive horizontal padding for aesthetic gaps) ── */}

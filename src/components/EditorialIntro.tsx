@@ -67,7 +67,7 @@ export function EditorialIntro() {
             style={{ transitionDelay: '100ms' }}
           >
             <span
-              className="font-corinthia text-[82px] sm:text-[98px] md:text-[124px] font-bold leading-none"
+              className="font-corinthia text-[52px] sm:text-[72px] md:text-[124px] font-bold leading-none"
               style={{ color: '#6E1F1F' }}
             >
               {intro.scriptTitle}
@@ -82,7 +82,7 @@ export function EditorialIntro() {
           {/* Subtitle - capitalized, bold cormorant */}
           <h2
             id="intro-heading"
-            className={`font-cormorant mt-6 mb-8 text-[28px] sm:text-[36px] md:text-[46px] font-bold tracking-[0.15em] text-[#6E1F1F] leading-tight transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`font-cormorant mt-4 mb-5 text-[20px] sm:text-[26px] md:text-[46px] font-bold tracking-[0.15em] text-[#6E1F1F] leading-tight transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
             }`}
             style={{ transitionDelay: '250ms' }}
@@ -95,7 +95,7 @@ export function EditorialIntro() {
             {intro.paragraphs.map((paragraph, idx) => (
               <p
                 key={paragraph.slice(0, 24)}
-                className={`font-poppins mb-6 text-[15px] sm:text-[16px] md:text-[18px] font-normal leading-[1.85] text-[#222222] last:mb-0 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                className={`font-poppins mb-4 text-[13px] sm:text-[14px] md:text-[18px] font-normal leading-[1.75] text-[#222222] last:mb-0 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
                   isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                 }`}
                 style={{ transitionDelay: `${350 + idx * 120}ms` }}
