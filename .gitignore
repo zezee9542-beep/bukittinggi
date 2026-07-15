@@ -45,6 +45,8 @@ src/assets/*
 !src/assets/bg.webp
 !src/assets/menara.webp
 !src/assets/menara.png
+!src/assets/cht.png
+!src/assets/enter.png
 !src/assets/imgg.webp
 !src/assets/gunung.webp
 !src/assets/frame.svg

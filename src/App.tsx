@@ -7,6 +7,8 @@ import { HistoryPage } from './components/HistoryPage';
 import { BudayaPage } from './components/BudayaPage';
 import { ParijsSection } from './components/ParijsSection';
 import { HeritageSection } from './components/HeritageSection';
+import { RancakBotWidget } from './components/RancakBotWidget';
+
 
 function HomePage() {
   return (
@@ -60,6 +62,7 @@ function App() {
           <Route path="/budaya" element={<BudayaPage />} />
         </Routes>
       </main>
+      <RancakBotWidget />
     </div>
   );
 }
