@@ -65,12 +65,12 @@ const PRESET_QAS = [
   },
 ];
 
-// ── Constants ─────────────────────────────────────────────────────────────
+// ── Constants for desktop size calculation ─────────────────────────────────
 const CHAR_W = 115;    // character container width
 const CHAR_H = 125;    // character container height
 const WRAP_W = 360;    // outer closed-state wrapper width
 
-// Head top-left position within the WRAP_W container:
+// Head top-left position within the WRAP_W container on desktop:
 //   character left edge = WRAP_W - CHAR_W = 245px
 //   head left offset within character ≈ 30px → 275px from wrapper-left
 //   head top offset within character ≈ 10px → 10px from wrapper-top
@@ -90,6 +90,11 @@ export function RancakBotWidget() {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
+
   // Inject float keyframe style into DOM once
   useEffect(() => {
     if (document.getElementById('rancakbot-style')) return;
@@ -98,11 +103,6 @@ export function RancakBotWidget() {
     el.textContent = FLOAT_STYLE;
     document.head.appendChild(el);
   }, []);
-
-  // Scroll to bottom on new messages
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
 
   // Open: mount then animate-in on next frame
   const openModal = useCallback(() => {
@@ -145,22 +145,17 @@ export function RancakBotWidget() {
   return (
     <>
       {/* ═══════════════════════════════════════════════════════════
-          CLOSED STATE — bubble sits precisely above head's top-left
+          CLOSED STATE — responsive size (bubble hidden on mobile)
+          • Mobile size adapts to show only the 3D character (85x95px)
+          • Desktop size shows full wrapper containing bubble above head
       ═══════════════════════════════════════════════════════════ */}
       {!wantsOpen && (
         <div
-          className="fixed z-50 pointer-events-none overflow-visible"
-          style={{
-            bottom: '20px',
-            right: '12px',
-            width: `${WRAP_W}px`,
-            height: `${CHAR_H}px`,
-          }}
+          className="fixed z-50 pointer-events-none overflow-visible bottom-5 right-3 w-[85px] h-[95px] md:w-[360px] md:h-[125px]"
         >
-          {/* 3D Character — anchored at bottom-right of wrapper, always floating */}
+          {/* 3D Character — smaller on mobile, standard on desktop */}
           <div
-            className="absolute bottom-0 right-0 pointer-events-auto cursor-pointer rancakbot-float"
-            style={{ width: `${CHAR_W}px`, height: `${CHAR_H}px` }}
+            className="absolute bottom-0 right-0 pointer-events-auto cursor-pointer rancakbot-float w-[85px] h-[95px] md:w-[115px] md:h-[125px]"
             onClick={openModal}
           >
             <model-viewer
@@ -178,15 +173,16 @@ export function RancakBotWidget() {
             />
           </div>
 
-          {/* Bubble — bottom-right corner (pointed) aligns with head top-left + small gap */}
+          {/* Speech bubble — hidden on mobile, flex on desktop */}
           <div
             onClick={openModal}
-            className="absolute pointer-events-auto cursor-pointer flex items-center gap-3 px-5 py-3.5 bg-[#4A0808] border-[1.5px] border-[#F9CE65] shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
+            className="hidden md:flex pointer-events-auto cursor-pointer absolute items-center gap-3 px-5 py-3.5 bg-[#4A0808] border-[1.5px] border-[#F9CE65] shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
             style={{
               right: `${BUBBLE_RIGHT}px`,    // positions bubble's right edge near head
               bottom: `${BUBBLE_BOTTOM}px`,  // positions bubble above head with small gap
               borderRadius: '24px 24px 0px 24px', // bottom-right is pointed → points to head
               whiteSpace: 'nowrap',
+              zIndex: 10,
             }}
           >
             <div className="relative flex-shrink-0 w-[11px] h-[11px] rounded-full bg-[#00B242]">
@@ -200,20 +196,21 @@ export function RancakBotWidget() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════
-          OPEN STATE — chat modal (animated) + character side by side
+          OPEN STATE — chat modal (responsive) + character (desktop only)
+          • flex-row items-end: bottom aligned
+          • Modal fits 100% viewport width with padding on mobile, standard on desktop
+          • 3D character hidden on mobile to avoid clutter, visible on desktop
       ═══════════════════════════════════════════════════════════ */}
       {mounted && (
         <div
-          className="fixed z-50 flex flex-row items-end select-none pointer-events-none"
-          style={{ bottom: '20px', right: '12px', gap: '10px' }}
+          className="fixed z-50 flex flex-row items-end select-none pointer-events-none bottom-5 right-3 max-w-[calc(100vw-24px)] md:right-5"
+          style={{ gap: '12px' }}
         >
-          {/* ── Chat Modal with enter/exit animation ── */}
+          {/* ── Chat Modal ── */}
           <div
-            className="pointer-events-auto flex flex-col rounded-[24px] overflow-hidden border-[1.5px] border-[#F9CE65] shadow-[0_24px_55px_rgba(0,0,0,0.55)]"
+            className="pointer-events-auto flex flex-col rounded-[24px] overflow-hidden border-[1.5px] border-[#F9CE65] shadow-[0_24px_55px_rgba(0,0,0,0.55)] w-[calc(100vw-24px)] sm:w-[360px] h-[75vh] max-h-[510px] sm:h-[510px]"
             style={{
               background: '#3E0F0F',
-              width: '360px',
-              height: '510px',
               // Animation via CSS transition
               opacity: visible ? 1 : 0,
               transform: visible
@@ -236,10 +233,12 @@ export function RancakBotWidget() {
                     src={chtPng}
                     alt="Chat"
                     className="w-[20px] h-[20px] object-contain"
-                    style={{ filter: 'brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(10deg)' }}
+                    style={{
+                      filter: 'brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(10deg)',
+                    }}
                   />
                   <div className="absolute bottom-[1px] right-[1px] w-[10px] h-[10px] rounded-full border-[1.5px] border-[#350A0A] bg-[#00B242]">
-                    <div className="absolute inset-0 rounded-full bg-[#00B242] animate-ping opacity-70" />
+                    <div className="absolute inset-0 rounded-full bg-[#00B242] animate-ping opacity-75" />
                   </div>
                 </div>
                 <div>
@@ -253,28 +252,29 @@ export function RancakBotWidget() {
               </div>
               <button
                 onClick={closeModal}
-                className="text-white/60 hover:text-white/90 transition-colors cursor-pointer text-[16px] focus:outline-none flex-shrink-0"
+                className="text-white/60 hover:text-white transition-colors cursor-pointer text-[16px] focus:outline-none flex-shrink-0"
                 aria-label="Tutup"
               >
                 ✕
               </button>
             </div>
 
-            {/* Gold divider */}
+            {/* Gold separator */}
             <div className="h-[1px] bg-[#F9CE65]/25 flex-shrink-0" />
 
-            {/* Messages */}
+            {/* Chat messages area */}
             <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-[#380C0C]">
-              {/* Welcome */}
+              {/* Welcome message */}
               <div
                 className="max-w-[92%] px-5 py-4 text-[13px] font-poppins leading-relaxed text-white/90 bg-[#4A0E0E] border border-[#F9CE65]/20"
                 style={{ borderRadius: '18px 18px 18px 0px' }}
               >
-                Apo Kaba, Dunsanak? <em>(Apa kabar, saudara?)</em>. Ambo siap membantu informasi
-                wisata, budaya, sejarah, dan kuliner khas Bukittinggi. Ado nan bisa ambo bantu hari
-                ko? <em>(Ada yang bisa saya bantu hari ini?)</em>
+                Apo Kaba, Dunsanak? <em>(Apa kabar, saudara?)</em>. Ambo siap membantu informasi wisata,
+                budaya, sejarah, dan kuliner khas Bukittinggi. Ado nan bisa ambo bantu hari ko?{' '}
+                <em>(Ada yang bisa saya bantu hari ini?)</em>
               </div>
 
+              {/* Messages */}
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div
@@ -305,7 +305,7 @@ export function RancakBotWidget() {
               <div ref={chatEndRef} />
             </div>
 
-            {/* Gold divider */}
+            {/* Gold separator */}
             <div className="h-[1px] bg-[#F9CE65]/20 flex-shrink-0" />
 
             {/* Quick suggestions */}
@@ -321,7 +321,7 @@ export function RancakBotWidget() {
               ))}
             </div>
 
-            {/* Gold divider */}
+            {/* Gold separator */}
             <div className="h-[1px] bg-[#F9CE65]/20 flex-shrink-0" />
 
             {/* Input bar */}
@@ -348,11 +348,10 @@ export function RancakBotWidget() {
             </div>
           </div>
 
-          {/* ── 3D Character (right, bottom-aligned, always visible and floating) ── */}
+          {/* ── 3D Character (desktop only: hidden on mobile, shown on tablet/desktop) ── */}
           <div
             onClick={closeModal}
-            className="pointer-events-auto cursor-pointer flex-shrink-0 rancakbot-float"
-            style={{ width: `${CHAR_W}px`, height: `${CHAR_H}px` }}
+            className="hidden sm:block pointer-events-auto cursor-pointer flex-shrink-0 rancakbot-float w-[85px] h-[95px] md:w-[115px] md:h-[125px]"
           >
             <model-viewer
               src="/textured.glb"

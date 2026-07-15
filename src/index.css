@@ -340,16 +340,15 @@ body {
 
 /* Phase 1: bottom-right corner swings to bottom-left (diagonal tear line appears)   */
 /* Phase 2: remaining upper triangle collapses to top-left corner (image disappears) */
+
+
 @keyframes imgTearOpen {
   0%   { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
-  58%  { clip-path: polygon(0% 0%, 100% 0%, 0%   100%, 0% 100%); }
-  100% { clip-path: polygon(0% 0%, 0%   0%, 0%   0%,   0% 0%  ); }
+  100% { clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%); }
 }
 
-/* Reverse: from collapsed → upper triangle re-appears → full image */
 @keyframes imgTearClose {
-  0%   { clip-path: polygon(0% 0%, 0%   0%, 0%   0%,   0% 0%  ); }
-  42%  { clip-path: polygon(0% 0%, 100% 0%, 0%   100%, 0% 100%); }
+  0%   { clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%); }
   100% { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
 }
 

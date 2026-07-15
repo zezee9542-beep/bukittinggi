@@ -112,7 +112,7 @@ export function HeritageSection() {
         <div
           ref={mobileScrollRef}
           onScroll={handleScroll}
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar touch-scroll scroll-smooth"
+          className="flex gap-4 overflow-x-auto snap-x snap-mandatory pt-4 pb-4 -mt-4 hide-scrollbar touch-scroll scroll-smooth"
           style={{
             paddingLeft: '1.25rem',
             paddingRight: '1.25rem',
