@@ -319,21 +319,33 @@ function generateAiResponse(userText: string, lang: Lang): string {
   return FALLBACK[lang];
 }
 
-// Constants for sizing
-const CHAR_W_DESKTOP = 115;
-const CHAR_H_DESKTOP = 125;
 
 // ─── 3D Character with tilt + drag + hi ─────────────────────────────────────
-function TiltableCharacter({ onClick }: { onClick: () => void }) {
+function TiltableCharacter({
+  onClick,
+  bubbleText,
+  pos,
+  setPos,
+  showBubble = true,
+  isFixed = true,
+  isOpen = false,
+}: {
+  onClick: () => void;
+  bubbleText: string;
+  pos: { bottom: number; right: number };
+  setPos: React.Dispatch<React.SetStateAction<{ bottom: number; right: number }>>;
+  showBubble?: boolean;
+  isFixed?: boolean;
+  isOpen?: boolean;
+}) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isTilting, setIsTilting] = useState(false);
   const [showHi, setShowHi] = useState(false);
-  // Drag state
-  const [pos, setPos] = useState<{ bottom: number; right: number } | null>(null);
   const dragging = useRef(false);
   const dragStart = useRef({ mx: 0, my: 0, bottom: 0, right: 0 });
   const hiTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasDragged = useRef(false);
 
   const MAX_TILT = 22; // degrees
 
@@ -374,7 +386,9 @@ function TiltableCharacter({ onClick }: { onClick: () => void }) {
 
   // Click → show Hi
   const handleClick = () => {
-    if (dragging.current) return;
+    if (hasDragged.current) {
+      return;
+    }
     setShowHi(false);
     requestAnimationFrame(() => {
       setShowHi(true);
@@ -384,16 +398,13 @@ function TiltableCharacter({ onClick }: { onClick: () => void }) {
     onClick();
   };
 
-  // ── Drag handling ──────────────────────────────────────────────────────────
-  const currentPos = pos ?? { bottom: 20, right: 12 };
-
   const startDrag = (clientX: number, clientY: number) => {
     dragging.current = true;
     dragStart.current = {
       mx: clientX,
       my: clientY,
-      bottom: currentPos.bottom,
-      right: currentPos.right,
+      bottom: pos.bottom,
+      right: pos.right,
     };
   };
 
@@ -404,13 +415,27 @@ function TiltableCharacter({ onClick }: { onClick: () => void }) {
       moved = true;
       const dx = e.clientX - dragStart.current.mx;
       const dy = e.clientY - dragStart.current.my;
+
+      const isDesktop = window.innerWidth >= 768;
+      const maxRight = isDesktop
+        ? (isOpen ? window.innerWidth - 490 : window.innerWidth - 120)
+        : (isOpen ? window.innerWidth - 90 : window.innerWidth - 90);
+      const maxBottom = isDesktop
+        ? (isOpen ? window.innerHeight - 520 : window.innerHeight - 130)
+        : (isOpen ? window.innerHeight - 520 : window.innerHeight - 100);
+
       setPos({
-        right: Math.max(0, Math.min(window.innerWidth - 90, dragStart.current.right - dx)),
-        bottom: Math.max(0, Math.min(window.innerHeight - 90, dragStart.current.bottom - dy)),
+        right: Math.max(0, Math.min(maxRight, dragStart.current.right - dx)),
+        bottom: Math.max(0, Math.min(maxBottom, dragStart.current.bottom - dy)),
       });
     };
     const onMouseUp = () => {
-      if (moved) { /* swallow click */ }
+      if (moved) {
+        hasDragged.current = true;
+        setTimeout(() => {
+          hasDragged.current = false;
+        }, 50);
+      }
       dragging.current = false;
       moved = false;
       resetTilt();
@@ -422,12 +447,31 @@ function TiltableCharacter({ onClick }: { onClick: () => void }) {
       moved = true;
       const dx = t.clientX - dragStart.current.mx;
       const dy = t.clientY - dragStart.current.my;
+
+      const isDesktop = window.innerWidth >= 768;
+      const maxRight = isDesktop
+        ? (isOpen ? window.innerWidth - 490 : window.innerWidth - 120)
+        : (isOpen ? window.innerWidth - 90 : window.innerWidth - 90);
+      const maxBottom = isDesktop
+        ? (isOpen ? window.innerHeight - 520 : window.innerHeight - 130)
+        : (isOpen ? window.innerHeight - 520 : window.innerHeight - 100);
+
       setPos({
-        right: Math.max(0, Math.min(window.innerWidth - 90, dragStart.current.right - dx)),
-        bottom: Math.max(0, Math.min(window.innerHeight - 90, dragStart.current.bottom - dy)),
+        right: Math.max(0, Math.min(maxRight, dragStart.current.right - dx)),
+        bottom: Math.max(0, Math.min(maxBottom, dragStart.current.bottom - dy)),
       });
     };
-    const onTouchEndDoc = () => { dragging.current = false; moved = false; resetTilt(); };
+    const onTouchEndDoc = () => {
+      if (moved) {
+        hasDragged.current = true;
+        setTimeout(() => {
+          hasDragged.current = false;
+        }, 50);
+      }
+      dragging.current = false;
+      moved = false;
+      resetTilt();
+    };
 
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
@@ -439,7 +483,7 @@ function TiltableCharacter({ onClick }: { onClick: () => void }) {
       window.removeEventListener('touchmove', onTouchMoveDoc);
       window.removeEventListener('touchend', onTouchEndDoc);
     };
-  }, []);
+  }, [isOpen, setPos]);
 
   const tiltStyle: React.CSSProperties = {
     perspective: '400px',
@@ -460,18 +504,19 @@ function TiltableCharacter({ onClick }: { onClick: () => void }) {
   return (
     <div
       style={{
-        position: 'fixed',
+        position: isFixed ? 'fixed' : undefined,
         zIndex: 50,
-        bottom: currentPos.bottom,
-        right: currentPos.right,
-        width: '80px',
-        height: '90px',
+        bottom: isFixed ? `${pos.bottom}px` : undefined,
+        right: isFixed ? `${pos.right}px` : undefined,
         cursor: dragging.current ? 'grabbing' : 'grab',
         userSelect: 'none',
         touchAction: 'none',
       }}
       ref={wrapperRef}
-      className="md:w-[115px] md:h-[125px]"
+      className={isFixed
+        ? "w-[80px] h-[90px] md:w-[115px] md:h-[125px]"
+        : "w-full h-full"
+      }
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       onMouseDown={(e) => { e.preventDefault(); startDrag(e.clientX, e.clientY); }}
@@ -483,6 +528,31 @@ function TiltableCharacter({ onClick }: { onClick: () => void }) {
       onTouchEnd={onTouchEnd}
       onClick={handleClick}
     >
+      {/* Tanya Ambo Rancak Bot Bubble — moves with character, positioned beside/above head on desktop */}
+      {showBubble && bubbleText && (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          className="hidden md:flex absolute items-center gap-3 px-5 py-3.5 bg-[#4A0808] border-[1.5px] border-[#F9CE65] shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] cursor-pointer"
+          style={{
+            right: 'calc(100% + 14px)',
+            bottom: '35%',
+            borderRadius: '24px 24px 0px 24px',
+            whiteSpace: 'nowrap',
+            zIndex: 49,
+          }}
+        >
+          <div className="relative flex-shrink-0 w-[11px] h-[11px] rounded-full bg-[#00B242]">
+            <div className="absolute inset-0 rounded-full bg-[#00B242] animate-ping opacity-70" />
+          </div>
+          <span className="font-poppins text-white text-[13px] font-semibold tracking-wide leading-none">{bubbleText}</span>
+        </div>
+      )}
+
       {/* Hi bubble */}
       {showHi && (
         <div
@@ -533,6 +603,7 @@ function TiltableCharacter({ onClick }: { onClick: () => void }) {
 }
 
 export function RancakBotWidget() {
+  const [pos, setPos] = useState<{ bottom: number; right: number }>({ bottom: 20, right: 12 });
   const [wantsOpen, setWantsOpen] = useState(false);
   const [mounted, setMounted]     = useState(false);
   const [visible, setVisible]     = useState(false);
@@ -613,33 +684,26 @@ export function RancakBotWidget() {
     <>
       {/* ── CLOSED STATE ── */}
       {!wantsOpen && (
-        <>
-          <TiltableCharacter onClick={openModal} />
-          {/* Desktop speech bubble — positioned relative to default bottom-right */}
-          <div
-            onClick={openModal}
-            className="hidden md:flex fixed pointer-events-auto cursor-pointer items-center gap-3 px-5 py-3.5 bg-[#4A0808] border-[1.5px] border-[#F9CE65] shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
-            style={{
-              right: `${12 + CHAR_W_DESKTOP + 14}px`,
-              bottom: `${28}px`,
-              borderRadius: '24px 24px 0px 24px',
-              whiteSpace: 'nowrap',
-              zIndex: 49,
-            }}
-          >
-            <div className="relative flex-shrink-0 w-[11px] h-[11px] rounded-full bg-[#00B242]">
-              <div className="absolute inset-0 rounded-full bg-[#00B242] animate-ping opacity-70" />
-            </div>
-            <span className="font-poppins text-white text-[13px] font-semibold tracking-wide leading-none">{t('bot_bubble')}</span>
-          </div>
-        </>
+        <TiltableCharacter
+          onClick={openModal}
+          bubbleText={t('bot_bubble')}
+          pos={pos}
+          setPos={setPos}
+          showBubble={true}
+          isFixed={true}
+          isOpen={false}
+        />
       )}
 
       {/* ── OPEN STATE ── */}
       {mounted && (
         <div
-          className="fixed z-50 flex flex-row items-end select-none pointer-events-none bottom-5 right-3 max-w-[calc(100vw-24px)] md:right-5"
-          style={{ gap: '12px' }}
+          className="fixed z-50 flex flex-row items-end select-none pointer-events-none max-w-[calc(100vw-24px)]"
+          style={{
+            gap: '12px',
+            bottom: `${pos.bottom}px`,
+            right: `${pos.right}px`,
+          }}
         >
           <div
             className="pointer-events-auto flex flex-col rounded-[24px] overflow-hidden border-[1.5px] border-[#F9CE65] shadow-[0_24px_55px_rgba(0,0,0,0.55)] w-[calc(100vw-24px)] sm:w-[360px] h-[70vh] max-h-[510px] sm:h-[510px]"
@@ -728,19 +792,19 @@ export function RancakBotWidget() {
           </div>
 
           {/* 3D Character */}
-          <div onClick={closeModal}
-            className="pointer-events-auto cursor-pointer flex-shrink-0 rancakbot-float absolute sm:relative bottom-0 right-0 sm:bottom-auto sm:right-auto z-50 w-[75px] h-[85px] sm:w-[115px] sm:h-[125px]"
-            style={{ margin: '0' }}>
-            <model-viewer src="/textured.glb" alt="RancakBot 3D Avatar"
-              auto-rotate camera-controls={false} disable-zoom
-              shadow-intensity="0.8" environment-image="neutral"
-              auto-rotate-delay="0" interaction-prompt="none"
-              loading="lazy" reveal="auto"
-              style={{ width: '100%', height: '100%', background: 'transparent', outline: 'none' }}>
-              <div slot="poster" className="absolute inset-0 flex items-center justify-center bg-transparent">
-                <img src={chtPng} className="w-[24px] h-[24px] animate-pulse opacity-40 brightness-0 invert" alt="Loading" />
-              </div>
-            </model-viewer>
+          <div
+            className="pointer-events-auto cursor-pointer flex-shrink-0 absolute sm:relative bottom-0 right-0 sm:bottom-auto sm:right-auto z-50 w-[75px] h-[85px] sm:w-[115px] sm:h-[125px]"
+            style={{ margin: '0' }}
+          >
+            <TiltableCharacter
+              onClick={closeModal}
+              bubbleText=""
+              pos={pos}
+              setPos={setPos}
+              showBubble={false}
+              isFixed={false}
+              isOpen={true}
+            />
           </div>
         </div>
       )}
