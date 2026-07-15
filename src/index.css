@@ -358,6 +358,11 @@ body {
 .img-tear-close {
   animation: imgTearClose 850ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+/* Static state when fully open — image hidden, no active animation */
+.img-tear-open-static {
+  clip-path: polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%);
+  animation: none;
+}
 
 /* One-shot shine sweep on card enter */
 @keyframes shinePass {
@@ -397,4 +402,14 @@ model-viewer:active {
   border: none !important;
   box-shadow: none !important;
 }
+
+/* Kill the focus outline that lives inside model-viewer's shadow DOM */
+model-viewer::part(virtual-stage),
+model-viewer::part(stage),
+model-viewer::part(canvas) {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 

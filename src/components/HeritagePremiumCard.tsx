@@ -84,9 +84,9 @@ export function HeritagePremiumCard({
   const imgClass  =
     phase === 'opening' ? 'img-tear-open' :
     phase === 'closing' ? 'img-tear-close' :
-    phase === 'open'    ? 'img-tear-open-static' : ''; // static final state
+    phase === 'open'    ? 'img-tear-open-static' : '';
 
-  // Image clip for the "fully open" static phase (no animation playing)
+  // Image clip for the "fully open" static phase (no animation playing — image is fully hidden)
   const openStaticClip = 'polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%)';
 
   // Parallax offsets (reset to 0 on mobile)
@@ -309,13 +309,11 @@ export function HeritagePremiumCard({
         className={imgClass}
         style={{
           position: 'absolute',
-          inset: '-1%', // Overflow slightly to prevent subpixel edge leaks
+          inset: '-1%',
           zIndex: 20,
           pointerEvents: 'none',
           willChange: 'clip-path',
-          // Static clip for the 'open' phase (fully hidden)
           ...(phase === 'open' ? { clipPath: openStaticClip, animation: 'none' } : {}),
-          // Clean fallback 'none' when idle so the browser processes zero clipping math (removes white lines)
           ...(phase === 'idle' ? { clipPath: 'none' } : {}),
         }}
         aria-hidden="true"

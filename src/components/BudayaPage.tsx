@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import frameSvg from '../assets/frame.svg';
 import gadangSvg from '../assets/gadang.svg';
 import segitigaSvg from '../assets/segitiga.svg';
@@ -6,6 +6,8 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import mapsSvg from '../assets/maps.svg';
 import tigaSvg from '../assets/tiga.svg';
 import budaya4kVideo from '../assets/Budaya 4k.mp4';
+import bgWebp from '../assets/bg.webp';
+
 
 // Grid card images — Panduan Budaya section
 import grid1 from '../assets/01.webp';
@@ -172,74 +174,169 @@ export function BudayaPage() {
   const { ref: gridRef, isVisible: gridVisible } = useScrollReveal<HTMLElement>();
   const { ref: footerRef, isVisible: footerVisible } = useScrollReveal<HTMLElement>();
 
-  // Carousel slide index (integer 0-7)
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Slide index — fractional for smooth drag tracking, rounded for display
   const [activeSlide, setActiveSlide] = useState(0);
   const activeSlideRef = useRef(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const isLockedRef = useRef(false);          // true when this section is scroll-locked
+  const hasLockedThisPass = useRef(false);    // lock only once per descent
+  const deltaAccRef  = useRef(0);             // accumulated wheel delta
+  const touchStartYRef = useRef(0);
+  const touchStartSlideRef = useRef(0);
 
-  // Touch swipe state
-  const touchStartRef = useRef({ x: 0, y: 0, slide: 0 });
-  const isSwipingRef = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    if (!touch) return;
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      slide: activeSlideRef.current,
+  // Screen size check
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // ── Scroll position reset and lock trigger ─────────────────────────────
+  useEffect(() => {
+    const handleScroll = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+
+      const rect = el.getBoundingClientRect();
+      const scrollY = window.scrollY;
+
+      // Reset slides and lock flag when scrolling back up near the hero section
+      if (scrollY < 180) {
+        if (hasLockedThisPass.current || activeSlideRef.current !== 0) {
+          hasLockedThisPass.current = false;
+          isLockedRef.current = false;
+          activeSlideRef.current = 0;
+          deltaAccRef.current = 0;
+          setActiveSlide(0);
+        }
+      }
+
+      // Lock only when scrolling down and section top reaches the centering threshold
+      if (!hasLockedThisPass.current && rect.top <= 60 && rect.top > -50) {
+        isLockedRef.current = true;
+        hasLockedThisPass.current = true;
+        deltaAccRef.current = 0;
+
+        // Center the section instantly to prevent smooth scroll conflicts/glitches
+        window.scrollTo(0, el.offsetTop);
+      }
     };
-    isSwipingRef.current = false;
-  };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    const start = touchStartRef.current;
-    if (!touch || !start) return;
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    const deltaX = start.x - touch.clientX;
-    const deltaY = start.y - touch.clientY;
+  // ── Scroll-lock wheel and touch gesture absorption ───────────────────────
+  useEffect(() => {
+    const PIXELS_PER_SLIDE = 320; // how many px of delta = one full slide advance
+    const clampSlide = (v: number) => Math.max(0, Math.min(slides.length - 1, v));
 
-    // Prefer horizontal swipe
-    if (!isSwipingRef.current && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 8) {
-      isSwipingRef.current = true;
-    }
+    const handleWheel = (e: WheelEvent) => {
+      if (!isLockedRef.current) return;
 
-    if (isSwipingRef.current) {
-      if (e.cancelable) e.preventDefault();
-      const screenW = window.innerWidth;
-      const rawSlide = start.slide + deltaX / (screenW * 0.6);
-      const clamped = Math.max(0, Math.min(slides.length - 1, rawSlide));
+      const cur = activeSlideRef.current;
+
+      // Already past last slide scrolling down — release lock
+      if (cur >= slides.length - 1 && e.deltaY > 0) {
+        isLockedRef.current = false;
+        return;
+      }
+      // Already at first slide scrolling up — release lock
+      if (cur <= 0 && e.deltaY < 0) {
+        isLockedRef.current = false;
+        return;
+      }
+
+      // Lock scroll and absorb
+      e.preventDefault();
+      deltaAccRef.current += e.deltaY;
+
+      const rawSlide = deltaAccRef.current / PIXELS_PER_SLIDE;
+      const clamped = clampSlide(rawSlide);
+
       activeSlideRef.current = clamped;
       setActiveSlide(clamped);
-    }
-  };
 
-  const handleTouchEnd = () => {
-    if (isSwipingRef.current) {
-      const snapped = Math.max(0, Math.min(slides.length - 1, Math.round(activeSlideRef.current)));
+      // Snap to integer once user stops (debounce 120ms)
+      clearTimeout((handleWheel as any)._t);
+      (handleWheel as any)._t = setTimeout(() => {
+        const snapped = clampSlide(Math.round(activeSlideRef.current));
+        deltaAccRef.current = snapped * PIXELS_PER_SLIDE;
+        activeSlideRef.current = snapped;
+        setActiveSlide(snapped);
+      }, 120);
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (!isLockedRef.current) return;
+      touchStartYRef.current = e.touches[0]!.clientY;
+      touchStartSlideRef.current = activeSlideRef.current;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isLockedRef.current) return;
+      const dy = touchStartYRef.current - e.touches[0]!.clientY;
+      const cur = activeSlideRef.current;
+
+      if (cur >= slides.length - 1 && dy > 0) {
+        isLockedRef.current = false;
+        return;
+      }
+      if (cur <= 0 && dy < 0) {
+        isLockedRef.current = false;
+        return;
+      }
+
+      e.preventDefault();
+      const rawSlide = touchStartSlideRef.current + dy / (window.innerHeight * 0.55);
+      const clamped = clampSlide(rawSlide);
+      activeSlideRef.current = clamped;
+      setActiveSlide(clamped);
+    };
+
+    const handleTouchEnd = () => {
+      if (!isLockedRef.current) return;
+      const snapped = clampSlide(Math.round(activeSlideRef.current));
+      deltaAccRef.current = snapped * PIXELS_PER_SLIDE;
       activeSlideRef.current = snapped;
       setActiveSlide(snapped);
-      isSwipingRef.current = false;
-    }
-  };
+    };
 
-  // SCROLL button — advance one slide
-  const handleNextSlide = () => {
-    const cur = Math.round(activeSlideRef.current);
-    if (cur < slides.length - 1) {
-      const next = cur + 1;
-      activeSlideRef.current = next;
-      setActiveSlide(next);
-    }
-  };
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
-  const activeSlideInt = Math.min(Math.max(0, Math.round(activeSlide)), slides.length - 1);
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
+
+  const activeSlideInt = Math.min(slides.length - 1, Math.round(activeSlide));
+  const slideProgress  = Math.max(0, Math.min(1, activeSlide / (slides.length - 1)));
   const progressPercent = ((activeSlideInt + 1) / slides.length) * 100;
+
+  // SCROLL button — advance one slide smoothly
+  const handleNextSlide = () => {
+    if (activeSlideInt >= slides.length - 1) return;
+    const next = activeSlideInt + 1;
+    const PIXELS_PER_SLIDE = 320;
+    deltaAccRef.current = next * PIXELS_PER_SLIDE;
+    activeSlideRef.current = next;
+    setActiveSlide(next);
+  };
+
 
   return (
     <div className="relative min-h-screen bg-[#3A0D0D] text-white overflow-x-hidden">
-
       {/* ── Hero Section ── */}
       <section
         ref={heroRef}
@@ -247,29 +344,38 @@ export function BudayaPage() {
         style={{ minHeight: '90svh' }}
         aria-labelledby="budaya-heading"
       >
-        <video
-          ref={videoRef}
-          src={budaya4kVideo}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-          onTimeUpdate={(e) => {
-            const v = e.currentTarget;
-            // Preemptively loop 0.25 seconds before the video ends to avoid a black flash/gap
-            if (v.duration && v.currentTime >= v.duration - 0.25) {
+        {isMobile ? (
+          <div
+            className="absolute inset-0 bg-cover bg-center pointer-events-none"
+            style={{
+              backgroundImage: `url(${bgWebp})`,
+            }}
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src={budaya4kVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            onTimeUpdate={(e) => {
+              const v = e.currentTarget;
+              // Preemptively loop 0.25 seconds before the video ends to avoid a black flash/gap
+              if (v.duration && v.currentTime >= v.duration - 0.25) {
+                v.currentTime = 0;
+                void v.play().catch(() => {});
+              }
+            }}
+            onEnded={(e) => {
+              const v = e.currentTarget;
               v.currentTime = 0;
               void v.play().catch(() => {});
-            }
-          }}
-          onEnded={(e) => {
-            const v = e.currentTarget;
-            v.currentTime = 0;
-            void v.play().catch(() => {});
-          }}
-        />
+            }}
+          />
+        )}
         <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/60 to-transparent z-10 pointer-events-none" />
         {/* Warm reddish-brown tint matching design reference */}
         <div className="absolute inset-0 bg-[#6B1C0C]/35 mix-blend-multiply z-10 pointer-events-none" />
@@ -287,7 +393,7 @@ export function BudayaPage() {
           className={`relative z-30 flex flex-col items-center justify-center text-center w-full px-6 transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             heroVisible ? 'translate-y-0 opacity-100 scale-100 blur-none' : 'translate-y-10 opacity-0 scale-[0.98] blur-[3px]'
           }`}
-          style={{ minHeight: '100svh' }}
+          style={{ minHeight: '90svh' }}
         >
           <h1
             id="budaya-heading"
@@ -327,130 +433,126 @@ export function BudayaPage() {
 
       {/* ── Featured Carousel Section (slides 1-8) ── */}
       <section
-        className="relative w-full bg-[#3A0D0D] py-10 md:py-24 flex flex-col items-center justify-center min-h-[580px] md:min-h-screen"
-        aria-labelledby="carousel-title-label"
+        ref={sectionRef}
+        className="relative w-full bg-[#3A0D0D] min-h-screen flex flex-col justify-start pt-0 pb-10"
       >
-        <div
-          ref={featureRef}
-          className={`w-full max-w-[1160px] mx-auto px-6 pt-12 md:pt-28 pb-8 overflow-hidden transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
-          }`}
-        >
-          {/* ── Slide Track ── */}
           <div
-            className="flex"
-            style={{
-              transform: `translateX(-${activeSlide * 100}%)`,
-              transition: isSwipingRef.current
-                ? 'none'
-                : 'transform 700ms cubic-bezier(0.16,1,0.3,1)',
-            }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {slides.map((slide, idx) => (
-              <article
-                key={slide.id}
-                className="w-full flex-shrink-0 flex flex-col md:flex-row gap-6 md:gap-10 items-start justify-start pr-12 md:pr-0"
-                style={{ width: '100%' }}
-              >
-                {/* ── LEFT Image ── */}
-                <img
-                  src={slide.img}
-                  alt={slide.title}
-                  className="w-full md:w-[695px] h-auto md:h-[521px] object-cover rounded-[24px] shadow-[0_16px_56px_rgba(0,0,0,0.45)] flex-shrink-0"
-                  loading={idx === 0 ? 'eager' : 'lazy'}
-                />
-
-                {/* ── RIGHT Content ── */}
-                <div className="flex-1 flex flex-col justify-start min-w-0 pt-2 gap-4">
-                  <p
-                    className="font-poppins uppercase tracking-[0.28em]"
-                    style={{ color: '#F9CE65', fontSize: 11, fontWeight: 500 }}
-                  >
-                    {slide.label}
-                  </p>
-
-                  <h2
-                    id={idx === activeSlideInt ? 'carousel-title-label' : undefined}
-                    className="font-cormorant font-bold text-white leading-tight"
-                    style={{ fontSize: 'clamp(28px, 3.5vw, 44px)' }}
-                  >
-                    {slide.title}
-                  </h2>
-
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-[2px] rounded-full" style={{ background: '#F9CE65' }} />
-                    <p
-                      className="font-poppins italic text-white leading-relaxed"
-                      style={{ fontSize: 'clamp(13px, 1.2vw, 15px)' }}
-                    >
-                      {slide.lead}
-                    </p>
-                  </div>
-
-                  <ul className="space-y-3.5">
-                    {slide.bullets.map((detail, i) => (
-                      <li key={i} className="flex items-start gap-4">
-                        <img
-                          src={segitigaSvg}
-                          alt=""
-                          aria-hidden="true"
-                          className="flex-shrink-0 mt-[4px]"
-                          style={{ width: 14, height: 16 }}
-                        />
-                        <span
-                          className="font-poppins italic text-white leading-relaxed"
-                          style={{ fontSize: 'clamp(11px, 1vw, 13px)' }}
-                        >
-                          {detail}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* ── Progress Bar + Controls ── */}
-          <div
-            className={`mx-auto mt-10 flex items-center justify-between gap-4 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              featureVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+            ref={featureRef}
+            className={`w-full max-w-[1160px] mx-auto px-6 pt-4 md:pt-6 pb-8 overflow-hidden transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
             }`}
           >
-            <span
-              className="font-poppins font-medium flex-shrink-0 select-none tabular-nums"
-              style={{ color: '#F9CE65', fontSize: 13, letterSpacing: '0.08em' }}
+            {/* ── Slide Track (driven by wheel/touch scroll-lock) ── */}
+            <div
+              className="flex"
+              style={{
+                transform: `translateX(-${slideProgress * 100 * (slides.length - 1)}%)`,
+                transition: 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+                willChange: 'transform',
+              }}
             >
-              0{activeSlideInt + 1}/08
-            </span>
+              {slides.map((slide, idx) => (
+                <article
+                  key={slide.id}
+                  className="w-full flex-shrink-0 flex flex-col md:flex-row gap-6 md:gap-10 items-start justify-start pr-12 md:pr-0"
+                  style={{ width: '100%' }}
+                >
+                  {/* ── LEFT Image ── */}
+                  <img
+                    src={slide.img}
+                    alt={slide.title}
+                    className="w-full md:w-[695px] h-auto md:h-[521px] object-cover rounded-[24px] shadow-[0_16px_56px_rgba(0,0,0,0.45)] flex-shrink-0"
+                    loading={idx === 0 ? 'eager' : 'lazy'}
+                  />
 
-            <div className="relative h-[1.5px] flex-1 bg-white/10 rounded-full">
-              <div
-                className="absolute left-0 top-0 h-full rounded-full"
-                style={{
-                  width: `${progressPercent}%`,
-                  background: '#F9CE65',
-                  transition: 'width 0.5s cubic-bezier(0.16,1,0.3,1)',
-                  boxShadow: '0 0 8px rgba(249,206,101,0.5)',
-                }}
-              />
+                  {/* ── RIGHT Content ── */}
+                  <div className="flex-1 flex flex-col justify-start min-w-0 pt-2 gap-4">
+                    <p
+                      className="font-poppins uppercase tracking-[0.28em]"
+                      style={{ color: '#F9CE65', fontSize: 11, fontWeight: 500 }}
+                    >
+                      {slide.label}
+                    </p>
+
+                    <h2
+                      id={idx === activeSlideInt ? 'carousel-title-label' : undefined}
+                      className="font-cormorant font-bold text-white leading-tight"
+                      style={{ fontSize: 'clamp(28px, 3.5vw, 44px)' }}
+                    >
+                      {slide.title}
+                    </h2>
+
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-[2px] rounded-full" style={{ background: '#F9CE65' }} />
+                      <p
+                        className="font-poppins italic text-white leading-relaxed"
+                        style={{ fontSize: 'clamp(13px, 1.2vw, 15px)' }}
+                      >
+                        {slide.lead}
+                      </p>
+                    </div>
+
+                    <ul className="space-y-3.5">
+                      {slide.bullets.map((detail, i) => (
+                        <li key={i} className="flex items-start gap-4">
+                          <img
+                            src={segitigaSvg}
+                            alt=""
+                            aria-hidden="true"
+                            className="flex-shrink-0 mt-[4px]"
+                            style={{ width: 14, height: 16 }}
+                          />
+                          <span
+                            className="font-poppins italic text-white leading-relaxed"
+                            style={{ fontSize: 'clamp(11px, 1vw, 13px)' }}
+                          >
+                            {detail}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              ))}
             </div>
 
-            <button
-              onClick={handleNextSlide}
-              type="button"
-              disabled={activeSlideInt >= slides.length - 1}
-              className="font-poppins uppercase tracking-[0.22em] flex-shrink-0 cursor-pointer focus:outline-none transition-all duration-300 hover:scale-105 active:scale-95 select-none disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ color: '#F9CE65', fontSize: 12, fontWeight: 500 }}
-              aria-label="Slide berikutnya"
+            {/* ── Progress Bar + Controls ── */}
+            <div
+              className={`w-full max-w-[1160px] mx-auto mt-16 md:mt-24 flex items-center gap-5 px-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                featureVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+              }`}
             >
-              {activeSlideInt < slides.length - 1 ? 'SCROLL ↓' : 'SELESAI'}
-            </button>
-          </div>
-        </div>
+              <span
+                className="font-poppins font-medium flex-shrink-0 select-none tabular-nums"
+                style={{ color: '#F9CE65', fontSize: 13, letterSpacing: '0.08em' }}
+              >
+                0{activeSlideInt + 1}/08
+              </span>
+
+              <div className="relative h-[1.5px] flex-1 bg-white/10 rounded-full">
+                <div
+                  className="absolute left-0 top-0 h-full rounded-full"
+                  style={{
+                    width: `${progressPercent}%`,
+                    background: '#F9CE65',
+                    transition: 'width 0.3s cubic-bezier(0.16,1,0.3,1)',
+                    boxShadow: '0 0 8px rgba(249,206,101,0.5)',
+                  }}
+                />
+              </div>
+
+              <button
+                onClick={handleNextSlide}
+                type="button"
+                disabled={activeSlideInt >= slides.length - 1}
+                className="font-poppins uppercase tracking-[0.22em] flex-shrink-0 cursor-pointer focus:outline-none transition-all duration-300 hover:scale-105 active:scale-95 select-none disabled:opacity-30 disabled:cursor-not-allowed"
+                style={{ color: '#F9CE65', fontSize: 12, fontWeight: 500 }}
+                aria-label="Slide berikutnya"
+              >
+                {activeSlideInt < slides.length - 1 ? 'SCROLL ↓' : 'SELESAI'}
+              </button>
+            </div>
+          </div>{/* end featureRef div */}
       </section>
 
 

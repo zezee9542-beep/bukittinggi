@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useParallax } from '../hooks/useParallax';
 import { FloatingParticles } from './FloatingParticles';
@@ -7,6 +8,16 @@ import gunungWebp from '../assets/gunung.webp';
 export function HeroSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>();
   const parallaxY = useParallax(0.25);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <section
@@ -77,12 +88,14 @@ export function HeroSection() {
             }}
           />
 
-          {/* Floating Particles Layer inside the card */}
-          <FloatingParticles
-            count={22}
-            colors={['#6E1F1F', '#D4A853', '#F9CE65', '#8C1D24', '#c8955a']}
-            className="z-[5] rounded-[32px]"
-          />
+          {/* Floating Particles Layer inside the card - Disabled on mobile */}
+          {!isMobile && (
+            <FloatingParticles
+              count={22}
+              colors={['#6E1F1F', '#D4A853', '#F9CE65', '#8C1D24', '#c8955a']}
+              className="z-[5] rounded-[32px]"
+            />
+          )}
 
           {/* ── 3. Inside Text (z-10, on top of background inside card - colored white) ── */}
           <div

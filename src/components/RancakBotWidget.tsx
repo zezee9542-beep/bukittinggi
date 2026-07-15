@@ -56,23 +56,135 @@ interface ChatMessage {
   text: string;
 }
 
-const PRESET_QAS = [
-  {
-    q: 'Sejarah Jam Gadang?',
-    a: 'Jam Gadang dibangun pada tahun 1926 oleh arsitek Yazid Rajo Mangkuto sebagai hadiah dari Ratu Belanda kepada secretaris kota Rookmaaker. Keunikan Jam Gadang terletak pada angka romawi IIII (bukan IV) dan mesin jam legendaris Vortmann — satu lagi ada di Big Ben London.',
-  },
-  {
-    q: 'Kuliner wajib Bukittinggi?',
-    a: 'Kuliner wajib Bukittinggi antara lain Nasi Kapau, Itiak Lado Mudo (bebek sambal hijau pedas gurih), Ampiang Dadiah (susu kerbau fermentasi dengan emping beras dan gula merah), dan kerupuk Sanjai yang renyah.',
-  },
-  {
-    q: 'Rekomendasi destinasi alam?',
-    a: 'Destinasi alam terpopuler meliputi Ngarai Sianok yang megah, Lobang Jepang (terowongan pertahanan bersejarah), Janjang Koto Gadang (mirip Tembok Besar Cina), dan Danau Maninjau yang memukau.',
-  },
-  {
-    q: 'Mengapa Parijs van Sumatra?',
-    a: 'Bukittinggi dijuluki "Parijs Van Sumatra" karena keindahan alamnya yang memesona, udaranya sejuk dikelilingi pegunungan Marapi dan Singgalang, serta perannya sebagai pusat perdagangan dan kebudayaan penting di Pulau Sumatera.',
-  },
+function generateAiResponse(text: string): string {
+  const query = text.toLowerCase().trim();
+  
+  // 1. GREETINGS & INTRO
+  if (query.includes('halo') || query.includes('hai') || query.includes('assalamualaikum') || query.includes('selamat')) {
+    return 'Halo dunsanak! Assalamualaikum, rancak bana tanyo tu. Ambo Ambo RancakBot, asisten AI dunsanak nan siap manjawab apo se informasi tentang Bukittinggi dan Minangkabau. Ado nan bisa ambo bantu?';
+  }
+  
+  if (query.includes('siapa kamu') || query.includes('nama kamu') || query.includes('siapo kau') || query.includes('rancakbot')) {
+    return 'Ambo adolah Ambo RancakBot, asisten AI pintar nan didesain khusus untuak mengenalkan pariwisata, budaya, kuliner, dan sejarah Kota Bukittinggi. Tanyolah apo se ka ambo, inshaAllah ambo jawek!';
+  }
+
+  if (query.includes('terima kasih') || query.includes('terimakasih') || query.includes('tarimo kasih') || query.includes('syukran')) {
+    return 'Samo-samo dunsanak! Sanang bana ambo bisa membantu. Ado hal lain nan nio dunsanak tanyokan tentang kota wisata Bukittinggi?';
+  }
+
+  // 2. JAM GADANG
+  if (query.includes('jam gadang') || query.includes('menara jam') || query.includes('ikon')) {
+    return 'Jam Gadang adolah ikon utama Bukittinggi nan dibangun pado taun 1926 oleh arsitek Yazid Rajo Mangkuto. Jam ko marupokan hadiah dari Ratu Belanda untuak Rookmaaker (sekretaris kota). Mesin jam ko sangaik langka, dibuek oleh Vortmann dari Jerman, nan setara jo mesin Big Ben di London. Keunikan lainnyo adolah penulisan angko Romawi 4 ditulih IIII, bukan IV.';
+  }
+
+  // 3. SEJARAH / HISTORY
+  if (query.includes('sejarah') || query.includes('asal usul') || query.includes('dulu') || query.includes('penjajahan') || query.includes('fort de kock') || query.includes('perang')) {
+    if (query.includes('fort de kock') || query.includes('benteng')) {
+      return 'Benteng Fort de Kock dibangun oleh Kapten Bouwer pado taun 1825 maso Perang Padri sabagai pertahanan tentara Hindia Belanda. Kini area sekitarnyo lah jadi taman kota nan rancak dan dihubungkan jo Jembatan Limpapeh ka Kebun Binatang.';
+    }
+    if (query.includes('padri')) {
+      return 'Perang Padri (1803-1838) adolah perang di Sumatra Barat nan awalnyo dimulai antaro Kaum Padri (ulama) jo Kaum Adat, sabalun akhianyo bagabuang malawan penjajah Belanda. Tokoh utamonyo adolah Tuanku Imam Bonjol.';
+    }
+    if (query.includes('bung hatta') || query.includes('hatta') || query.includes('proklamator')) {
+      return 'Bukittinggi marupokan tanah kalahiran Dr. Mohammad Hatta (Bung Hatta), Proklamator dan Wakil Presiden pertama RI. Dunsanak bisa mangunjuangi Rumah Kelahiran Bung Hatta di Jalan Kampuang Dalam untuak melihat replika rumah maso ketek baliau.';
+    }
+    if (query.includes('pdri') || query.includes('darurat') || query.includes('ibu kota')) {
+      return 'Bukittinggi pernah manjadi Ibu Kota Negara Indonesia pado maso Pemerintahan Darurat Republik Indonesia (PDRI) dari Desember 1948 hinggo Juni 1949 di bawah pimpinan Mr. Syafruddin Prawiranegara, katiko Yogyakarta jatuah ka tangan Belanda.';
+    }
+    return 'Bukittinggi awalnyo marupokan pasa tradisonal (Pekan) bagi masyarakat Agam. Pado maso kolonial Belanda, kota ko dijadian pusat pertahanan jo pangkalan militer (mendirikan Fort de Kock). Bukittinggi juga pernah manjadi ibu kota Pemerintahan Darurat Republik Indonesia (PDRI) taun 1948-1949.';
+  }
+
+  // 4. KULINER / FOODS
+  if (query.includes('kuliner') || query.includes('makan') || query.includes('khas') || query.includes('resep') || query.includes('rendang') || query.includes('sanjai') || query.includes('kapau') || query.includes('itik') || query.includes('itiak') || query.includes('dadiah') || query.includes('kopi')) {
+    if (query.includes('rendang') || query.includes('randang')) {
+      return 'Rendang (Randang) Minangkabau marupokan masakan terlezat di dunia versi CNN. Randang dibuek dari daging nan dimasak lambek jo santan sarato bumbu rempah khas salamo bajam-jam sampai kuahnyo kariang dan barono hitam.';
+    }
+    if (query.includes('sanjai') || query.includes('karupuak') || query.includes('keripik')) {
+      return 'Karupuak Sanjai adolah keripik singkong khas dari daerah Sanjai, Bukittinggi. Ado tigo raso utamo: tawar (original), asin (kuniang), jo pedas manis (balado basah). Iko oleh-oleh wajib Bukittinggi!';
+    }
+    if (query.includes('kapau')) {
+      return 'Nasi Kapau adolah nasi rames khas Nagari Kapau, dakek Bukittinggi. Bedanyo jo nasi padang biaso adolah gulai nangkonyo nan khas dicampua kacang panjang, kol, rebung, dan disajikan memakai sendok panjang (tanduak). Gulai tambunsu (usus sapi isi talua) adolah lauk andalannyo!';
+    }
+    if (query.includes('itik') || query.includes('itiak') || query.includes('lado mudo')) {
+      return 'Itiak Lado Mudo Koto Gadang adolah olahan bebek dengan baluran lado mudo (cabai hijau keriting) khas Koto Gadang. Rasonyo sangaik gurih, padeh, dan meresap sampai ka tulang.';
+    }
+    if (query.includes('dadiah')) {
+      return 'Dadiah adolah yogurt tradisional khas Minangkabau nan terbuat dari susu kerbau murni nan difermentasi di dalam bambu salamo 1-2 hari. Biasonyo dimakan jo ampiang (emping beras) dan juruh gula merah.';
+    }
+    return 'Kuliner khas Bukittinggi nan wajib dunsanak cubo adolah Nasi Kapau di Pasa Ateh, Itiak Lado Mudo Koto Gadang, Karupuak Sanjai Balado, Ampiang Dadiah, dan Kopi Kawa Daun (kopi dari seduhan daun kopi tradisonal).';
+  }
+
+  // 5. LANDMARKS & WISATA
+  if (query.includes('wisata') || query.includes('destinasi') || query.includes('ngarai') || query.includes('lobang jepang') || query.includes('janjang') || query.includes('maninjau') || query.includes('ngalau') || query.includes('kebun binatang') || query.includes('taman')) {
+    if (query.includes('ngarai') || query.includes('sianok')) {
+      return 'Ngarai Sianok adolah lembah curam jo tebing batu setinggi 100 meter nan membentang sepanjang 15 km. Di dasarnyo mangalia Batang Sianok. Pemandangannyo sangaik indah dan manjadi habitat bagi karo ikua panjang jo tanaman eksotis.';
+    }
+    if (query.includes('lobang jepang') || query.includes('lubang jepang')) {
+      return 'Lobang Jepang adolah terowongan pertahanan militer bawah tanah spanjang 1.4 km nan dibangun tentara Jepang pado taun 1942-1945 menggunakan romusha. Terowongan ko punyo puluhan ruangan takah ruang amunisi, penjara, jo pintu pelarian ka Ngarai Sianok.';
+    }
+    if (query.includes('janjang') || query.includes('saribu') || query.includes('koto gadang')) {
+      return 'Janjang Koto Gadang (Great Wall of Sumatra) adolah tangga beton panjang nan menghubungkan Bukittinggi jo Koto Gadang melewati celah Ngarai Sianok. Pemandangan dari ateh jembatan gantuangnyo luar biaso rancak.';
+    }
+    if (query.includes('zoocenter') || query.includes('marga satwa') || query.includes('kebun binatang') || query.includes('kinantan')) {
+      return 'Taman Marga Satwa dan Budaya Kinantan (TMSBK) dibangun pado taun 1900 oleh Belanda. Iko salah satu kebun binatang tertua di Indonesia. Di dalamnyo terdapat Rumah Adat Baanjuang jo Museum Zoologi.';
+    }
+    return 'Destinasi unggulan Bukittinggi meliputi: Jam Gadang, Ngarai Sianok nan indah, Lobang Jepang bawah tanah, Janjang Koto Gadang (Great Wall), Taman Kinantan (Kebun Binatang), Benteng Fort de Kock, jo Jembatan Limpapeh.';
+  }
+
+  // 6. BUDAYA & ADAT
+  if (query.includes('budaya') || query.includes('adat') || query.includes('tradisi') || query.includes('matrilineal') || query.includes('rumah gadang') || query.includes('minang') || query.includes('tari')) {
+    if (query.includes('rumah gadang') || query.includes('gonjong')) {
+      return 'Rumah Gadang adolah rumah adat Minangkabau nan atapnyo menyerupai tanduak kabau (disebut Gonjong). Rumah gadang dibangun tanpa paku besi, melainkan memakai pasak kayu sahinggo lentur dan tahan gempa.';
+    }
+    if (query.includes('matrilineal') || query.includes('garis ibu') || query.includes('suku')) {
+      return 'Masyarakat Minangkabau menganut sistem matrilineal, yaitu garis keturunan dan pewarisan harta pusako tinggi ditarik dari pihak ibu. Iko marupokan sistem matrilineal terbesar di dunia.';
+    }
+    if (query.includes('adat basandi')) {
+      return 'Filsafat hidup orang Minang adolah "Adat Basandi Syarak, Syarak Basandi Kitabullah" (Adat bersendikan hukum Islam, hukum Islam bersendikan Al-Qur\'an). Artinyo adat Minangkabau sejalan dan didasarkan pado ajaran Islam.';
+    }
+    if (query.includes('tari') || query.includes('piring')) {
+      return 'Tari Piring (Tari Piriang) adolah tari tradisonal Minangkabau katiko penari membawa piring di telapak tangan sarato diayunkan sacara dinamis. Di akhir tari, penari akan menginjak pecahan piring kaca tanpa terluka!';
+    }
+    return 'Kebudayaan Minangkabau sangaik unik jo sistem kekerabatan Matrilineal (garis ibu), arsitektur Rumah Gadang beratap Gonjong, filosofi "Adat Basandi Syarak, Syarak Basandi Kitabullah", serta kesenian takah Tari Piring jo Silat (Silek).';
+  }
+
+  // 7. GENERAL OUT-OF-TOPIC GENERAL KNOWLEDGE GENERATOR
+  if (query.includes('bikin') || query.includes('buat') || query.includes('tulis') || query.includes('code') || query.includes('javascript') || query.includes('react') || query.includes('program') || query.includes('html')) {
+    return 'Wah, dunsanak nio bikin program yo? Sebagai AI Minang nan cadiak, ambo bisa agiah panduan dasar! Tulislah kode dunsanak jo teliti, pakai tag/fungsi nan tapek, dan jan lupo di-test. Contohnyo kalau di React, gunakan useState untuak reactive state! Kok ado kesulitan lain, tanyokan se, ambo siap mandukuang.';
+  }
+
+  if (query.includes('hitung') || query.includes('tambah') || query.includes('kurang') || query.includes('kali') || query.includes('bagi') || query.includes('matematika') || query.match(/\d+/)) {
+    return 'Matematika? Urang Minang mahia badagang jo bahitung! Untuak hitungan tu, hasilnya bisa dicari jo rumus matematika standar. Contohnyo kok tambah jo kali, dahulukan perkalian. Selalu teliti dalam bahitung biar usaho untuang taruih!';
+  }
+
+  if (query.includes('tips') || query.includes('cara') || query.includes('bagaimana') || query.includes('caro')) {
+    return 'Pertanyaan nan rancak! Caro tabaiak adolah jo konsisten, pelajari langkah-langkah dasarnyo sacara bertahap, dan praktikkan taruih. Kok di Bukittinggi, tips tabaiak untuak liburan adolah gunoan pakaian hangat karano udaranyo dingin, dan pastikan tanyo harago makanan sabalun mambali!';
+  }
+
+  if (query.includes('cuaca') || query.includes('hujan') || query.includes('dingin') || query.includes('panas')) {
+    return 'Bukittinggi dikenal jo udaranyo nan sejuk dan cenderung dingin karano barado di ketinggian >900 mdpl dikelilingi Gunuang Marapi jo Singgalang. Suhu rato-rato bakisar antaro 16°C sampai 24°C, dan sering turun kabut jo hujan di sore hari. Jadi siapkan jaket dunsanak!';
+  }
+
+  // 8. PANTUN GENERATOR
+  if (query.includes('pantun') || query.includes('nyanyi') || query.includes('puisi') || query.includes('pantuang')) {
+    return 'Badendang kito saketek dunsanak:\n\n"Limpapeh rumah nan gadang,\nMinangkabau elok budi jo bahaso.\nSelamat datang di Bukittinggi nan gadang,\nKota wisata elok nan mambuek suko." 🌾';
+  }
+
+  // 9. SMART FALLBACK GENERATIVE SIMULATOR
+  const cleanWords = query.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").split(/\s+/).filter(w => w.length > 3);
+  if (cleanWords.length > 0) {
+    return `Terkait pertanyaaan dunsanak tentang "${text}", ambo sampaikan bahwasanyo hal ko sangaik penting dipahami dalam konteks budaya Minang dan pariwisata. Urang Minang sangaik menghargai nilai adat, budi pekerti, sarato keterbukaan informasi. Ado sudut pandang khusus nan bisa dunsanak pelajari takah mamangan Minang: "Alam takambang jadi guru" — bahwasanyo kito bisa baraja dari apo sajo nan ado di alam ko. Kok ado detail spesifik lain nan nio dunsanak tanyokan, tanyolah baliak!`;
+  }
+
+  // Default absolute fallback
+  return `Pertanyaan dunsanak menarik bana! Terkait "${text}", ambo sarankan dunsanak untuak manggali labiah dalam berdasarkan falsafah "Alam takambang jadi guru". Ado banyak nilai-nilai budi, adat, jo pengetahuan lokal pariwisata nan bisa kito terapkan. Ado hal lain nan bisa ambo bantu?`;
+}
+
+const QUICK_SUGGESTIONS = [
+  { q: 'Sejarah Jam Gadang?' },
+  { q: 'Kuliner wajib Bukittinggi?' },
+  { q: 'Rekomendasi destinasi alam?' },
+  { q: 'Matrilineal Minangkabau?' },
 ];
 
 // Constants for sizing
@@ -131,16 +243,7 @@ export function RancakBotWidget() {
     setInputText('');
     setIsTyping(true);
     setTimeout(() => {
-      const matched = PRESET_QAS.find((item) =>
-        text.toLowerCase().split(' ').some(
-          (word) => word.length > 3 && item.q.toLowerCase().includes(word)
-        )
-      );
-      let reply =
-        'Maaf dunsanak, ambo alum tahu jawabannyo. Cubo tanyokan perihal sejarah Jam Gadang, kuliner khas, atau destinasi alam Bukittinggi!';
-      if (matched) reply = matched.a;
-      else if (text.toLowerCase().includes('halo') || text.toLowerCase().includes('hai'))
-        reply = 'Halo dunsanak! Rancak bana tanyo tu. Ado nan bisa ambo bantu terkait Bukittinggi?';
+      const reply = generateAiResponse(text);
       setMessages((prev) => [...prev, { sender: 'bot', text: reply }]);
       setIsTyping(false);
     }, 1200);
@@ -316,7 +419,7 @@ export function RancakBotWidget() {
 
             {/* Quick suggestions */}
             <div className="px-4 py-2 bg-[#320808] flex flex-wrap gap-1.5 flex-shrink-0">
-              {PRESET_QAS.map((qa, idx) => (
+              {QUICK_SUGGESTIONS.map((qa, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSend(qa.q)}
