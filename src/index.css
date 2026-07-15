@@ -383,3 +383,18 @@ body {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
+/* Disable default focus outline/border on model-viewer web components */
+model-viewer {
+  outline: none !important;
+  border: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+model-viewer:focus, 
+model-viewer:focus-visible,
+model-viewer:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+

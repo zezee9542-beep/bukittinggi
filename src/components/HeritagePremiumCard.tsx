@@ -108,7 +108,9 @@ export function HeritagePremiumCard({
         // Card lift — spring overshoot on enter
         transform: isVisible
           ? isHovered
-            ? 'translateY(-10px) scale(1.015)'
+            ? isMobile
+              ? 'translateY(-6px)'
+              : 'translateY(-10px) scale(1.015)'
             : 'translateY(0) scale(1)'
           : 'translateY(48px) scale(0.95)',
         opacity: isVisible ? 1 : 0,

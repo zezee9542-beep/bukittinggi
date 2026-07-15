@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import frameSvg from '../assets/frame.svg';
 import gadangSvg from '../assets/gadang.svg';
 import segitigaSvg from '../assets/segitiga.svg';
@@ -165,7 +165,6 @@ const gridItems = [
   },
 ];
 
-const SCROLL_THRESHOLD = 120;
 
 export function BudayaPage() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollReveal<HTMLElement>();
@@ -173,23 +172,10 @@ export function BudayaPage() {
   const { ref: gridRef, isVisible: gridVisible } = useScrollReveal<HTMLElement>();
   const { ref: footerRef, isVisible: footerVisible } = useScrollReveal<HTMLElement>();
 
-  // Carousel section element ref (used for wheel-lock boundary detection)
-  const containerRef = useRef<HTMLElement>(null);
-  // Video ref for manual loop control (prevents black flash on loop boundary)
-  const videoRef = useRef<HTMLVideoElement>(null);
   // Carousel slide index (integer 0-7)
   const [activeSlide, setActiveSlide] = useState(0);
   const activeSlideRef = useRef(0);
-
-  // Scroll accumulator — tracks partial scroll momentum before triggering a slide change
-  const scrollAccRef = useRef(0);
-
-  // Whether the carousel is actively intercepting wheel scroll
-  const carouselActiveRef = useRef(false);
-  // Whether the carousel has been snapped into view (to avoid re-snapping)
-  const snapDoneRef = useRef(false);
-  // Blocks locking if user has already scrolled past slide 8 once during this visit
-  const hasCompletedLockRef = useRef(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Touch swipe state
   const touchStartRef = useRef({ x: 0, y: 0, slide: 0 });
@@ -238,127 +224,6 @@ export function BudayaPage() {
     }
   };
 
-  /**
-   * IntersectionObserver: smoothly snap carousel into view when it enters viewport,
-   * then activate the scroll lock. Only snaps ONCE per traversal through the section.
-   */
-  useEffect(() => {
-    const section = containerRef.current;
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Only lock on initial scroll down and if they haven't finished slides yet
-        if (
-          entry.isIntersecting && 
-          entry.intersectionRatio >= 0.4 && 
-          !snapDoneRef.current && 
-          !hasCompletedLockRef.current
-        ) {
-          // Single smooth snap — section glides into view naturally
-          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          snapDoneRef.current = true;
-          // Activate lock after snap animation settles (~600ms)
-          setTimeout(() => {
-            carouselActiveRef.current = true;
-          }, 650);
-        }
-        if (!entry.isIntersecting) {
-          // Reset when section leaves viewport entirely
-          carouselActiveRef.current = false;
-          snapDoneRef.current = false;
-          scrollAccRef.current = 0;
-        }
-      },
-      { threshold: [0, 0.4, 1.0] }
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
-  /**
-   * Wheel handler — only active when carouselActiveRef is true.
-   * No window.scrollTo() calls here — eliminates jank entirely.
-   */
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      // If lock was already completed, behave like a normal page
-      if (hasCompletedLockRef.current) return;
-      if (!carouselActiveRef.current) return;
-
-      const curInt = Math.round(activeSlideRef.current);
-
-      // Support horizontal scroll (deltaX) from trackpads or advanced mice
-      const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-      if (isHorizontal) {
-        e.preventDefault();
-        scrollAccRef.current += e.deltaX;
-
-        if (e.deltaX > 0 && scrollAccRef.current >= SCROLL_THRESHOLD) {
-          const next = Math.min(slides.length - 1, curInt + 1);
-          scrollAccRef.current = 0;
-          activeSlideRef.current = next;
-          setActiveSlide(next);
-        } else if (e.deltaX < 0 && scrollAccRef.current <= -SCROLL_THRESHOLD) {
-          const next = Math.max(0, curInt - 1);
-          scrollAccRef.current = 0;
-          activeSlideRef.current = next;
-          setActiveSlide(next);
-        }
-        return;
-      }
-
-      // At last slide scrolling down → release lock permanently, let page continue
-      if (e.deltaY > 0 && curInt >= slides.length - 1) {
-        carouselActiveRef.current = false;
-        snapDoneRef.current = false;
-        scrollAccRef.current = 0;
-        hasCompletedLockRef.current = true; // Mark as done, no more locks when scrolling back up!
-        return;
-      }
-
-      // At first slide scrolling up → release lock without marking completed, let page scroll back up
-      if (e.deltaY < 0 && curInt <= 0) {
-        carouselActiveRef.current = false;
-        snapDoneRef.current = false;
-        scrollAccRef.current = 0;
-        return;
-      }
-
-      // Lock vertical scroll: consume this scroll event
-      e.preventDefault();
-      scrollAccRef.current += e.deltaY;
-
-      if (e.deltaY > 0 && scrollAccRef.current >= SCROLL_THRESHOLD) {
-        const next = Math.min(slides.length - 1, curInt + 1);
-        scrollAccRef.current = 0;
-        activeSlideRef.current = next;
-        setActiveSlide(next);
-      } else if (e.deltaY < 0 && scrollAccRef.current <= -SCROLL_THRESHOLD) {
-        const next = Math.max(0, curInt - 1);
-        scrollAccRef.current = 0;
-        activeSlideRef.current = next;
-        setActiveSlide(next);
-      }
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    return () => window.removeEventListener('wheel', handleWheel);
-  }, []);
-
-  // Reset lock when user scrolls back to top
-  useEffect(() => {
-    const handleScrollReset = () => {
-      if (window.scrollY <= 10) {
-        hasCompletedLockRef.current = false;
-        activeSlideRef.current = 0;
-        setActiveSlide(0);
-      }
-    };
-    window.addEventListener('scroll', handleScrollReset);
-    return () => window.removeEventListener('scroll', handleScrollReset);
-  }, []);
-
   // SCROLL button — advance one slide
   const handleNextSlide = () => {
     const cur = Math.round(activeSlideRef.current);
@@ -379,7 +244,7 @@ export function BudayaPage() {
       <section
         ref={heroRef}
         className="relative w-full overflow-hidden"
-        style={{ minHeight: '100svh' }}
+        style={{ minHeight: '90svh' }}
         aria-labelledby="budaya-heading"
       >
         <video
@@ -460,16 +325,14 @@ export function BudayaPage() {
         </div>
       </section>
 
-      {/* ── Featured Carousel Section — Full Scroll-Jacked (slides 1-8) ── */}
+      {/* ── Featured Carousel Section (slides 1-8) ── */}
       <section
-        ref={containerRef}
-        className="relative w-full bg-[#3A0D0D] flex flex-col items-center justify-center"
-        style={{ minHeight: '100svh' }}
+        className="relative w-full bg-[#3A0D0D] py-10 md:py-24 flex flex-col items-center justify-center min-h-[580px] md:min-h-screen"
         aria-labelledby="carousel-title-label"
       >
         <div
           ref={featureRef}
-          className={`w-full max-w-[1160px] mx-auto px-6 overflow-hidden transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`w-full max-w-[1160px] mx-auto px-6 pt-12 md:pt-28 pb-8 overflow-hidden transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
           }`}
         >

@@ -153,19 +153,48 @@ export function Navigation() {
 
         {/* Right Side: Toggle Switch + Mobile Menu Trigger */}
         <div className="flex items-center gap-6">
-          {/* Custom Pill Dark Mode Toggle Switch */}
-          <button
-            onClick={toggleDarkMode}
-            type="button"
-            className="relative w-12 h-[26px] rounded-full bg-[#6E1F1F] transition-colors duration-300 focus:outline-none cursor-pointer flex items-center p-0.5 ripple-btn"
-            aria-label="Toggle Dark Mode"
-          >
-            <div
-              className={`w-5 h-5 rounded-full bg-white shadow-md transition-transform duration-300 ease-out transform ${
-                darkMode ? 'translate-x-[22px]' : 'translate-x-0'
+          {/* Custom Theme Toggle Switch (Light/Dark Indicator) */}
+          <div className="relative flex items-center gap-2">
+            <span className="hidden sm:inline font-poppins text-[11px] uppercase tracking-wider font-semibold text-[#6E1F1F]/60 select-none">
+              {darkMode ? 'Gelap' : 'Terang'}
+            </span>
+            <button
+              onClick={toggleDarkMode}
+              type="button"
+              className={`relative w-14 h-[28px] rounded-full transition-all duration-300 focus:outline-none cursor-pointer flex items-center p-1 shadow-inner border ${
+                darkMode 
+                  ? 'bg-[#1e0505] border-[#F9CE65]/40' 
+                  : 'bg-neutral-200 border-neutral-300'
               }`}
-            />
-          </button>
+              title="Ganti Tema (Terang/Gelap)"
+              aria-label="Ganti Tema (Terang/Gelap)"
+            >
+              {/* Sun icon */}
+              <span 
+                className={`absolute left-2 text-[10px] transition-opacity duration-300 pointer-events-none select-none ${
+                  darkMode ? 'opacity-0' : 'opacity-100'
+                }`}
+              >
+                ☀️
+              </span>
+              {/* Moon icon */}
+              <span 
+                className={`absolute right-2 text-[10px] transition-opacity duration-300 pointer-events-none select-none ${
+                  darkMode ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                🌙
+              </span>
+              {/* Slider Knob */}
+              <div
+                className={`w-5 h-5 rounded-full shadow-md transition-all duration-300 ease-out transform ${
+                  darkMode 
+                    ? 'translate-x-[26px] bg-[#F9CE65]' 
+                    : 'translate-x-0 bg-white'
+                }`}
+              />
+            </button>
+          </div>
 
           {/* Mobile Hamburger menu trigger */}
           <button

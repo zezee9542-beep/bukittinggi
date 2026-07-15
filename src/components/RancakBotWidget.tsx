@@ -7,13 +7,23 @@ import enterPng from '../assets/enter.png';
 const FLOAT_STYLE = `
 @keyframes rancakbotFloat {
   0%   { transform: translateY(0px) rotate(-1deg); }
-  30%  { transform: translateY(-10px) rotate(0.5deg); }
-  60%  { transform: translateY(-6px) rotate(-0.5deg); }
+  30%  { transform: translateY(-8px) rotate(0.5deg); }
+  60%  { transform: translateY(-5px) rotate(-0.5deg); }
   100% { transform: translateY(0px) rotate(-1deg); }
 }
 .rancakbot-float {
-  animation: rancakbotFloat 3.6s ease-in-out infinite;
+  animation: rancakbotFloat 3.8s ease-in-out infinite;
   transform-origin: bottom center;
+}
+/* Disable focus outlines on model-viewer */
+model-viewer {
+  outline: none !important;
+  border: none !important;
+  --poster-color: transparent !important;
+}
+model-viewer:focus, model-viewer:focus-visible {
+  outline: none !important;
+  border: none !important;
 }
 `;
 
@@ -65,20 +75,14 @@ const PRESET_QAS = [
   },
 ];
 
-// ── Constants for desktop size calculation ─────────────────────────────────
-const CHAR_W = 115;    // character container width
-const CHAR_H = 125;    // character container height
-const WRAP_W = 360;    // outer closed-state wrapper width
+// Constants for sizing
+const CHAR_W_DESKTOP = 115;
+const CHAR_H_DESKTOP = 125;
+const WRAP_W_DESKTOP = 360;
 
-// Head top-left position within the WRAP_W container on desktop:
-//   character left edge = WRAP_W - CHAR_W = 245px
-//   head left offset within character ≈ 30px → 275px from wrapper-left
-//   head top offset within character ≈ 10px → 10px from wrapper-top
-// Bubble bottom-right corner should be here + small gap (3px up, 5px left):
-//   right = WRAP_W - 275 + 5 = 90px from wrapper-right
-//   bottom = CHAR_H - 10 + 3 = 118px from wrapper-bottom
-const BUBBLE_RIGHT  = WRAP_W - (WRAP_W - CHAR_W + 30) + 5;   // ≈ 90
-const BUBBLE_BOTTOM = CHAR_H - 10 + 3;                        // ≈ 118
+// Speech bubble position relative to head on desktop
+const BUBBLE_RIGHT_DESKTOP  = WRAP_W_DESKTOP - (WRAP_W_DESKTOP - CHAR_W_DESKTOP + 30) + 5; // ≈ 90
+const BUBBLE_BOTTOM_DESKTOP = CHAR_H_DESKTOP - 10 + 3; // ≈ 118
 
 export function RancakBotWidget() {
   const [wantsOpen, setWantsOpen] = useState(false);   // user intent
@@ -95,7 +99,7 @@ export function RancakBotWidget() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Inject float keyframe style into DOM once
+  // Inject styles once
   useEffect(() => {
     if (document.getElementById('rancakbot-style')) return;
     const el = document.createElement('style');
@@ -104,7 +108,7 @@ export function RancakBotWidget() {
     document.head.appendChild(el);
   }, []);
 
-  // Open: mount then animate-in on next frame
+  // Open: mount then animate-in
   const openModal = useCallback(() => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
     setWantsOpen(true);
@@ -145,17 +149,15 @@ export function RancakBotWidget() {
   return (
     <>
       {/* ═══════════════════════════════════════════════════════════
-          CLOSED STATE — responsive size (bubble hidden on mobile)
-          • Mobile size adapts to show only the 3D character (85x95px)
-          • Desktop size shows full wrapper containing bubble above head
+          CLOSED STATE — bubble sits precisely above head's top-left
       ═══════════════════════════════════════════════════════════ */}
       {!wantsOpen && (
         <div
-          className="fixed z-50 pointer-events-none overflow-visible bottom-5 right-3 w-[85px] h-[95px] md:w-[360px] md:h-[125px]"
+          className="fixed z-50 pointer-events-none overflow-visible bottom-5 right-3 w-[80px] h-[90px] md:w-[360px] md:h-[125px]"
         >
-          {/* 3D Character — smaller on mobile, standard on desktop */}
+          {/* 3D Character — floating, lazy loading, with loading poster */}
           <div
-            className="absolute bottom-0 right-0 pointer-events-auto cursor-pointer rancakbot-float w-[85px] h-[95px] md:w-[115px] md:h-[125px]"
+            className="absolute bottom-0 right-0 pointer-events-auto cursor-pointer rancakbot-float w-[80px] h-[90px] md:w-[115px] md:h-[125px]"
             onClick={openModal}
           >
             <model-viewer
@@ -164,13 +166,19 @@ export function RancakBotWidget() {
               auto-rotate
               camera-controls={false}
               disable-zoom
-              shadow-intensity="1"
+              shadow-intensity="0.8"
               environment-image="neutral"
               auto-rotate-delay="0"
               interaction-prompt="none"
-              loading="eager"
+              loading="lazy"
+              reveal="auto"
               style={{ width: '100%', height: '100%', background: 'transparent', outline: 'none' }}
-            />
+            >
+              {/* Poster slots to show immediately while loading 16MB file */}
+              <div slot="poster" className="absolute inset-0 flex items-center justify-center bg-transparent">
+                <img src={chtPng} className="w-[28px] h-[28px] animate-pulse opacity-50 brightness-0 invert" alt="Loading" />
+              </div>
+            </model-viewer>
           </div>
 
           {/* Speech bubble — hidden on mobile, flex on desktop */}
@@ -178,9 +186,9 @@ export function RancakBotWidget() {
             onClick={openModal}
             className="hidden md:flex pointer-events-auto cursor-pointer absolute items-center gap-3 px-5 py-3.5 bg-[#4A0808] border-[1.5px] border-[#F9CE65] shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
             style={{
-              right: `${BUBBLE_RIGHT}px`,    // positions bubble's right edge near head
-              bottom: `${BUBBLE_BOTTOM}px`,  // positions bubble above head with small gap
-              borderRadius: '24px 24px 0px 24px', // bottom-right is pointed → points to head
+              right: `${BUBBLE_RIGHT_DESKTOP}px`,
+              bottom: `${BUBBLE_BOTTOM_DESKTOP}px`,
+              borderRadius: '24px 24px 0px 24px',
               whiteSpace: 'nowrap',
               zIndex: 10,
             }}
@@ -196,10 +204,9 @@ export function RancakBotWidget() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════
-          OPEN STATE — chat modal (responsive) + character (desktop only)
-          • flex-row items-end: bottom aligned
-          • Modal fits 100% viewport width with padding on mobile, standard on desktop
-          • 3D character hidden on mobile to avoid clutter, visible on desktop
+          OPEN STATE — chat modal (responsive) + character overlapping
+          • Desktop: Character is next to modal (flex layout)
+          • Mobile: Character overlaps bottom-right of modal to fit narrow screens
       ═══════════════════════════════════════════════════════════ */}
       {mounted && (
         <div
@@ -208,10 +215,9 @@ export function RancakBotWidget() {
         >
           {/* ── Chat Modal ── */}
           <div
-            className="pointer-events-auto flex flex-col rounded-[24px] overflow-hidden border-[1.5px] border-[#F9CE65] shadow-[0_24px_55px_rgba(0,0,0,0.55)] w-[calc(100vw-24px)] sm:w-[360px] h-[75vh] max-h-[510px] sm:h-[510px]"
+            className="pointer-events-auto flex flex-col rounded-[24px] overflow-hidden border-[1.5px] border-[#F9CE65] shadow-[0_24px_55px_rgba(0,0,0,0.55)] w-[calc(100vw-24px)] sm:w-[360px] h-[70vh] max-h-[510px] sm:h-[510px]"
             style={{
               background: '#3E0F0F',
-              // Animation via CSS transition
               opacity: visible ? 1 : 0,
               transform: visible
                 ? 'translateY(0px) scale(1)'
@@ -324,11 +330,11 @@ export function RancakBotWidget() {
             {/* Gold separator */}
             <div className="h-[1px] bg-[#F9CE65]/20 flex-shrink-0" />
 
-            {/* Input bar */}
+            {/* Input bar — pr-14 on mobile to avoid overlap with 3D character */}
             <div className="p-4 bg-[#350A0A] flex-shrink-0">
               <form
                 onSubmit={(e) => { e.preventDefault(); handleSend(inputText); }}
-                className="flex items-center gap-3 border-[1.5px] border-[#F9CE65] rounded-[16px] px-4 py-2.5 bg-[#3E0F0F]"
+                className="flex items-center gap-3 border-[1.5px] border-[#F9CE65] rounded-[16px] px-4 py-2.5 bg-[#3E0F0F] pr-14 sm:pr-4"
               >
                 <input
                   type="text"
@@ -348,10 +354,17 @@ export function RancakBotWidget() {
             </div>
           </div>
 
-          {/* ── 3D Character (desktop only: hidden on mobile, shown on tablet/desktop) ── */}
+          {/* ── 3D Character — Aligned at bottom-right.
+              • Desktop: stays side-by-side (flex layout, no margin offsets)
+              • Mobile: absolute overlapping at bottom-right corner, scale slightly smaller
+          ── */}
           <div
             onClick={closeModal}
-            className="hidden sm:block pointer-events-auto cursor-pointer flex-shrink-0 rancakbot-float w-[85px] h-[95px] md:w-[115px] md:h-[125px]"
+            className="pointer-events-auto cursor-pointer flex-shrink-0 rancakbot-float absolute sm:relative bottom-0 right-0 sm:bottom-auto sm:right-auto z-50 w-[75px] h-[85px] sm:w-[115px] sm:h-[125px]"
+            style={{
+              // On mobile it aligns absolute inside bottom-right corner, on desktop it stays static in the flex row
+              margin: '0',
+            }}
           >
             <model-viewer
               src="/textured.glb"
@@ -359,13 +372,18 @@ export function RancakBotWidget() {
               auto-rotate
               camera-controls={false}
               disable-zoom
-              shadow-intensity="1"
+              shadow-intensity="0.8"
               environment-image="neutral"
               auto-rotate-delay="0"
               interaction-prompt="none"
-              loading="eager"
+              loading="lazy"
+              reveal="auto"
               style={{ width: '100%', height: '100%', background: 'transparent', outline: 'none' }}
-            />
+            >
+              <div slot="poster" className="absolute inset-0 flex items-center justify-center bg-transparent">
+                <img src={chtPng} className="w-[24px] h-[24px] animate-pulse opacity-40 brightness-0 invert" alt="Loading" />
+              </div>
+            </model-viewer>
           </div>
         </div>
       )}
