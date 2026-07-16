@@ -4,6 +4,7 @@ import chtPng from '../assets/cht.png';
 import enterPng from '../assets/enter.png';
 import { useMode } from '../context/ModeContext';
 import { useTranslation } from '../hooks/useTranslation';
+import { askGroq, type GroqChatMessage } from '../lib/groqClient';
 
 // Inject float keyframe + tilt styles once
 const FLOAT_STYLE = `
@@ -669,36 +670,53 @@ export function RancakBotWidget() {
 
   const handleSend = useCallback((text: string) => {
     if (!text.trim()) return;
-    setMessages(prev => [...prev, { sender: 'user', text }]);
+    const userMessage: ChatMessage = { sender: 'user', text };
+    setMessages(prev => [...prev, userMessage]);
     setInputText('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      const translateCmd = detectTranslateCommand(text.toLowerCase());
-      if (translateCmd === 'en') {
-        setLanguage('en');
-        setMessages(prev => [...prev, { sender: 'bot', text: "✅ Done! The website has been switched to **English**. All pages are now in English. Say 'switch to Indonesian' to switch back anytime!" }]);
+    // Site-language switch commands stay local — they control the app UI,
+    // not something the AI model should be asked about.
+    const translateCmd = detectTranslateCommand(text.toLowerCase());
+    if (translateCmd) {
+      setTimeout(() => {
+        if (translateCmd === 'en') {
+          setLanguage('en');
+          setMessages(prev => [...prev, { sender: 'bot', text: "✅ Done! The website has been switched to **English**. All pages are now in English. Say 'switch to Indonesian' to switch back anytime!" }]);
+        } else if (translateCmd === 'id') {
+          setLanguage('id');
+          setMessages(prev => [...prev, { sender: 'bot', text: "✅ Selesai! Website telah dikembalikan ke **Bahasa Indonesia**. Semua halaman sekarang dalam Bahasa Indonesia." }]);
+        } else {
+          setMessages(prev => [...prev, { sender: 'bot', text: "Maaf Dunsanak, untuak saat ko ambo hanya mendukung Bahasa Indonesia dan Bahasa Inggris sebagai bahasa antarmuka. Namun ambo bisa menjawab dalam Bahasa Minang!" }]);
+        }
         setIsTyping(false);
-        return;
-      }
-      if (translateCmd === 'id') {
-        setLanguage('id');
-        setMessages(prev => [...prev, { sender: 'bot', text: "✅ Selesai! Website telah dikembalikan ke **Bahasa Indonesia**. Semua halaman sekarang dalam Bahasa Indonesia." }]);
-        setIsTyping(false);
-        return;
-      }
-      if (translateCmd === 'min') {
-        setMessages(prev => [...prev, { sender: 'bot', text: "Maaf Dunsanak, untuak saat ko ambo hanya mendukung Bahasa Indonesia dan Bahasa Inggris sebagai bahasa antarmuka. Namun ambo bisa menjawab dalam Bahasa Minang!" }]);
-        setIsTyping(false);
-        return;
-      }
+      }, 900);
+      return;
+    }
 
-      const lang = detectInputLang(text);
-      const reply = generateAiResponse(text, lang);
-      setMessages(prev => [...prev, { sender: 'bot', text: reply }]);
-      setIsTyping(false);
-    }, 900);
-  }, [setLanguage]);
+    const lang = detectInputLang(text);
+
+    // Ask the real Groq-hosted model for a reply, falling back to the local
+    // keyword-based knowledge base if the request fails (no API key, offline,
+    // rate-limited, etc.) so the widget still works either way.
+    void (async () => {
+      const minDelay = new Promise(resolve => setTimeout(resolve, 600));
+      try {
+        const history: GroqChatMessage[] = [...messages, userMessage]
+          .slice(-12)
+          .map(m => ({ role: m.sender === 'user' ? 'user' as const : 'assistant' as const, content: m.text }));
+
+        const [reply] = await Promise.all([askGroq(history, lang), minDelay]);
+        setMessages(prev => [...prev, { sender: 'bot', text: reply }]);
+      } catch (err) {
+        console.error('RancakBot: Groq request failed, using local knowledge base instead.', err);
+        await minDelay;
+        setMessages(prev => [...prev, { sender: 'bot', text: generateAiResponse(text, lang) }]);
+      } finally {
+        setIsTyping(false);
+      }
+    })();
+  }, [setLanguage, messages]);
 
   const QUICK = [
     { q: t('bot_quick1') },

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type MouseEvent as ReactMouseEvent } from 'react';
 import frameSvg from '../assets/frame.svg';
 import gadangSvg from '../assets/gadang.svg';
 import segitigaSvg from '../assets/segitiga.svg';
@@ -7,6 +7,11 @@ import mapsSvg from '../assets/maps.svg';
 import tigaSvg from '../assets/tiga.svg';
 import budaya4kVideo from '../assets/Budaya 4k.mp4';
 
+// Custom left/right navigation cursors shown once the intro scroll-through is complete
+const PREV_SLIDE_CURSOR =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='rgba(0,0,0,0.35)' stroke='%23F9CE65' stroke-width='1.5'/%3E%3Cpath d='M23 12l-8 8 8 8' fill='none' stroke='%23F9CE65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\") 20 20, w-resize";
+const NEXT_SLIDE_CURSOR =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='rgba(0,0,0,0.35)' stroke='%23F9CE65' stroke-width='1.5'/%3E%3Cpath d='M17 12l8 8-8 8' fill='none' stroke='%23F9CE65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\") 20 20, e-resize";
 
 // Grid card images — Panduan Budaya section
 import grid1 from '../assets/01.webp';
@@ -176,137 +181,147 @@ export function BudayaPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Slide index — fractional for smooth drag tracking, rounded for display
+  // Slide index — fractional while a gesture is actively moving it, snapped
+  // to the nearest whole slide once the gesture ends.
   const [activeSlide, setActiveSlide] = useState(0);
   const activeSlideRef = useRef(0);
-  const isLockedRef = useRef(false);          // true when this section is scroll-locked
-  const sectionInViewRef = useRef(false);     // true when section is intersecting viewport
-  const hasLockedThisPass = useRef(false);    // lock only once per descent
-  const deltaAccRef  = useRef(0);             // accumulated wheel delta
-  const touchStartYRef = useRef(0);
-  const touchStartSlideRef = useRef(0);
 
-  // ── IntersectionObserver — reliably detect when section enters/leaves viewport ──
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
+  // Whether the user has already scrolled all the way through slides 1-8 once
+  // during this visit to the page. Once true, the section never locks scroll
+  // again and slide navigation switches to cursor-driven left/right control.
+  const [hasCompletedIntro, setHasCompletedIntro] = useState(false);
+  const hasCompletedIntroRef = useRef(false);
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        sectionInViewRef.current = entry!.isIntersecting;
+  // True only while an active wheel/touch gesture is driving the slide —
+  // disables the CSS transition so per-frame updates track the gesture
+  // instantly instead of fighting a transition (which is what felt glitchy).
+  const [isGesturing, setIsGesturing] = useState(false);
 
-        // When section leaves viewport entirely upward, reset everything
-        if (!entry!.isIntersecting && entry!.boundingClientRect.bottom < 0) {
-          hasLockedThisPass.current = false;
-          isLockedRef.current = false;
-          activeSlideRef.current = 0;
-          deltaAccRef.current = 0;
-          setActiveSlide(0);
-        }
-      },
-      { threshold: 0.05 }
-    );
+  // Which half of the slide area the cursor is hovering (for the left/right
+  // navigation cursor shown once the intro pass is complete).
+  const [hoverSide, setHoverSide] = useState<'prev' | 'next' | null>(null);
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  // ── Scroll-lock wheel and touch gesture absorption ───────────────────────
+  // ── Scroll lock for the intro pass ──────────────────────────────────────
+  // The section is a normal single-viewport block — no artificial extra
+  // height — so the page length and layout stay exactly as they were.
+  // While the section is in view and the intro hasn't been completed yet,
+  // wheel/touch scrolling is intercepted and converted into slide movement
+  // instead of page scroll. React state is only written once per animation
+  // frame (never synchronously inside the raw event handler), which is what
+  // keeps this smooth on every device instead of glitching under rapid
+  // wheel/touch events.
   useEffect(() => {
     const PIXELS_PER_SLIDE = 320;
     const clampSlide = (v: number) => Math.max(0, Math.min(slides.length - 1, v));
 
-    const engageLock = () => {
-      const el = sectionRef.current;
-      if (!el) return;
-      isLockedRef.current = true;
-      hasLockedThisPass.current = true;
-      deltaAccRef.current = 0;
-      // Snap page scroll to top of section so it sits flush
-      window.scrollTo({ top: el.offsetTop, behavior: 'instant' as ScrollBehavior });
+    let inView = false;
+    let isLocked = false;
+    let rafId = 0;
+    let pendingSlide: number | null = null;
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+    let touchStartY = 0;
+    let touchStartSlide = 0;
+
+    const flush = () => {
+      rafId = 0;
+      if (pendingSlide === null) return;
+      activeSlideRef.current = pendingSlide;
+      setActiveSlide(pendingSlide);
+      pendingSlide = null;
+    };
+
+    const scheduleUpdate = (value: number) => {
+      pendingSlide = value;
+      if (!rafId) rafId = requestAnimationFrame(flush);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inView = (entry?.intersectionRatio ?? 0) > 0.6;
+      },
+      { threshold: [0, 0.6, 1] }
+    );
+    const section = sectionRef.current;
+    if (section) observer.observe(section);
+
+    const complete = () => {
+      isLocked = false;
+      hasCompletedIntroRef.current = true;
+      setHasCompletedIntro(true);
+      setIsGesturing(false);
+    };
+
+    const release = () => {
+      isLocked = false;
+      setIsGesturing(false);
     };
 
     const handleWheel = (e: WheelEvent) => {
+      if (hasCompletedIntroRef.current) return;
       const cur = activeSlideRef.current;
 
-      // Engage lock when section is in view and we haven't locked this pass yet
-      if (!isLockedRef.current && sectionInViewRef.current && !hasLockedThisPass.current) {
-        if (e.deltaY > 0) { // Only lock on downward scroll
-          engageLock();
+      if (!isLocked) {
+        if (inView && e.deltaY > 0) {
+          isLocked = true;
+          setIsGesturing(true);
         } else {
           return;
         }
       }
 
-      if (!isLockedRef.current) return;
-
-      // Release lock: past last slide scrolling down
+      // Finished slide 8 and still scrolling down — release for good.
       if (cur >= slides.length - 1 && e.deltaY > 0) {
-        isLockedRef.current = false;
+        complete();
         return;
       }
-      // Release lock: at first slide scrolling up
+      // Back at slide 1 and scrolling up — let the page scroll away normally.
       if (cur <= 0 && e.deltaY < 0) {
-        isLockedRef.current = false;
-        hasLockedThisPass.current = false;
+        release();
         return;
       }
 
       e.preventDefault();
-      deltaAccRef.current += e.deltaY;
+      scheduleUpdate(clampSlide(cur + e.deltaY / PIXELS_PER_SLIDE));
 
-      const rawSlide = deltaAccRef.current / PIXELS_PER_SLIDE;
-      const clamped = clampSlide(rawSlide);
-      activeSlideRef.current = clamped;
-      setActiveSlide(clamped);
-
-      clearTimeout((handleWheel as any)._t);
-      (handleWheel as any)._t = setTimeout(() => {
-        const snapped = clampSlide(Math.round(activeSlideRef.current));
-        deltaAccRef.current = snapped * PIXELS_PER_SLIDE;
-        activeSlideRef.current = snapped;
-        setActiveSlide(snapped);
-      }, 120);
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        scheduleUpdate(clampSlide(Math.round(activeSlideRef.current)));
+        setIsGesturing(false);
+      }, 140);
     };
 
     const handleTouchStart = (e: TouchEvent) => {
-      touchStartYRef.current = e.touches[0]!.clientY;
-      touchStartSlideRef.current = activeSlideRef.current;
-
-      // Engage lock on downward touch when section is in view
-      if (!isLockedRef.current && sectionInViewRef.current && !hasLockedThisPass.current) {
-        engageLock();
+      if (hasCompletedIntroRef.current) return;
+      touchStartY = e.touches[0]!.clientY;
+      touchStartSlide = activeSlideRef.current;
+      if (!isLocked && inView) {
+        isLocked = true;
+        setIsGesturing(true);
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!isLockedRef.current) return;
-      const dy = touchStartYRef.current - e.touches[0]!.clientY;
+      if (!isLocked) return;
+      const dy = touchStartY - e.touches[0]!.clientY;
       const cur = activeSlideRef.current;
 
       if (cur >= slides.length - 1 && dy > 0) {
-        isLockedRef.current = false;
+        complete();
         return;
       }
       if (cur <= 0 && dy < 0) {
-        isLockedRef.current = false;
-        hasLockedThisPass.current = false;
+        release();
         return;
       }
 
       e.preventDefault();
-      const rawSlide = touchStartSlideRef.current + dy / (window.innerHeight * 0.55);
-      const clamped = clampSlide(rawSlide);
-      activeSlideRef.current = clamped;
-      setActiveSlide(clamped);
+      scheduleUpdate(clampSlide(touchStartSlide + dy / (window.innerHeight * 0.55)));
     };
 
     const handleTouchEnd = () => {
-      if (!isLockedRef.current) return;
-      const snapped = clampSlide(Math.round(activeSlideRef.current));
-      deltaAccRef.current = snapped * PIXELS_PER_SLIDE;
-      activeSlideRef.current = snapped;
-      setActiveSlide(snapped);
+      if (!isLocked) return;
+      scheduleUpdate(clampSlide(Math.round(activeSlideRef.current)));
+      setIsGesturing(false);
     };
 
     window.addEventListener('wheel', handleWheel, { passive: false });
@@ -315,6 +330,9 @@ export function BudayaPage() {
     window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
+      observer.disconnect();
+      clearTimeout(settleTimer);
+      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
@@ -326,15 +344,49 @@ export function BudayaPage() {
   const slideProgress  = Math.max(0, Math.min(1, activeSlide / (slides.length - 1)));
   const progressPercent = ((activeSlideInt + 1) / slides.length) * 100;
 
-  // SCROLL button — advance one slide smoothly
+  const goToSlide = (next: number) => {
+    const clamped = Math.max(0, Math.min(slides.length - 1, next));
+    activeSlideRef.current = clamped;
+    setActiveSlide(clamped);
+  };
+
+  // SCROLL button — advances one slide directly; also completes the intro
+  // once it reaches the last slide, same as scrolling would.
   const handleNextSlide = () => {
     if (activeSlideInt >= slides.length - 1) return;
     const next = activeSlideInt + 1;
-    const PIXELS_PER_SLIDE = 320;
-    deltaAccRef.current = next * PIXELS_PER_SLIDE;
-    activeSlideRef.current = next;
-    setActiveSlide(next);
+    goToSlide(next);
+    if (next >= slides.length - 1 && !hasCompletedIntroRef.current) {
+      hasCompletedIntroRef.current = true;
+      setHasCompletedIntro(true);
+    }
   };
+
+  // Cursor-driven left/right navigation — only active once the intro pass is done
+  const handleSlideAreaMouseMove = (e: ReactMouseEvent<HTMLDivElement>) => {
+    if (!hasCompletedIntro) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setHoverSide(e.clientX - rect.left < rect.width / 2 ? 'prev' : 'next');
+  };
+
+  const handleSlideAreaMouseLeave = () => {
+    if (hasCompletedIntro) setHoverSide(null);
+  };
+
+  const handleSlideAreaClick = (e: ReactMouseEvent<HTMLDivElement>) => {
+    if (!hasCompletedIntro) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const isLeftHalf = e.clientX - rect.left < rect.width / 2;
+    goToSlide(isLeftHalf ? activeSlideInt - 1 : activeSlideInt + 1);
+  };
+
+  const slideAreaCursor = !hasCompletedIntro
+    ? undefined
+    : hoverSide === 'prev'
+      ? PREV_SLIDE_CURSOR
+      : hoverSide === 'next'
+        ? NEXT_SLIDE_CURSOR
+        : 'default';
 
 
   return (
@@ -435,12 +487,19 @@ export function BudayaPage() {
               featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
             }`}
           >
-            {/* ── Slide Track (driven by wheel/touch scroll-lock) ── */}
+            {/* ── Slide Viewport — locked to scroll during the intro pass, cursor-driven afterwards ── */}
+            <div
+              className="overflow-hidden"
+              style={{ cursor: slideAreaCursor }}
+              onMouseMove={handleSlideAreaMouseMove}
+              onMouseLeave={handleSlideAreaMouseLeave}
+              onClick={handleSlideAreaClick}
+            >
             <div
               className="flex"
               style={{
                 transform: `translateX(-${slideProgress * 100 * (slides.length - 1)}%)`,
-                transition: 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+                transition: isGesturing ? 'none' : 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1)',
                 willChange: 'transform',
               }}
             >
@@ -507,6 +566,7 @@ export function BudayaPage() {
                   </div>
                 </article>
               ))}
+            </div>
             </div>
 
             {/* ── Progress Bar + Controls ── */}
@@ -746,4 +806,3 @@ function GridCard({
 }
 
 export default BudayaPage;
-
