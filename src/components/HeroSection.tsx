@@ -48,7 +48,7 @@ export function HeroSection() {
           SHARED CARD STRUCTURE — same layout for both modes,
           only the images and colors differ.
       ════════════════════════════════════════════════════════ */}
-      <div className="relative pt-24 sm:pt-28 md:pt-32 pb-12 md:pb-16 flex justify-center items-center px-3 sm:px-4 md:px-5">
+      <div className="relative pt-32 sm:pt-36 md:pt-44 pb-12 md:pb-16 flex justify-center items-center px-3 sm:px-4 md:px-5">
 
         {/* ── Card Container ── */}
         <div className="relative w-full max-w-[1440px] h-[480px] sm:h-[580px] md:h-[680px] lg:h-[80vh] min-h-[460px] overflow-visible">
@@ -221,7 +221,7 @@ export function HeroSection() {
           <div
             className="absolute left-1/2 z-20 pointer-events-none"
             style={{
-              bottom: isMobile ? '12%' : '-15%',
+              bottom: isMobile ? '20%' : '-2%',
               transform: isVisible
                 ? 'translateX(-50%) translateY(0) scale(1)'
                 : 'translateX(-50%) translateY(32px) scale(0.96)',

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { EditorialIntro } from './components/EditorialIntro';
 import { HeroSection } from './components/HeroSection';
+import { FeatureSection } from './components/FeatureSection';
 import { Navigation } from './components/Navigation';
 import { HistoryPage } from './components/HistoryPage';
 import { BudayaPage } from './components/BudayaPage';
@@ -17,6 +18,7 @@ function HomePage() {
       {/* Home wrapper — relative container for Hero + Editorial */}
       <div className="relative overflow-x-hidden">
         <HeroSection />
+        <FeatureSection />
         <EditorialIntro />
       </div>
       <ParijsSection />
