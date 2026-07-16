@@ -4,7 +4,7 @@ import chtPng from '../assets/cht.png';
 import enterPng from '../assets/enter.png';
 import { useMode } from '../context/ModeContext';
 import { useTranslation } from '../hooks/useTranslation';
-import { askGroq, type GroqChatMessage } from '../lib/groqClient';
+import { askAi, type AiChatMessage } from '../lib/aiClient';
 
 // Inject float keyframe + tilt styles once
 const FLOAT_STYLE = `
@@ -702,14 +702,14 @@ export function RancakBotWidget() {
     void (async () => {
       const minDelay = new Promise(resolve => setTimeout(resolve, 600));
       try {
-        const history: GroqChatMessage[] = [...messages, userMessage]
+        const history: AiChatMessage[] = [...messages, userMessage]
           .slice(-12)
           .map(m => ({ role: m.sender === 'user' ? 'user' as const : 'assistant' as const, content: m.text }));
 
-        const [reply] = await Promise.all([askGroq(history, lang), minDelay]);
+        const [reply] = await Promise.all([askAi(history, lang), minDelay]);
         setMessages(prev => [...prev, { sender: 'bot', text: reply }]);
       } catch (err) {
-        console.error('RancakBot: Groq request failed, using local knowledge base instead.', err);
+        console.error('RancakBot: AI request failed, using local knowledge base instead.', err);
         await minDelay;
         setMessages(prev => [...prev, { sender: 'bot', text: generateAiResponse(text, lang) }]);
       } finally {

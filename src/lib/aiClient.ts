@@ -1,23 +1,23 @@
 // Client for the RancakBot AI assistant. This calls our own same-origin
 // `/api/chat` Vercel Serverless Function (see `api/chat.ts`) instead of
-// calling Groq directly from the browser — the Groq API key only ever lives
-// on the server, so it's never exposed in the public JS bundle.
+// calling the AI provider directly from the browser — the API key only ever
+// lives on the server, so it's never exposed in the public JS bundle.
 
-export type GroqRole = 'user' | 'assistant';
+export type AiRole = 'user' | 'assistant';
 
-export interface GroqChatMessage {
-  role: GroqRole;
+export interface AiChatMessage {
+  role: AiRole;
   content: string;
 }
 
-export type GroqLang = 'en' | 'id' | 'min';
+export type AiLang = 'en' | 'id' | 'min';
 
 /**
  * Sends the conversation to the `/api/chat` proxy and returns the
  * assistant's reply text. Throws on network failure or a non-2xx response —
  * callers should catch this and fall back to a local response if needed.
  */
-export async function askGroq(history: GroqChatMessage[], lang: GroqLang): Promise<string> {
+export async function askAi(history: AiChatMessage[], lang: AiLang): Promise<string> {
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

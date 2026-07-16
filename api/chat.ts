@@ -1,5 +1,5 @@
 // Vercel Serverless Function — server-side proxy for the RancakBot AI
-// assistant. This is what keeps the Groq API key off the public browser
+// assistant. This is what keeps the Gemini API key off the public browser
 // bundle: the key only ever lives in this function's environment (set as a
 // Vercel Project Environment Variable), never in client-side code.
 import type { VercelRequest, VercelResponse } from '@vercel/node';
@@ -13,8 +13,8 @@ interface IncomingMessage {
 
 type Lang = 'en' | 'id' | 'min';
 
-const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
-const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
+const GEMINI_ENDPOINT_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+const DEFAULT_MODEL = 'gemini-3.1-flash-lite';
 
 const LANGUAGE_NAMES: Record<Lang, string> = {
   en: 'English',
@@ -38,9 +38,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    res.status(500).json({ error: 'Server misconfigured: GROQ_API_KEY is not set.' });
+    res.status(500).json({ error: 'Server misconfigured: GEMINI_API_KEY is not set.' });
     return;
   }
 
@@ -53,41 +53,51 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const lang: Lang = body.lang === 'en' || body.lang === 'min' ? body.lang : 'id';
-  const model = process.env.GROQ_MODEL || DEFAULT_MODEL;
+  const model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+
+  // Gemini's `contents` array uses role "model" for assistant turns (not
+  // "assistant"), and has no top-level "system" role — system instructions
+  // go in a separate `system_instruction` field.
+  const contents = messages.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
 
   try {
-    const groqRes = await fetch(GROQ_ENDPOINT, {
+    const geminiRes = await fetch(`${GEMINI_ENDPOINT_BASE}/${model}:generateContent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
+        'x-goog-api-key': apiKey,
       },
       body: JSON.stringify({
-        model,
-        messages: [{ role: 'system', content: buildSystemPrompt(lang) }, ...messages],
-        temperature: 0.6,
-        max_tokens: 500,
+        system_instruction: { parts: [{ text: buildSystemPrompt(lang) }] },
+        contents,
+        generationConfig: { temperature: 0.6, maxOutputTokens: 500 },
       }),
     });
 
-    if (!groqRes.ok) {
-      const errText = await groqRes.text().catch(() => '');
-      res.status(groqRes.status).json({ error: `Groq API error: ${errText}` });
+    if (!geminiRes.ok) {
+      const errText = await geminiRes.text().catch(() => '');
+      res.status(geminiRes.status).json({ error: `Gemini API error: ${errText}` });
       return;
     }
 
-    const data: unknown = await groqRes.json();
-    const reply = (data as { choices?: { message?: { content?: string } }[] })
-      ?.choices?.[0]?.message?.content?.trim();
+    const data: unknown = await geminiRes.json();
+    const parts = (data as {
+      candidates?: { content?: { parts?: { text?: string }[] } }[];
+    })?.candidates?.[0]?.content?.parts;
+
+    const reply = parts?.map(p => p.text ?? '').join('').trim();
 
     if (!reply) {
-      res.status(502).json({ error: 'Groq API returned an empty response.' });
+      res.status(502).json({ error: 'Gemini API returned an empty response.' });
       return;
     }
 
     res.status(200).json({ reply });
   } catch (err) {
     console.error('RancakBot proxy error:', err);
-    res.status(500).json({ error: 'Unexpected server error while contacting Groq.' });
+    res.status(500).json({ error: 'Unexpected server error while contacting Gemini.' });
   }
 }
