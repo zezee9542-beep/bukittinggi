@@ -13,6 +13,11 @@ import kalendarSvg from '../assets/kalendar.svg';
 import luvSvg from '../assets/luv.svg';
 import aiSvg from '../assets/ai.svg';
 
+// Custom PNG Asset Imports
+import flagPng from '../assets/flag.png';
+import sawahPng from '../assets/sawah.png';
+
+
 interface Message {
   sender: 'bot' | 'user';
   text: string;
@@ -47,10 +52,91 @@ export function TravelPlannerPage() {
   const dateInputRef = useRef<HTMLInputElement>(null);
   const [isListening, setIsListening] = useState(false);
 
+  // ── Date Picker Modal States ──
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [departureDate, setDepartureDate] = useState<Date | null>(new Date(2025, 4, 15)); // 15 Mei 2025
+  const [returnDate, setReturnDate] = useState<Date | null>(new Date(2025, 4, 22)); // 22 Mei 2025
+  const [displayMonth, setDisplayMonth] = useState<number>(4); // Mei
+  const [displayYear, setDisplayYear] = useState<number>(2025);
+
   // Scroll to bottom of chat when new message is added
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatLog, isGenerating]);
+
+  // ── Date Picker Helper Functions ──
+  const getMonthName = (monthIdx: number) => {
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    return months[monthIdx];
+  };
+
+  const getCalendarDays = (month: number, year: number) => {
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+    const cells: { date: Date; isCurrentMonth: boolean }[] = [];
+
+    // Prev month padding
+    for (let i = startOffset - 1; i >= 0; i--) {
+      const prevDate = new Date(year, month - 1, daysInPrevMonth - i);
+      cells.push({ date: prevDate, isCurrentMonth: false });
+    }
+
+    // Current month
+    for (let i = 1; i <= daysInMonth; i++) {
+      const currentDate = new Date(year, month, i);
+      cells.push({ date: currentDate, isCurrentMonth: true });
+    }
+
+    // Next month padding to fill 42 cells (6 rows * 7 columns)
+    const remaining = 42 - cells.length;
+    for (let i = 1; i <= remaining; i++) {
+      const nextDate = new Date(year, month + 1, i);
+      cells.push({ date: nextDate, isCurrentMonth: false });
+    }
+
+    return cells;
+  };
+
+  const isSameDay = (d1: Date | null, d2: Date | null) => {
+    if (!d1 || !d2) return false;
+    return d1.getFullYear() === d2.getFullYear() &&
+           d1.getMonth() === d2.getMonth() &&
+           d1.getDate() === d2.getDate();
+  };
+
+  const isBetweenDates = (date: Date) => {
+    if (!departureDate || !returnDate) return false;
+    return date.getTime() > departureDate.getTime() && date.getTime() < returnDate.getTime();
+  };
+
+  const formatDateShort = (date: Date | null) => {
+    if (!date) return '';
+    const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  const prevMonth = () => {
+    if (displayMonth === 0) {
+      setDisplayMonth(11);
+      setDisplayYear(y => y - 1);
+    } else {
+      setDisplayMonth(m => m - 1);
+    }
+  };
+
+  const nextMonth = () => {
+    if (displayMonth === 11) {
+      setDisplayMonth(0);
+      setDisplayYear(y => y + 1);
+    } else {
+      setDisplayMonth(m => m + 1);
+    }
+  };
 
   // ── Icon Handlers ──────────────────────────────────────────────────────────
 
@@ -68,19 +154,19 @@ export function TravelPlannerPage() {
     e.target.value = '';
   };
 
-  // 2. Calendar: open date picker, insert formatted date into chat input
+  // 2. Calendar: Open custom modal instead of native date picker
   const handleCalendar = () => {
-    dateInputRef.current?.showPicker?.();
-    dateInputRef.current?.click();
+    setIsDatePickerOpen(true);
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value; // e.g. "2025-08-10"
+    const raw = e.target.value;
     if (!raw) return;
     const d = new Date(raw);
     const formatted = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     setChatInput(prev => prev ? `${prev} ${formatted}` : formatted);
   };
+
 
   // 3. Voice: Web Speech API — toggle listening, transcript → chat input
   const handleVoice = () => {
@@ -551,11 +637,274 @@ export function TravelPlannerPage() {
           
           <p className="font-manrope text-center text-neutral-400 text-[11px] leading-relaxed mt-3.5 px-4">
             AI Bukittinggi Heritage akan menyusun itinerary yang sesuai dengan minat, waktu, dan kebutuhan perjalanan Anda.
-
           </p>
         </div>
 
       </div>
+
+      {/* ── Custom Date Picker Modal Popup ── */}
+      {isDatePickerOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[900px] max-h-[92vh] overflow-y-auto p-8 relative flex flex-col font-manrope">
+            {/* Top-right close button */}
+            <button 
+              onClick={() => setIsDatePickerOpen(false)}
+              className="absolute top-6 right-6 w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 hover:text-neutral-800 transition-colors cursor-pointer"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Modal Header */}
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-[52px] h-[52px] rounded-full bg-[#6B2D22] flex items-center justify-center flex-shrink-0">
+                <img src={kalendSvg} alt="" className="w-6 h-6 invert brightness-0" style={{ filter: 'brightness(0) invert(1)' }} />
+              </div>
+              <div>
+                <h2 className="font-cormorant font-bold text-[#1A1C1A] text-[22px] leading-tight">
+                  Pilih Tanggal Perjalanan
+                </h2>
+                <p className="text-neutral-500 text-[13px] mt-0.5">
+                  Pilih tanggal berangkat dan tanggal pergi untuk perjalananmu
+                </p>
+              </div>
+            </div>
+
+            {/* Side-by-Side Calendars */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              
+              {/* 1. Left Card: Tanggal Berangkat */}
+              <div className="border border-[#F3DDDB]/50 rounded-[20px] p-6 bg-white shadow-sm flex flex-col">
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <img src={pesaSvg} alt="" className="w-4 h-4 object-contain" />
+                  <span className="text-[#6B2D22] font-semibold text-[13px] tracking-wide uppercase">
+                    Tanggal Berangkat
+                  </span>
+                </div>
+
+                {/* Calendar Controls */}
+                <div className="flex items-center justify-between mb-4 px-2">
+                  <button onClick={prevMonth} className="p-1.5 rounded-full hover:bg-neutral-100 cursor-pointer">
+                    <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                  </button>
+                  <span className="font-bold text-[14px] text-[#1A1C1A]">
+                    {getMonthName(displayMonth)} {displayYear}
+                  </span>
+                  <button onClick={nextMonth} className="p-1.5 rounded-full hover:bg-neutral-100 cursor-pointer">
+                    <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Weekday Headers */}
+                <div className="grid grid-cols-7 text-center text-[11px] font-medium text-neutral-400 mb-3">
+                  <div>Sen</div>
+                  <div>Sel</div>
+                  <div>Rab</div>
+                  <div>Kam</div>
+                  <div>Jum</div>
+                  <div>Sab</div>
+                  <div>Min</div>
+                </div>
+
+                {/* Days Grid */}
+                <div className="grid grid-cols-7 gap-y-1.5 text-center text-[12.5px]">
+                  {getCalendarDays(displayMonth, displayYear).map((cell, cIdx) => {
+                    const isSelected = isSameDay(cell.date, departureDate);
+                    const isInRange = isBetweenDates(cell.date);
+                    const isReturning = isSameDay(cell.date, returnDate);
+
+                    let cellClass = "w-9 h-9 mx-auto flex items-center justify-center rounded-full transition-all cursor-pointer ";
+                    if (isSelected || isReturning) {
+                      cellClass += "bg-[#6B2D22] text-white font-bold";
+                    } else if (isInRange) {
+                      cellClass += "bg-[#F3DDDB] text-[#6B2D22] rounded-none";
+                    } else if (!cell.isCurrentMonth) {
+                      cellClass += "text-neutral-300";
+                    } else {
+                      cellClass += "text-neutral-700 hover:bg-neutral-100";
+                    }
+
+                    return (
+                      <div key={`left-${cIdx}`} className="relative py-0.5">
+                        <div 
+                          onClick={() => {
+                            setDepartureDate(cell.date);
+                            if (returnDate && cell.date.getTime() >= returnDate.getTime()) {
+                              setReturnDate(new Date(cell.date.getTime() + 24 * 60 * 60 * 1000));
+                            }
+                          }}
+                          className={cellClass}
+                        >
+                          {cell.date.getDate()}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2. Right Card: Tanggal Pulang */}
+              <div className="border border-[#F3DDDB]/50 rounded-[20px] p-6 bg-white shadow-sm flex flex-col">
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <img src={flagPng} alt="" className="w-4 h-4 object-contain" />
+                  <span className="text-[#6B2D22] font-semibold text-[13px] tracking-wide uppercase">
+                    Tanggal Pulang
+                  </span>
+                </div>
+
+                {/* Calendar Controls */}
+                <div className="flex items-center justify-between mb-4 px-2">
+                  <button onClick={prevMonth} className="p-1.5 rounded-full hover:bg-neutral-100 cursor-pointer">
+                    <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                  </button>
+                  <span className="font-bold text-[14px] text-[#1A1C1A]">
+                    {getMonthName(displayMonth)} {displayYear}
+                  </span>
+                  <button onClick={nextMonth} className="p-1.5 rounded-full hover:bg-neutral-100 cursor-pointer">
+                    <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Weekday Headers */}
+                <div className="grid grid-cols-7 text-center text-[11px] font-medium text-neutral-400 mb-3">
+                  <div>Sen</div>
+                  <div>Sel</div>
+                  <div>Rab</div>
+                  <div>Kam</div>
+                  <div>Jum</div>
+                  <div>Sab</div>
+                  <div>Min</div>
+                </div>
+
+                {/* Days Grid */}
+                <div className="grid grid-cols-7 gap-y-1.5 text-center text-[12.5px]">
+                  {getCalendarDays(displayMonth, displayYear).map((cell, cIdx) => {
+                    const isSelected = isSameDay(cell.date, departureDate);
+                    const isInRange = isBetweenDates(cell.date);
+                    const isReturning = isSameDay(cell.date, returnDate);
+
+                    let cellClass = "w-9 h-9 mx-auto flex items-center justify-center rounded-full transition-all cursor-pointer ";
+                    if (isSelected || isReturning) {
+                      cellClass += "bg-[#6B2D22] text-white font-bold";
+                    } else if (isInRange) {
+                      cellClass += "bg-[#F3DDDB] text-[#6B2D22] rounded-none";
+                    } else if (!cell.isCurrentMonth) {
+                      cellClass += "text-neutral-300";
+                    } else {
+                      cellClass += "text-neutral-700 hover:bg-neutral-100";
+                    }
+
+                    return (
+                      <div key={`right-${cIdx}`} className="relative py-0.5">
+                        <div 
+                          onClick={() => {
+                            if (departureDate && cell.date.getTime() < departureDate.getTime()) {
+                              setDepartureDate(cell.date);
+                              setReturnDate(null);
+                            } else {
+                              setReturnDate(cell.date);
+                            }
+                          }}
+                          className={cellClass}
+                        >
+                          {cell.date.getDate()}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Bottom summary card: Ringkasan Perjalanan */}
+            <div className="relative bg-[#FAF5F2] border border-[#F3DDDB]/50 rounded-[20px] p-5 flex items-center justify-between overflow-hidden mb-8 min-h-[100px]">
+              {/* Background image sawah.png absolute right, covering half, beautifully faded */}
+              <div className="absolute right-0 top-0 bottom-0 w-[45%] pointer-events-none select-none">
+                <img src={sawahPng} alt="" className="h-full w-full object-cover object-right" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#FAF5F2] via-[#FAF5F2]/80 to-transparent" />
+              </div>
+
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="w-[48px] h-[48px] rounded-full bg-[#8D726D] flex items-center justify-center flex-shrink-0 text-white">
+                  {/* Suitcase SVG */}
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5h-16.5A2.25 2.25 0 0 0 1.5 9.75v8.25A2.25 2.25 0 0 0 3.75 20.25h16.5A2.25 2.25 0 0 0 22.5 18V9.75A2.25 2.25 0 0 0 20.25 7.5Z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V4.5a2.25 2.25 0 0 1 2.25-2.25h3a2.25 2.25 0 0 1 2.25 2.25V7.5" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 11.25v4.5" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 13.5h6" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-[15px] text-[#1A1C1A]">Ringkasan Perjalanan</h3>
+                  <p className="text-[#6B2D22] font-semibold text-[13px] mt-0.5">
+                    {departureDate && returnDate 
+                      ? `${Math.ceil(Math.abs(returnDate.getTime() - departureDate.getTime()) / (1000 * 60 * 60 * 24)) + 1} hari perjalanan`
+                      : 'Pilih tanggal perjalanan'
+                    }
+                  </p>
+                  <p className="text-neutral-500 text-[12px] mt-0.5">
+                    {departureDate && returnDate 
+                      ? `${formatDateShort(departureDate)} - ${formatDateShort(returnDate)}`
+                      : 'Silakan klik tanggal keberangkatan dan pulang pada kalender di atas'
+                    }
+                  </p>
+                </div>
+              </div>
+
+              {/* Right indicator badge */}
+              {departureDate && returnDate && (
+                <div className="relative z-10 mr-4 bg-[#6B2D22] text-white font-semibold text-[13px] px-4 py-2 rounded-full flex items-center gap-1.5 shadow-sm">
+                  <img src={kalendSvg} alt="" className="w-3.5 h-3.5 invert brightness-0" style={{ filter: 'brightness(0) invert(1)' }} />
+                  <span>{Math.ceil(Math.abs(returnDate.getTime() - departureDate.getTime()) / (1000 * 60 * 60 * 24)) + 1} Hari</span>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between border-t border-neutral-100 pt-6">
+              <div className="flex items-center gap-2 text-neutral-500 text-[12px]">
+                <svg className="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 1 1 1.063 1.06l-.041.02-.04-.02a.75.75 0 0 1 1.063-1.06l.04.02zm0 4.5.041-.02a.75.75 0 1 1 1.063 1.06l-.041.02-.04-.02a.75.75 0 0 1 1.063-1.06l.04.02zM12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25z" />
+                </svg>
+                <span>Kamu bisa mengubah tanggal nanti</span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setIsDatePickerOpen(false)}
+                  className="px-6 py-2.5 border border-neutral-200 hover:bg-neutral-50 text-[#1A1C1A] text-[14px] font-medium rounded-xl transition-all cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button 
+                  onClick={() => {
+                    if (departureDate && returnDate) {
+                      const diff = Math.ceil(Math.abs(returnDate.getTime() - departureDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+                      const msgText = `Rencana perjalanan ${diff} hari dari tanggal ${departureDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} hingga ${returnDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+                      void handleNextStep(msgText);
+                    }
+                    setIsDatePickerOpen(false);
+                  }}
+                  disabled={!departureDate || !returnDate}
+                  className="px-6 py-2.5 bg-[#6B2D22] hover:bg-[#5E1D1D] disabled:opacity-50 disabled:cursor-not-allowed text-white text-[14px] font-medium rounded-xl transition-all shadow-md cursor-pointer"
+                >
+                  Konfirmasi Tanggal
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
