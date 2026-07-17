@@ -84,19 +84,24 @@ export function TravelPlannerPage() {
 
   // 3. Voice: Web Speech API — toggle listening, transcript → chat input
   const handleVoice = () => {
-    const SpeechRecognition =
-      (window as unknown as { SpeechRecognition?: typeof globalThis.SpeechRecognition; webkitSpeechRecognition?: typeof globalThis.SpeechRecognition })
-        .SpeechRecognition ??
-      (window as unknown as { SpeechRecognition?: typeof globalThis.SpeechRecognition; webkitSpeechRecognition?: typeof globalThis.SpeechRecognition })
-        .webkitSpeechRecognition;
+    interface SpeechRecognitionCtor {
+      new(): SpeechRecognition;
+    }
+    interface WindowWithSpeech {
+      SpeechRecognition?: SpeechRecognitionCtor;
+      webkitSpeechRecognition?: SpeechRecognitionCtor;
+    }
+    const w = window as unknown as WindowWithSpeech;
+    const SpeechRecognitionAPI = w.SpeechRecognition ?? w.webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
+
+    if (!SpeechRecognitionAPI) {
       alert('Browser Anda tidak mendukung voice recognition. Coba Chrome atau Edge.');
       return;
     }
     if (isListening) return; // already running
 
-    const recognition = new SpeechRecognition();
+    const recognition = new SpeechRecognitionAPI();
     recognition.lang = 'id-ID';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
@@ -113,6 +118,7 @@ export function TravelPlannerPage() {
 
     recognition.start();
   };
+
 
   // Step information
   const timelineSteps = [
