@@ -87,19 +87,18 @@ export function HeroSection() {
 
             {/* Background image — crossfades between explorer (image.png / image copy.png) and heritage (imgg.webp) */}
             <div
-              className="absolute inset-0 overflow-hidden bg-[#FAF8F5]"
+              className="absolute inset-x-0 -top-12 -bottom-12 h-[calc(100%+96px)] bg-[#FAF8F5]"
               style={{ transform: `translateY(${parallaxY * 0.35}px)` }}
             >
               {/* Heritage background */}
               <img
                 src={imggWebp}
                 alt="Bukittinggi Heritage Landscape"
-                className="absolute inset-0 h-[110%] w-full object-cover select-none pointer-events-none animate-ken-burns"
+                className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none animate-ken-burns"
                 fetchPriority="high"
                 decoding="sync"
                 draggable={false}
                 style={{
-                  top: '-5%',
                   opacity: isExplorer ? 0 : 1,
                   transform: isExplorer ? 'scale(1.05)' : 'scale(1)',
                   transition: `opacity ${FADE}, transform ${FADE}`,
@@ -110,12 +109,11 @@ export function HeroSection() {
                 <img
                   src={imageCopyPng}
                   alt="Bukittinggi Explorer Sunset Sky Mobile"
-                  className="absolute inset-0 h-[110%] w-full object-cover select-none pointer-events-none"
+                  className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none"
                   fetchPriority="high"
                   decoding="async"
                   draggable={false}
                   style={{
-                    top: '-5%',
                     opacity: isExplorer ? 1 : 0,
                     transform: isExplorer ? 'scale(1)' : 'scale(1.05)',
                     transition: `opacity ${FADE}, transform ${FADE}`,
@@ -127,12 +125,11 @@ export function HeroSection() {
                 <img
                   src={imagePng}
                   alt="Bukittinggi Explorer Sunset Sky Desktop"
-                  className="absolute inset-0 h-[110%] w-full object-cover select-none pointer-events-none"
+                  className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none"
                   fetchPriority="high"
                   decoding="async"
                   draggable={false}
                   style={{
-                    top: '-5%',
                     opacity: isExplorer ? 1 : 0,
                     transform: isExplorer ? 'scale(1)' : 'scale(1.05)',
                     transition: `opacity ${FADE}, transform ${FADE}`,
@@ -140,6 +137,7 @@ export function HeroSection() {
                 />
               )}
             </div>
+
 
             {/* Radial vignette */}
             <div
@@ -243,12 +241,6 @@ export function HeroSection() {
             />
           </div>
 
-          {/* ── 4. Outer Bottom Fade ── */}
-          <div
-            className="absolute inset-x-0 -bottom-2 z-30 h-[90px] pointer-events-none"
-            style={{ background: 'linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.98) 45%, transparent 100%)' }}
-          />
-
           {/* ── Scroll Down Indicator ── */}
           {isVisible && (
             <div
@@ -282,6 +274,15 @@ export function HeroSection() {
           )}
         </div>
       </div>
+
+      {/* ── 4. Outer Bottom Fade (Full Width) ── */}
+      <div
+        className="absolute inset-x-0 bottom-0 z-30 h-[120px] w-full pointer-events-none"
+        style={{
+          background: 'linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.98) 45%, rgba(255,255,255,0.7) 70%, transparent 100%)',
+        }}
+      />
     </section>
+
   );
 }
