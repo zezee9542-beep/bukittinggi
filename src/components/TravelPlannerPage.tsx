@@ -2,6 +2,17 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { askTravelPlanner, type AiChatMessage } from '../lib/aiClient';
 
+// SVG Asset Imports
+import linkSvg from '../assets/link.svg';
+import kalendSvg from '../assets/kalend.svg';
+import voicSvg from '../assets/voic.svg';
+import lokSvg from '../assets/lok.svg';
+import pesaSvg from '../assets/pesa.svg';
+import orngSvg from '../assets/orng.svg';
+import kalendarSvg from '../assets/kalendar.svg';
+import luvSvg from '../assets/luv.svg';
+import aiSvg from '../assets/ai.svg';
+
 interface Message {
   sender: 'bot' | 'user';
   text: string;
@@ -32,40 +43,106 @@ export function TravelPlannerPage() {
   ]);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const [isListening, setIsListening] = useState(false);
 
   // Scroll to bottom of chat when new message is added
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatLog, isGenerating]);
 
+  // ── Icon Handlers ──────────────────────────────────────────────────────────
+
+  // 1. Attachment: open file picker, append filename to chat input
+  const handleAttachment = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const friendly = `[File: ${file.name}]`;
+    setChatInput(prev => prev ? `${prev} ${friendly}` : friendly);
+    // reset so the same file can be re-selected later
+    e.target.value = '';
+  };
+
+  // 2. Calendar: open date picker, insert formatted date into chat input
+  const handleCalendar = () => {
+    dateInputRef.current?.showPicker?.();
+    dateInputRef.current?.click();
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value; // e.g. "2025-08-10"
+    if (!raw) return;
+    const d = new Date(raw);
+    const formatted = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    setChatInput(prev => prev ? `${prev} ${formatted}` : formatted);
+  };
+
+  // 3. Voice: Web Speech API — toggle listening, transcript → chat input
+  const handleVoice = () => {
+    const SpeechRecognition =
+      (window as unknown as { SpeechRecognition?: typeof globalThis.SpeechRecognition; webkitSpeechRecognition?: typeof globalThis.SpeechRecognition })
+        .SpeechRecognition ??
+      (window as unknown as { SpeechRecognition?: typeof globalThis.SpeechRecognition; webkitSpeechRecognition?: typeof globalThis.SpeechRecognition })
+        .webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert('Browser Anda tidak mendukung voice recognition. Coba Chrome atau Edge.');
+      return;
+    }
+    if (isListening) return; // already running
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'id-ID';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    setIsListening(true);
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      const transcript = event.results[0][0].transcript;
+      setChatInput(prev => prev ? `${prev} ${transcript}` : transcript);
+    };
+
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+
+    recognition.start();
+  };
+
   // Step information
   const timelineSteps = [
     {
       label: 'TUJUAN WISATA',
-      iconText: '📍',
+      icon: lokSvg,
       description: 'Belum tahu mau ke mana? Biarkan AI memberikan rekomendasi terbaik.',
     },
     {
       label: 'ASAL PERJALANAN',
-      iconText: '✈️',
+      icon: pesaSvg,
       description: 'Dari kota mana Anda memulai perjalanan?',
     },
     {
       label: 'TEMAN PERJALANAN',
-      iconText: '👥',
+      icon: orngSvg,
       description: 'Siapa yang akan menemani perjalanan Anda?',
     },
     {
       label: 'WAKTU KUNJUNGAN',
-      iconText: '📅',
+      icon: kalendarSvg,
       description: 'Kapan Anda berencana berkunjung?',
     },
     {
       label: 'MINAT PERJALANAN',
-      iconText: '♡',
+      icon: luvSvg,
       description: 'Pengalaman seperti apa yang Anda cari?',
     },
   ];
+
 
   // Chip configurations matching the color aesthetic
   const chipSets: ChipConfig[][] = [
@@ -299,21 +376,36 @@ export function TravelPlannerPage() {
             
             <div className="flex items-center justify-between">
               {/* Bottom Left Icons */}
-              <div className="flex items-center gap-3 text-neutral-400 pl-1">
-                <button className="hover:text-[#6B2D22] transition-colors duration-200 cursor-pointer" title="Attachment">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739 11.16 20.1a5.002 5.002 0 0 1-7.072-7.073l7.918-7.917a4 4 0 0 1 5.657 5.656L9.82 18.662a2 2 0 1 1-2.829-2.829l6.938-6.937M18.375 12.739c.646-.646 1.01-1.526 1.01-2.443s-.364-1.797-1.01-2.443a3.456 3.456 0 0 0-4.89 0L5.56 15.772" />
-                  </svg>
+              <div className="flex items-center gap-2.5 pl-1">
+                {/* Attachment */}
+                <button
+                  onClick={handleAttachment}
+                  className="hover:opacity-75 transition-opacity duration-200 cursor-pointer"
+                  title="Lampirkan file"
+                >
+                  <img src={linkSvg} alt="Attachment" className="w-[22px] h-[22px]" />
                 </button>
-                <button className="hover:text-[#6B2D22] transition-colors duration-200 cursor-pointer" title="Calendar">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                  </svg>
+
+                {/* Calendar date picker */}
+                <button
+                  onClick={handleCalendar}
+                  className="hover:opacity-75 transition-opacity duration-200 cursor-pointer"
+                  title="Pilih tanggal"
+                >
+                  <img src={kalendSvg} alt="Calendar" className="w-[22px] h-[22px]" />
                 </button>
-                <button className="hover:text-[#6B2D22] transition-colors duration-200 cursor-pointer" title="Voice Input">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
-                  </svg>
+
+                {/* Voice input */}
+                <button
+                  onClick={handleVoice}
+                  className={`transition-all duration-200 cursor-pointer ${
+                    isListening
+                      ? 'opacity-100 scale-110 drop-shadow-[0_0_6px_rgba(107,45,34,0.6)] animate-pulse'
+                      : 'hover:opacity-75'
+                  }`}
+                  title={isListening ? 'Sedang mendengarkan...' : 'Input suara'}
+                >
+                  <img src={voicSvg} alt="Voice" className="w-[22px] h-[22px]" />
                 </button>
               </div>
 
@@ -321,13 +413,31 @@ export function TravelPlannerPage() {
               <button
                 onClick={handleSend}
                 disabled={currentStep >= 5}
-                className="w-10 h-10 bg-[#5E1D1D] hover:bg-[#6B2D22] text-white flex items-center justify-center rounded-[12px] shadow-md transition-all duration-300 hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-9 h-9 bg-[#5E1D1D] hover:bg-[#6B2D22] text-white flex items-center justify-center rounded-[10px] shadow-md transition-all duration-300 hover:scale-105 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
                 </svg>
               </button>
             </div>
+
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,.pdf,.doc,.docx,.txt"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+
+            {/* Hidden date input */}
+            <input
+              ref={dateInputRef}
+              type="date"
+              className="hidden"
+              onChange={handleDateChange}
+            />
+
           </div>
 
           {/* Disclaimer */}
@@ -347,32 +457,27 @@ export function TravelPlannerPage() {
         <div className="flex items-center gap-5 mb-6 flex-shrink-0">
           {/* Progress Circular Wheel */}
           <div className="w-[72px] h-[72px] rounded-full border-[5px] border-[#6B2D22] flex items-center justify-center bg-transparent flex-shrink-0">
-            <span className="font-poppins font-bold text-[22px] text-[#4A2C27]">
+            <span className="font-poppins font-bold text-[22px] text-[#6B2D22]">
               {currentStep}/5
             </span>
           </div>
 
           <div className="flex-1">
-            <span className="font-poppins text-[10px] font-bold tracking-[0.2em] text-[#6B2D22] uppercase block mb-1">
+            <span className="font-manrope font-semibold text-[11px] tracking-[0.2em] text-[#88726F] uppercase block mb-1">
               Rencana Perjalanan
             </span>
-            <h2 className="font-cormorant font-bold text-[#4A2C27] text-xl md:text-2xl leading-tight">
+            <h2 className="font-cormorant font-bold text-[#1A1C1A] text-xl md:text-2xl leading-tight">
               Rancang Petualangan Anda di Bukittinggi
             </h2>
-            <span className="font-poppins text-neutral-500 text-[12px] block mt-1">
+            <span className="font-manrope font-normal text-[#554240] text-[12px] block mt-1">
               {currentStep} dari 5 langkah selesai
             </span>
           </div>
         </div>
 
+
         {/* Vertical Timeline */}
         <div className="relative flex-1 pl-4 mb-6 space-y-6 overflow-y-auto min-h-0">
-          {/* Connecting Vertical Line */}
-          <div 
-            className="absolute left-[27px] top-[12px] bottom-[12px] w-[1.5px] bg-[#E9D2CF]" 
-            style={{ zIndex: 0 }}
-          />
-
           {timelineSteps.map((step, idx) => {
             const isActive = currentStep === idx;
             const isCompleted = currentStep > idx;
@@ -383,26 +488,38 @@ export function TravelPlannerPage() {
                 className="relative z-10 flex items-start gap-5 transition-opacity duration-300"
                 style={{ opacity: isCompleted || isActive ? 1 : 0.45 }}
               >
-                {/* Node circle */}
-                <div 
-                  className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all duration-500 bg-white flex-shrink-0 ${
-                    isCompleted 
-                      ? 'border-[#6B2D22] text-[#6B2D22] shadow-sm'
-                      : isActive 
-                      ? 'border-[#6B2D22] text-[#6B2D22] shadow-[0_0_12px_rgba(107,45,34,0.15)] font-bold'
-                      : 'border-[#E9D2CF]'
-                  }`}
-                >
-                  <div className={`w-2.5 h-2.5 rounded-full ${isCompleted || isActive ? 'bg-[#6B2D22]' : 'bg-transparent'}`} />
+                {/* Node circle with dynamic line segments */}
+                <div className="flex flex-col items-center flex-shrink-0 relative">
+                  <div 
+                    className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all duration-500 bg-white flex-shrink-0 z-10 ${
+                      isCompleted 
+                        ? 'border-[#6B2D22] text-[#6B2D22] shadow-sm'
+                        : isActive 
+                        ? 'border-[#6B2D22] text-[#6B2D22] shadow-[0_0_12px_rgba(107,45,34,0.15)] font-bold'
+                        : 'border-[#E9D2CF]'
+                    }`}
+                  >
+                    <div className={`w-2 h-2 rounded-full ${isCompleted || isActive ? 'bg-[#6B2D22]' : 'bg-transparent'}`} />
+                  </div>
+                  {idx < timelineSteps.length - 1 && (
+                    <div 
+                      className={`w-[1.5px] absolute top-7 bottom-[-32px] transition-all duration-500 ${
+                        currentStep >= idx + 1 ? 'bg-[#88726F]' : 'bg-transparent'
+                      }`}
+                      style={{ zIndex: 0 }}
+                    />
+                  )}
                 </div>
 
                 {/* Step Details */}
                 <div className="flex-1">
-                  <h3 className="font-poppins font-semibold text-[11px] md:text-[12px] tracking-wider text-[#6B2D22] flex items-center gap-1.5">
-                    <span>{step.iconText}</span>
-                    <span>{step.label}</span>
-                  </h3>
-                  <p className="font-poppins text-[13px] text-[#4A2C27] mt-0.5 leading-relaxed">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <img src={step.icon} alt="" className="w-3.5 h-3.5 object-contain" />
+                    <span className="font-manrope font-semibold text-[11px] md:text-[12px] tracking-wider text-[#88726F]">
+                      {step.label}
+                    </span>
+                  </div>
+                  <p className="font-manrope font-normal text-[13.5px] text-[#1A1C1A] leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -416,18 +533,19 @@ export function TravelPlannerPage() {
           <button
             onClick={() => { void generateItinerary(); }}
             disabled={currentStep < 5}
-            className={`w-full h-[60px] rounded-[14px] flex items-center justify-center gap-2 text-white font-poppins font-bold text-[17px] shadow-sm transform transition-all duration-300 cursor-pointer ${
+            className={`w-full h-[60px] rounded-[14px] flex items-center justify-center gap-2.5 text-white font-poppins font-bold text-[17px] shadow-sm transform transition-all duration-300 cursor-pointer ${
               currentStep >= 5
                 ? 'bg-[#6B2D22] hover:bg-[#5E1D1D] hover:scale-[1.02] shadow-[0_6px_20px_rgba(107,45,34,0.25)]'
                 : 'bg-[#B8A6A2] hover:scale-[1.01]'
             }`}
           >
-            <span className="text-xl">✦</span>
+            <img src={aiSvg} alt="AI Icon" className="w-5 h-5 object-contain" />
             <span>Buat Rencana Perjalanan</span>
           </button>
           
-          <p className="font-poppins text-center text-neutral-400 text-[11px] leading-relaxed mt-3.5 px-4">
+          <p className="font-manrope text-center text-neutral-400 text-[11px] leading-relaxed mt-3.5 px-4">
             AI Bukittinggi Heritage akan menyusun itinerary yang sesuai dengan minat, waktu, dan kebutuhan perjalanan Anda.
+
           </p>
         </div>
 
