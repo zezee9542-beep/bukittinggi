@@ -9,6 +9,8 @@ export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { musicPlaying, setMusicPlaying } = useMode();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isJelajahiOpen, setIsJelajahiOpen] = useState(false);
+  const [showGameToast, setShowGameToast] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ export function Navigation() {
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
   const [navMounted, setNavMounted] = useState(false);
+  const closeToastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Mount animation
   useEffect(() => {
@@ -42,6 +45,7 @@ export function Navigation() {
           setNavVisible(true);
         } else if (delta > 4) {
           setNavVisible(false);
+          setIsJelajahiOpen(false); // Auto close dropdown on scroll
         } else if (delta < -4) {
           setNavVisible(true);
         }
@@ -56,6 +60,7 @@ export function Navigation() {
   }, []);
 
   const handleNavClick = (path: string, sectionId?: string) => {
+    setIsJelajahiOpen(false);
     if (location.pathname === path) {
       if (sectionId) {
         const element = document.getElementById(sectionId);
@@ -82,17 +87,29 @@ export function Navigation() {
     }
   };
 
+  const triggerGameToast = () => {
+    if (closeToastTimer.current) clearTimeout(closeToastTimer.current);
+    setShowGameToast(true);
+    closeToastTimer.current = setTimeout(() => {
+      setShowGameToast(false);
+    }, 4500);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeToastTimer.current) clearTimeout(closeToastTimer.current);
+    };
+  }, []);
+
   const { t } = useTranslation();
 
-  const navLinks = [
-    { label: t('nav_home'), path: '/' },
+  // "Jelajahi" submenus
+  const jelajahiLinks = [
     { label: t('nav_history'), path: '/sejarah' },
     { label: t('nav_culture'), path: '/budaya' },
     { label: t('nav_culinary'), path: '/', targetId: 'heritage-heading' },
     { label: t('nav_tourism'), path: '/', targetId: 'heritage-heading' },
-    { label: t('nav_map'), path: '/', targetId: 'heritage-heading' },
   ];
-
 
   // Shared structural classes — background/color handled via inline style for smooth CSS transition
   const headerClass = isScrolled
@@ -111,7 +128,7 @@ export function Navigation() {
     'border-radius 0.3s ease',
   ].join(', ');
 
-  // Inline styles for smooth bg/color/border transitions (always identical to Heritage / Mode OFF)
+  // Inline styles for smooth bg/color/border transitions
   const headerStyle: React.CSSProperties = {
     transition: navMounted ? smoothTransition : 'transform 0.55s cubic-bezier(0.16,1,0.3,1)',
     ...(isScrolled
@@ -136,7 +153,7 @@ export function Navigation() {
           <img
             src={logoSvg}
             alt="Bukittinggi Heritage"
-            className={`w-auto object-contain cursor-pointer transition-all duration-500 hover-spring ${
+            className={`w-auto object-contain cursor-pointer transition-all duration-500 hover-spring active:scale-95 ${
               isScrolled ? 'h-[40px] sm:h-[44px]' : 'h-[52px] sm:h-[60px]'
             }`}
             onClick={() => handleNavClick('/')}
@@ -148,81 +165,152 @@ export function Navigation() {
           />
         </div>
 
-        {/* Center: Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8" aria-label="Navigasi utama">
-          {navLinks.map((link, idx) => {
-            const isPageActive = location.pathname === link.path && !link.targetId;
-            const activeColor = 'text-[#6E1F1F]';
-            const inactiveColor = 'text-[#6E1F1F]/70 hover:text-[#6E1F1F]';
-            const lineColor = 'bg-[#6E1F1F]';
+        {/* Center: Desktop Navigation Links (Remastered style matching screenshot) */}
+        <nav className="hidden lg:flex items-center gap-8 relative" aria-label="Navigasi utama">
+          {/* Beranda Link */}
+          <button
+            onClick={() => handleNavClick('/')}
+            className={`relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 ${
+              location.pathname === '/' ? 'text-[#6E1F1F] font-bold' : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5'
+            }`}
+          >
+            {t('nav_home')}
+            {location.pathname === '/' && (
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#6E1F1F] rounded-full animate-line-grow" />
+            )}
+          </button>
 
-            return (
-              <button
-                key={link.label}
-                onClick={() => handleNavClick(link.path, link.targetId)}
-                className={`relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-colors duration-300 cursor-pointer magnetic-link ripple-btn ${
-                  isPageActive ? `${activeColor} font-semibold` : inactiveColor
-                }`}
-                style={{ animationDelay: `${idx * 60}ms` }}
+          {/* Jelajahi Dropdown Trigger */}
+          <div
+            className="relative"
+            onMouseEnter={() => setIsJelajahiOpen(true)}
+            onMouseLeave={() => setIsJelajahiOpen(false)}
+          >
+            <button
+              onClick={() => setIsJelajahiOpen(!isJelajahiOpen)}
+              type="button"
+              className={`flex items-center gap-1.5 font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 ${
+                isJelajahiOpen || location.pathname === '/sejarah' || location.pathname === '/budaya'
+                  ? 'text-[#6E1F1F] font-bold'
+                  : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5'
+              }`}
+              aria-expanded={isJelajahiOpen}
+              aria-haspopup="true"
+            >
+              <span>Jelajahi</span>
+              <svg
+                className={`w-3 h-3 transition-transform duration-300 ${isJelajahiOpen ? 'rotate-180' : 'rotate-0'}`}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                {link.label}
-                {isPageActive && (
-                  <span className={`absolute bottom-0 left-0 w-full h-[2px] ${lineColor} rounded-full animate-line-grow`} />
-                )}
-              </button>
-            );
-          })}
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            {/* Dropdown Card */}
+            <div
+              className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-48 bg-white border border-neutral-200/60 rounded-2xl shadow-xl py-2.5 flex flex-col transition-all duration-300 origin-top z-50 ${
+                isJelajahiOpen
+                  ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+                  : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+              }`}
+            >
+              {jelajahiLinks.map((subLink) => {
+                const isSubActive = location.pathname === subLink.path && !subLink.targetId;
+                return (
+                  <button
+                    key={subLink.label}
+                    onClick={() => handleNavClick(subLink.path, subLink.targetId)}
+                    className={`px-5 py-2.5 text-left font-poppins text-[14px] font-medium transition-all duration-300 hover:bg-[#F7E0E0]/30 active:scale-95 cursor-pointer ${
+                      isSubActive ? 'text-[#6E1F1F] bg-[#F7E0E0]/20 font-bold' : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F]'
+                    }`}
+                  >
+                    {subLink.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* AI Travel Planner smooth scrolls to homepage FeatureSection card */}
+          <button
+            onClick={() => handleNavClick('/', 'features-heading')}
+            className="relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5"
+          >
+            AI Travel Planner
+          </button>
+
+          {/* Peta smooth scrolls to heritage section map */}
+          <button
+            onClick={() => handleNavClick('/', 'heritage-heading')}
+            className="relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5"
+          >
+            Peta
+          </button>
+
+          {/* Game shows a beautiful coming soon notification */}
+          <button
+            onClick={triggerGameToast}
+            className="relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5"
+          >
+            Game
+          </button>
         </nav>
 
         {/* Right Side: Toggle Switch + Mobile Menu Trigger */}
         <div className="flex items-center gap-6">
-          {/* Custom Mode Toggle Pill (ON / OFF) — shown on all pages */}
+          {/* BB8 Droid Toggle Switch — shown on all pages */}
           <div className="relative flex items-center">
-            <button
-              onClick={() => setMusicPlaying(!musicPlaying)}
-              type="button"
-              className={`relative flex items-center bg-[#1E0505]/80 border border-[#F9CE65]/35 rounded-full p-[3px] h-[34px] sm:h-[38px] w-[54px] sm:w-[94px] cursor-pointer focus:outline-none transition-all duration-300 shadow-lg ${
-                musicPlaying ? 'justify-end' : 'justify-start'
-              }`}
-              title={musicPlaying ? 'Turn Music & Explorer Off' : 'Turn Music & Explorer On'}
-              aria-label="Toggle Mode & Music"
-            >
-              <div
-                className={`h-full aspect-square rounded-full transition-all duration-300 flex items-center justify-center ${
-                  musicPlaying
-                    ? 'bg-gradient-to-r from-[#F9CE65] to-[#D4A853] text-[#1E0505] shadow-[0_2px_8px_rgba(249,206,101,0.45)]'
-                    : 'bg-[#6E1F1F] text-white shadow-[0_2px_8px_rgba(110,31,31,0.45)]'
-                }`}
-              >
-                {musicPlaying ? (
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h6V3h-6z"/>
-                  </svg>
-                ) : (
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M4.27 3L3 4.27l9 9v.28c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4v-1.73l6 6L21 20l-9-9-7.73-8.01L4.27 3zM14 7h6V3h-6v4z"/>
-                  </svg>
-                )}
+            <label className="bb8-toggle" title={musicPlaying ? 'Turn Music & Explorer Off' : 'Turn Music & Explorer On'}>
+              <input
+                className="bb8-toggle__checkbox"
+                type="checkbox"
+                checked={musicPlaying}
+                onChange={() => setMusicPlaying(!musicPlaying)}
+                aria-label="Toggle Mode & Music"
+              />
+              <div className="bb8-toggle__container">
+                <div className="bb8-toggle__scenery">
+                  <div className="bb8-toggle__star" />
+                  <div className="bb8-toggle__star" />
+                  <div className="bb8-toggle__star" />
+                  <div className="bb8-toggle__star" />
+                  <div className="bb8-toggle__star" />
+                  <div className="bb8-toggle__star" />
+                  <div className="bb8-toggle__star" />
+                  <div className="tatto-1" />
+                  <div className="tatto-2" />
+                  <div className="gomrassen" />
+                  <div className="hermes" />
+                  <div className="chenini" />
+                  <div className="bb8-toggle__cloud" />
+                  <div className="bb8-toggle__cloud" />
+                  <div className="bb8-toggle__cloud" />
+                </div>
+                <div className="bb8">
+                  <div className="bb8__head-container">
+                    <div className="bb8__antenna" />
+                    <div className="bb8__antenna" />
+                    <div className="bb8__head" />
+                  </div>
+                  <div className="bb8__body" />
+                </div>
+                <div className="artificial__hidden">
+                  <div className="bb8__shadow" />
+                </div>
               </div>
-
-              {/* Label Text - Hidden on mobile */}
-              <span
-                className={`absolute text-[11px] font-bold font-poppins tracking-wider select-none uppercase pointer-events-none transition-all duration-300 hidden sm:inline ${
-                  musicPlaying
-                    ? 'left-[14px] text-[#F9CE65]'
-                    : 'right-[14px] text-white/50'
-                }`}
-              >
-                {musicPlaying ? 'ON' : 'OFF'}
-              </span>
-            </button>
+            </label>
           </div>
 
           {/* Mobile Hamburger menu trigger */}
           <button
             onClick={() => setIsMenuOpen(true)}
             type="button"
-            className={`lg:hidden flex items-center justify-center p-1.5 transition-transform active:scale-95 cursor-pointer hover:scale-110`}
+            className="lg:hidden flex items-center justify-center p-1.5 transition-transform active:scale-95 cursor-pointer hover:scale-110"
             aria-label="Buka menu"
             style={{
               transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)',
@@ -251,7 +339,37 @@ export function Navigation() {
           onClose={() => setIsMenuOpen(false)}
         />
       )}
+
+      {/* ── Premium Custom Game Toast Notification ── */}
+      <div
+        className={`fixed z-[99] bottom-6 right-6 md:right-10 max-w-sm bg-white border border-neutral-200/80 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-5 flex items-start gap-4 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+          showGameToast
+            ? 'translate-y-0 opacity-100 scale-100'
+            : 'translate-y-12 opacity-0 scale-90 pointer-events-none'
+        }`}
+      >
+        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#F7E0E0] flex items-center justify-center text-xl">
+          🎮
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-poppins font-bold text-[#6E1F1F] text-[15px] mb-1">
+            Game Segera Hadir!
+          </p>
+          <p className="font-poppins text-neutral-500 text-[13px] leading-relaxed">
+            Permainan Kebudayaan Bukittinggi sedang dalam pengembangan dan segera hadir di Hub Warisan Budaya! Pantau terus ya!
+          </p>
+        </div>
+        <button
+          onClick={() => setShowGameToast(false)}
+          className="flex-shrink-0 text-neutral-400 hover:text-[#6E1F1F] transition-colors cursor-pointer"
+          aria-label="Tutup notifikasi"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
     </>
   );
 }
-
