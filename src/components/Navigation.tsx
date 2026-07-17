@@ -236,12 +236,17 @@ export function Navigation() {
             </div>
           </div>
 
-          {/* AI Travel Planner smooth scrolls to homepage FeatureSection card */}
+          {/* AI Travel Planner page link */}
           <button
-            onClick={() => handleNavClick('/', 'features-heading')}
-            className="relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5"
+            onClick={() => handleNavClick('/travel-planner')}
+            className={`relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 ${
+              location.pathname === '/travel-planner' ? 'text-[#6E1F1F] font-bold' : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5'
+            }`}
           >
             AI Travel Planner
+            {location.pathname === '/travel-planner' && (
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#6E1F1F] rounded-full animate-line-grow" />
+            )}
           </button>
 
           {/* Peta smooth scrolls to heritage section map */}
@@ -263,47 +268,23 @@ export function Navigation() {
 
         {/* Right Side: Toggle Switch + Mobile Menu Trigger */}
         <div className="flex items-center gap-6">
-          {/* BB8 Droid Toggle Switch — shown on all pages */}
+          {/* Simple Clean Toggle Switch — shown on all pages */}
           <div className="relative flex items-center">
-            <label className="bb8-toggle" title={musicPlaying ? 'Turn Music & Explorer Off' : 'Turn Music & Explorer On'}>
-              <input
-                className="bb8-toggle__checkbox"
-                type="checkbox"
-                checked={musicPlaying}
-                onChange={() => setMusicPlaying(!musicPlaying)}
-                aria-label="Toggle Mode & Music"
+            <button
+              onClick={() => setMusicPlaying(!musicPlaying)}
+              className="relative w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 focus:outline-none"
+              style={{
+                backgroundColor: musicPlaying ? '#5E1D1D' : '#D6B8B3',
+              }}
+              title={musicPlaying ? 'Turn Music & Explorer Off' : 'Turn Music & Explorer On'}
+              aria-label="Toggle Mode & Music"
+            >
+              <div
+                className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform duration-300 ${
+                  musicPlaying ? 'translate-x-5' : 'translate-x-0'
+                }`}
               />
-              <div className="bb8-toggle__container">
-                <div className="bb8-toggle__scenery">
-                  <div className="bb8-toggle__star" />
-                  <div className="bb8-toggle__star" />
-                  <div className="bb8-toggle__star" />
-                  <div className="bb8-toggle__star" />
-                  <div className="bb8-toggle__star" />
-                  <div className="bb8-toggle__star" />
-                  <div className="bb8-toggle__star" />
-                  <div className="tatto-1" />
-                  <div className="tatto-2" />
-                  <div className="gomrassen" />
-                  <div className="hermes" />
-                  <div className="chenini" />
-                  <div className="bb8-toggle__cloud" />
-                  <div className="bb8-toggle__cloud" />
-                  <div className="bb8-toggle__cloud" />
-                </div>
-                <div className="bb8">
-                  <div className="bb8__head-container">
-                    <div className="bb8__antenna" />
-                    <div className="bb8__antenna" />
-                    <div className="bb8__head" />
-                  </div>
-                  <div className="bb8__body" />
-                </div>
-                <div className="artificial__hidden">
-                  <div className="bb8__shadow" />
-                </div>
-              </div>
-            </label>
+            </button>
           </div>
 
           {/* Mobile Hamburger menu trigger */}

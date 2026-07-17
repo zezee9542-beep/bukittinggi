@@ -1,9 +1,11 @@
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { useNavigate } from 'react-router-dom';
 import c1Icon from '../assets/c1.svg';
 import c2Icon from '../assets/c2.svg';
 
 export function FeatureSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>();
+  const navigate = useNavigate();
 
   const features = [
     {
@@ -11,18 +13,23 @@ export function FeatureSection() {
       title: 'Jelajahi Bukittinggi',
       description:
         'Jelajahi destinasi wisata, sejarah, budaya, kuliner, dan pengalaman menarik yang menjadikan Bukittinggi istimewa.',
+      action: () => navigate('/sejarah'),
     },
     {
       icon: c2Icon,
       title: 'AI Heritage Assistant',
       description:
         'Tanyakan apa saja dan temukan kisah, budaya, serta sejarah Bukittinggi lebih mendalam.',
+      action: () => {
+        window.dispatchEvent(new CustomEvent('open-rancak-bot'));
+      },
     },
     {
       icon: c2Icon,
       title: 'AI Travel Planner',
       description:
         'Buat rencana perjalanan personal berdasarkan jumlah hari dan budget Anda.',
+      action: () => navigate('/travel-planner'),
     },
   ];
 
@@ -110,7 +117,8 @@ export function FeatureSection() {
             {features.map((feature, idx) => (
               <div
                 key={feature.title}
-                className={`group flex flex-col items-center text-center bg-white rounded-[24px] px-8 py-10 md:px-10 md:py-12 transition-all duration-500 border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] ${
+                onClick={feature.action}
+                className={`group flex flex-col items-center text-center bg-white rounded-[24px] px-8 py-10 md:px-10 md:py-12 transition-all duration-500 border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] cursor-pointer select-none ${
                   isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                 }`}
                 style={{
@@ -132,7 +140,7 @@ export function FeatureSection() {
 
                 {/* Title */}
                 <h3
-                  className="font-poppins font-semibold text-[#1a1a1a] mb-4"
+                  className="font-poppins font-semibold text-[#1a1a1a] mb-4 text-center"
                   style={{ fontSize: 'clamp(16px, 1.8vw, 19.5px)' }}
                 >
                   {feature.title}
@@ -140,7 +148,7 @@ export function FeatureSection() {
 
                 {/* Description */}
                 <p
-                  className="font-poppins text-neutral-500 leading-[1.7] max-w-[280px] mx-auto"
+                  className="font-poppins text-neutral-500 leading-[1.7] max-w-[280px] mx-auto text-center"
                   style={{ fontSize: 'clamp(12px, 1.25vw, 13.5px)' }}
                 >
                   {feature.description}

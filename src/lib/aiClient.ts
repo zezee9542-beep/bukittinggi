@@ -37,3 +37,33 @@ export async function askAi(history: AiChatMessage[], lang: AiLang): Promise<str
   }
   return reply;
 }
+
+/**
+ * Sends the travel-planner conversation to `/api/travel-planner` and returns
+ * the assistant's reply. Pass `generateItinerary: true` to trigger the full
+ * day-by-day itinerary generation in the final step.
+ */
+export async function askTravelPlanner(
+  history: AiChatMessage[],
+  generateItinerary = false,
+): Promise<string> {
+  const response = await fetch('/api/travel-planner', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: history, generateItinerary }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text().catch(() => '');
+    throw new Error(`Travel Planner API error ${response.status}: ${errText}`);
+  }
+
+  const data: unknown = await response.json();
+  const reply = (data as { reply?: string })?.reply?.trim();
+
+  if (!reply) {
+    throw new Error('Travel Planner API returned an empty response.');
+  }
+  return reply;
+}
+

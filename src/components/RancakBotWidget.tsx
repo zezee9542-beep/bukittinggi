@@ -668,6 +668,14 @@ export function RancakBotWidget() {
     closeTimerRef.current = setTimeout(() => setMounted(false), 380);
   }, []);
 
+  useEffect(() => {
+    const handleOpen = () => {
+      openModal();
+    };
+    window.addEventListener('open-rancak-bot', handleOpen);
+    return () => window.removeEventListener('open-rancak-bot', handleOpen);
+  }, [openModal]);
+
   const handleSend = useCallback((text: string) => {
     if (!text.trim()) return;
     const userMessage: ChatMessage = { sender: 'user', text };
