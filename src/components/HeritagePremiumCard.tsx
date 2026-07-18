@@ -69,7 +69,15 @@ export function HeritagePremiumCard({
   }, [title]);
 
   const handleCardClick = useCallback((e: React.MouseEvent) => {
-    if (!checkIsMobile()) return;
+    if (!checkIsMobile()) {
+      // For desktop, navigate directly
+      const path = getPath();
+      if (path) {
+        navigate(path);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
     
     // Stop event bubbling to prevent page side-effects
     e.stopPropagation();
@@ -89,15 +97,6 @@ export function HeritagePremiumCard({
       }
     }
   }, [phase, navigate, getPath]);
-
-  const handleDesktopClick = useCallback((e: React.MouseEvent) => {
-    if (checkIsMobile()) return;
-    const path = getPath();
-    if (path) {
-      navigate(path);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [navigate, getPath]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (checkIsMobile()) return;
