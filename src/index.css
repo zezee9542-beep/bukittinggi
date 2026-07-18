@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Corinthia:wght@700&family=Manrope:wght@400;600&family=Poppins:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Corinthia:wght@700&family=Manrope:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:wght@400;500;600&display=swap');
 
 @import 'tailwindcss';
 
@@ -9,7 +9,9 @@
   --font-corinthia: 'Corinthia', cursive;
   --font-poppins: 'Poppins', system-ui, sans-serif;
   --font-manrope: 'Manrope', system-ui, sans-serif;
+  --font-noto: 'Noto Serif', Georgia, serif;
 }
+
 
 :root {
   font-family: var(--font-poppins);
@@ -57,6 +59,11 @@ body {
 .font-manrope {
   font-family: var(--font-manrope);
 }
+
+.font-noto {
+  font-family: var(--font-noto);
+}
+
 
 
 /* ══════════════════════════════════════════════════════════

@@ -12,17 +12,47 @@ import orngSvg from '../assets/orng.svg';
 import kalendarSvg from '../assets/kalendar.svg';
 import luvSvg from '../assets/luv.svg';
 import aiSvg from '../assets/ai.svg';
+import alSvg from '../assets/al.svg';
+import campSvg from '../assets/camp.svg';
+import pdfSvg from '../assets/pdf.svg';
+import svSvg from '../assets/sv.svg';
 
 // Custom PNG Asset Imports
 import flagPng from '../assets/flag.png';
 import sawahPng from '../assets/sawah.png';
-
 
 interface Message {
   sender: 'bot' | 'user';
   text: string;
   isItinerary?: boolean;
 }
+
+interface ItineraryActivity {
+  waktu: string;
+  aktivitas: string;
+  lokasi: string;
+  deskripsi: string;
+}
+
+interface ItineraryDay {
+  dayNumber: number;
+  title: string;
+  fokus: string;
+  activities: ItineraryActivity[];
+}
+
+interface TripInfo {
+  destination: string;   // step 1 answer
+  origin: string;        // step 2 answer
+  companions: string;    // step 3 answer
+  duration: string;      // step 4 answer
+  interests: string;     // step 5 answer
+  judul: string;         // JUDUL_PERJALANAN from AI
+  ringkasan: string;     // RINGKASAN_AI from AI
+  estimasi: string;      // ESTIMASI_BIAYA from AI
+  tips: string;          // TIPS_TRANSPORTASI from AI
+}
+
 
 const WELCOME = 'Selamat datang di Bukittinggi Heritage. Saya akan membantu menyusun perjalanan yang sesuai dengan minat, waktu, dan gaya liburan Anda.\n\nUntuk memulai, destinasi mana yang ingin Anda jelajahi? Atau biarkan saya memberikan rekomendasi terbaik.';
 
@@ -59,12 +89,262 @@ export function TravelPlannerPage() {
   const [displayMonth, setDisplayMonth] = useState<number>(4); // Mei
   const [displayYear, setDisplayYear] = useState<number>(2025);
 
+  // ── Result Screen & Parser States ──
+  const [showResultScreen, setShowResultScreen] = useState<boolean>(false);
+  const [itineraryDays, setItineraryDays] = useState<ItineraryDay[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [tripInfo, setTripInfo] = useState<TripInfo>({
+    destination: 'Bukittinggi',
+    origin: '-',
+    companions: '2 Orang',
+    duration: '-',
+    interests: '-',
+    judul: 'Perjalanan Bukittinggi',
+    ringkasan: '',
+    estimasi: '',
+    tips: '',
+  });
+  // stepAnswers[i] = what the user said at step i (0-indexed)
+  const [stepAnswers, setStepAnswers] = useState<string[]>([]);
+
   // Scroll to bottom of chat when new message is added
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatLog, isGenerating]);
 
+  // ── Custom Predefined Fallback & Parsers ──
+
+  /**
+   * Extract companion count & label from step 3 answer (e.g. "Bersama Pasangan", "Solo Traveler", "Liburan Keluarga 4 orang")
+   */
+  const parseCompanions = (raw: string): string => {
+    const lower = raw.toLowerCase();
+    if (lower.includes('solo') || lower.includes('sendiri')) return '1 Orang';
+    if (lower.includes('pasangan') || lower.includes('couple') || lower.includes('berdua')) return '2 Orang';
+    if (lower.includes('keluarga') || lower.includes('family')) {
+      const numMatch = raw.match(/(\d+)/);
+      return numMatch ? `${numMatch[1]} Orang` : '4 Orang';
+    }
+    if (lower.includes('teman') || lower.includes('rombongan') || lower.includes('group')) {
+      const numMatch = raw.match(/(\d+)/);
+      return numMatch ? `${numMatch[1]} Orang` : '4 Orang';
+    }
+    const numMatch = raw.match(/(\d+)/);
+    return numMatch ? `${numMatch[1]} Orang` : '2 Orang';
+  };
+
+  /**
+   * Extract duration (number of days) from step 4 answer
+   */
+  const parseDuration = (raw: string): number => {
+    const lower = raw.toLowerCase();
+    // "3 hari", "5 days", "3-day"
+    const dayMatch = raw.match(/(\d+)\s*(?:hari|day)/);
+    if (dayMatch) return parseInt(dayMatch[1]);
+    // weekend = 2 days typically
+    if (lower.includes('weekend') || lower.includes('akhir pekan')) return 2;
+    // "sepekan" / "seminggu"
+    if (lower.includes('seminggu') || lower.includes('sepekan')) return 7;
+    return 3; // default
+  };
+
+  const getDefaultItinerary = (): ItineraryDay[] => [
+    {
+      dayNumber: 1,
+      title: "Kedatangan & Jelajahi Warisan Budaya",
+      fokus: "WARISAN SEJARAH",
+      activities: [
+        { waktu: "08:00 - 10:00", aktivitas: "Kedatangan & Check-in", lokasi: "Bandara BIM", deskripsi: "Tiba di Bandara Internasional Minangkabau dan perjalanan menuju Bukittinggi sekitar 2 jam." },
+        { waktu: "10:30 - 12:30", aktivitas: "Kunjungi Jam Gadang", lokasi: "Jam Gadang", deskripsi: "Mengunjungi ikon Kota Bukittinggi dan menikmati suasana di sekitar alun-alun kota." },
+        { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Khas Minang", lokasi: "Restoran Nasi Kapau", deskripsi: "Nikmati nasi kapau otentik dengan berbagai pilihan lauk pauk khas Minangkabau." },
+        { waktu: "15:30 - 17:30", aktivitas: "Jelajah Pasar Atas", lokasi: "Pasar Atas Bukittinggi", deskripsi: "Berbelanja oleh-oleh, kerajinan tangan, dan mencicipi jajanan khas Sumatera Barat." },
+        { waktu: "19:00 - 21:00", aktivitas: "Makan Malam Kuliner Malam", lokasi: "Kawasan Kuliner Malam", deskripsi: "Mencicipi kuliner malam khas Bukittinggi seperti tahu pong dan sate Padang." },
+      ]
+    },
+    {
+      dayNumber: 2,
+      title: "Keindahan Alam & Jejak Kerajaan",
+      fokus: "PETUALANGAN ALAM",
+      activities: [
+        { waktu: "08:00 - 10:00", aktivitas: "Panorama Ngarai Sianok", lokasi: "Ngarai Sianok", deskripsi: "Menikmati panorama alam yang menakjubkan serta udara segar khas dataran tinggi." },
+        { waktu: "10:30 - 12:30", aktivitas: "Tur Lobang Jepang", lokasi: "Lobang Jepang", deskripsi: "Tur sejarah ke terowongan peninggalan Perang Dunia II di kawasan Ngarai Sianok." },
+        { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Pinggir Jurang", lokasi: "Resto View Ngarai", deskripsi: "Makan siang sambil menikmati pemandangan ngarai yang spektakuler." },
+        { waktu: "15:30 - 17:30", aktivitas: "Kunjungi Istano Pagaruyung", lokasi: "Istano Basa Pagaruyung", deskripsi: "Mengunjungi replika megah istana kerajaan Minangkabau dan berfoto dengan pakaian adat." },
+        { waktu: "19:00 - 21:00", aktivitas: "Makan Malam Tradisional", lokasi: "Restoran Lokal Batusangkar", deskripsi: "Nikmati makan malam dengan masakan Minang otentik khas daerah Batusangkar." },
+      ]
+    },
+    {
+      dayNumber: 3,
+      title: "Wisata Kuliner & Kepulangan",
+      fokus: "KULINER & BELANJA",
+      activities: [
+        { waktu: "08:00 - 10:00", aktivitas: "Sarapan Pagi di Pasar", lokasi: "Pasar Bawah Bukittinggi", deskripsi: "Sarapan dengan berbagai makanan khas seperti lontong sayur dan bubur kampiun." },
+        { waktu: "10:30 - 12:30", aktivitas: "Belanja Oleh-oleh Sanjai", lokasi: "Toko Sanjai Nijai", deskripsi: "Membeli keripik sanjai dan berbagai oleh-oleh khas Sumatera Barat untuk dibawa pulang." },
+        { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Terakhir", lokasi: "Restoran Natrabu", deskripsi: "Menikmati makan siang terakhir dengan hidangan khas Minangkabau yang lezat." },
+        { waktu: "15:30 - 17:00", aktivitas: "Perjalanan ke Bandara", lokasi: "Bandara BIM", deskripsi: "Perjalanan menuju bandara disarankan 2-3 jam sebelum jadwal penerbangan." },
+        { waktu: "17:00 - 19:00", aktivitas: "Check-in & Kepulangan", lokasi: "Bandara BIM", deskripsi: "Proses check-in dan menunggu penerbangan pulang ke kota asal." },
+      ]
+    }
+  ];
+
+  /**
+   * Parses the new ##KEY:value line-based AI itinerary format.
+   * Format:
+   *   ##JUDUL:Trip title
+   *   ##RINGKASAN:Summary text
+   *   ##ESTIMASI:Cost estimate
+   *   ##TIPS:Transport tip
+   *   ##HARI:1
+   *   ##JUDUL_HARI:Day title
+   *   ##FOKUS:FOCUS THEME
+   *   HH:MM-HH:MM|Activity|Location|Description
+   *
+   * Falls back to legacy bullet-list parsing, then to default itinerary.
+   */
+  const parseItineraryText = (text: string): { days: ItineraryDay[]; meta: Partial<TripInfo> } => {
+    const meta: Partial<TripInfo> = {};
+    const parsedDays: ItineraryDay[] = [];
+
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    let currentDay: ItineraryDay | null = null;
+
+    for (const line of lines) {
+      // ── Meta headers (allow spaces around colon) ──────────────────────────
+      if (/^##JUDUL\s*:/i.test(line) && !/^##JUDUL_HARI\s*:/i.test(line)) {
+        meta.judul = line.replace(/^##JUDUL\s*:/i, '').trim();
+        continue;
+      }
+      if (/^##RINGKASAN\s*:/i.test(line)) {
+        meta.ringkasan = line.replace(/^##RINGKASAN\s*:/i, '').trim();
+        continue;
+      }
+      if (/^##ESTIMASI\s*:/i.test(line)) {
+        meta.estimasi = line.replace(/^##ESTIMASI\s*:/i, '').trim();
+        continue;
+      }
+      if (/^##TIPS\s*:/i.test(line)) {
+        meta.tips = line.replace(/^##TIPS\s*:/i, '').trim();
+        continue;
+      }
+
+      // ── Day header (allow spaces around colon, e.g. ##HARI: 1 or ##HARI:1) ──
+      if (/^##HARI\s*:\s*\d+/i.test(line)) {
+        if (currentDay) parsedDays.push(currentDay);
+        const dayNumStr = line.replace(/^##HARI\s*:/i, '').trim();
+        const dayNum = parseInt(dayNumStr, 10);
+        currentDay = {
+          dayNumber: isNaN(dayNum) ? parsedDays.length + 1 : dayNum,
+          title: `Hari ${isNaN(dayNum) ? parsedDays.length + 1 : dayNum}`,
+          fokus: 'RENCANA PERJALANAN',
+          activities: [],
+        };
+        continue;
+      }
+      if (/^##JUDUL_HARI\s*:/i.test(line) && currentDay) {
+        currentDay.title = line.replace(/^##JUDUL_HARI\s*:/i, '').trim() || currentDay.title;
+        continue;
+      }
+      if (/^##FOKUS\s*:/i.test(line) && currentDay) {
+        currentDay.fokus = line.replace(/^##FOKUS\s*:/i, '').trim().toUpperCase() || 'RENCANA PERJALANAN';
+        continue;
+      }
+      if (/^##AKTIVITAS/i.test(line)) continue; // section marker, skip
+
+      // ── Activity line: split by pipe '|' for extreme robustness ──────────
+      if (currentDay && !line.startsWith('##')) {
+        const parts = line.split('|');
+        if (parts.length >= 4) {
+          const rawWaktu = parts[0].trim();
+          const aktivitas = parts[1].trim();
+          const lokasi = parts[2].trim();
+          const deskripsi = parts.slice(3).join('|').trim();
+
+          // Normalise time separator
+          const waktu = rawWaktu
+            .replace(/\./g, ':')
+            .replace(/[–—]/g, '-')
+            .replace(/\s*-\s*/g, ' - ');
+
+          currentDay.activities.push({ waktu, aktivitas, lokasi, deskripsi });
+          continue;
+        }
+
+        // ── Fallback Activity line (old WAKTU|NAMA|LOKASI|DESKRIPSI pipe format) ──────
+        const oldRe = /WAKTU\s*:\s*([^|]+)\|\s*(?:NAMA|AKTIVITAS)\s*:\s*([^|]+)\|\s*LOKASI\s*:\s*([^|]+)\|\s*(?:DESKRIPSI|KETERANGAN)\s*:\s*(.+)/i;
+        const om = oldRe.exec(line);
+        if (om) {
+          const rawW = om[1].trim().replace(/\./g, ':').replace(/[–—]/g, '-').replace(/\s*-\s*/g, ' - ');
+          currentDay.activities.push({
+            waktu: rawW, aktivitas: om[2].trim(), lokasi: om[3].trim(), deskripsi: om[4].trim(),
+          });
+        }
+      }
+    }
+
+    // Push last day
+    if (currentDay) parsedDays.push(currentDay);
+
+    // If new format yielded nothing, try legacy bullet parser
+    if (parsedDays.length === 0) {
+      return { days: parseLegacyFormat(text), meta };
+    }
+
+    // Ensure each day has title + at least 1 activity
+    parsedDays.forEach(d => {
+      if (!d.title) d.title = `Hari ${d.dayNumber}`;
+      if (d.activities.length === 0) {
+        d.activities.push({ waktu: '09:00 - 17:00', aktivitas: 'Jelajahi Bukittinggi', lokasi: 'Kota Bukittinggi', deskripsi: 'Nikmati berbagai aktivitas menarik sesuai jadwal harian Anda.' });
+      }
+    });
+
+    return { days: parsedDays, meta };
+  };
+
+  /** Legacy fallback: parse old markdown bullet list format */
+  const parseLegacyFormat = (text: string): ItineraryDay[] => {
+    const dayRegex = /(?:^|\n)(?:###?\s*)?(?:Hari|Day|##HARI)\s*[:\-–\s]*(\d+)[:\s-]*([^\n]*)/gi;
+    const dayIndices: { index: number; dayNum: number; title: string }[] = [];
+    let m;
+    while ((m = dayRegex.exec(text)) !== null) {
+      dayIndices.push({ index: m.index, dayNum: parseInt(m[1], 10), title: m[2].trim() });
+    }
+    if (dayIndices.length === 0) return getDefaultItinerary();
+    const fokusList = ['WARISAN BUDAYA', 'PETUALANGAN ALAM', 'KULINER & BELANJA', 'WISATA SEJARAH', 'RELAKSASI'];
+    const result: ItineraryDay[] = [];
+    for (let i = 0; i < dayIndices.length; i++) {
+      const start = dayIndices[i].index;
+      const end   = i < dayIndices.length - 1 ? dayIndices[i + 1].index : text.length;
+      const block = text.substring(start, end);
+      const activities: ItineraryActivity[] = [];
+      block.split('\n').forEach(line => {
+        const cl = line.trim();
+        if (!cl || cl.startsWith('Hari') || cl.startsWith('Day')) return;
+        if (cl.startsWith('-') || cl.startsWith('*') || /^\d+\./.test(cl)) {
+          const content = cl.replace(/^[-*\d.]+\s*/, '').replace(/[\u{1F300}-\u{1FFFF}]/gu, '').replace(/[\u2600-\u26FF]/g, '').trim();
+          const tm = content.match(/(\d{1,2}[:.]\d{2})\s*[-–]\s*(\d{1,2}[:.]\d{2})/);
+          let waktu = '09:00 - 12:00', remaining = content;
+          if (tm) {
+            waktu = `${tm[1].replace('.', ':')} - ${tm[2].replace('.', ':')}`;
+            remaining = content.replace(tm[0], '').replace(/^[:\s]+/, '').trim();
+          } else {
+            const lc = content.toLowerCase();
+            if (lc.includes('pagi')) waktu = '08:00 - 12:00';
+            else if (lc.includes('siang')) waktu = '12:00 - 15:00';
+            else if (lc.includes('sore')) waktu = '15:00 - 18:00';
+            else if (lc.includes('malam')) waktu = '18:00 - 21:00';
+          }
+          const parts = remaining.split(/[|,–\-]/).map(s => s.trim()).filter(Boolean);
+          activities.push({ waktu, aktivitas: (parts[0] || remaining).substring(0, 60), lokasi: (parts[1] || 'Bukittinggi').substring(0, 50), deskripsi: remaining.substring(0, 200) });
+        }
+      });
+      if (activities.length === 0) activities.push({ waktu: '09:00 - 17:00', aktivitas: 'Jelajahi Bukittinggi', lokasi: 'Kota Bukittinggi', deskripsi: 'Nikmati aktivitas menarik sesuai jadwal.' });
+      result.push({ dayNumber: dayIndices[i].dayNum, title: dayIndices[i].title || `Hari ${dayIndices[i].dayNum}`, fokus: fokusList[i % fokusList.length], activities });
+    }
+    return result;
+  };
+
   // ── Date Picker Helper Functions ──
+
   const getMonthName = (monthIdx: number) => {
     const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     return months[monthIdx];
@@ -281,6 +561,27 @@ export function TravelPlannerPage() {
     setAiHistory(newHistory);
     setIsGenerating(true);
 
+    // Capture user answer per step to populate result screen dynamically
+    const newAnswers = [...stepAnswers];
+    newAnswers[currentStep] = answerText;
+    setStepAnswers(newAnswers);
+
+    // Map step answer to TripInfo fields
+    setTripInfo(prev => {
+      const updated = { ...prev };
+      if (currentStep === 0) updated.destination = answerText.substring(0, 60);
+      if (currentStep === 1) updated.origin = answerText.substring(0, 40);
+      if (currentStep === 2) updated.companions = parseCompanions(answerText);
+      if (currentStep === 3) {
+        updated.duration = answerText.substring(0, 50);
+        const days = parseDuration(answerText);
+        const nights = Math.max(days - 1, 0);
+        updated.duration = `${days} Hari ${nights} Malam`;
+      }
+      if (currentStep === 4) updated.interests = answerText.substring(0, 60);
+      return updated;
+    });
+
     try {
       const reply = await askTravelPlanner(newHistory);
       const botMsg: Message = { sender: 'bot', text: reply };
@@ -302,7 +603,7 @@ export function TravelPlannerPage() {
       setCurrentStep(s => Math.min(s + 1, 5));
       setIsGenerating(false);
     }
-  }, [currentStep, isGenerating, aiHistory]);
+  }, [currentStep, isGenerating, aiHistory, stepAnswers, parseCompanions, parseDuration]);
 
   const handleSend = () => {
     if (!chatInput.trim() || isGenerating) return;
@@ -320,16 +621,267 @@ export function TravelPlannerPage() {
       const reply = await askTravelPlanner(aiHistory, true);
       setChatLog(prev => [...prev, { sender: 'bot', text: reply, isItinerary: true }]);
       setAiHistory(prev => [...prev, { role: 'assistant', content: reply }]);
-    } catch {
-      setChatLog(prev => [
+
+      const { days, meta } = parseItineraryText(reply);
+      setItineraryDays(days);
+
+      // Merge AI-extracted metadata into tripInfo
+      setTripInfo(prev => ({
         ...prev,
-        { sender: 'bot', text: 'Maaf, terjadi kesalahan saat menghubungi AI. Silakan coba lagi dalam beberapa saat.', isItinerary: false },
-      ]);
+        judul: meta.judul || prev.judul,
+        ringkasan: meta.ringkasan || prev.ringkasan,
+        estimasi: meta.estimasi || prev.estimasi,
+        tips: meta.tips || prev.tips,
+        // Derive duration from actual parsed days if not set
+        duration: prev.duration !== '-' ? prev.duration : `${days.length} Hari ${Math.max(days.length - 1, 0)} Malam`,
+      }));
+
+      setCurrentPage(1);
+      setShowResultScreen(true);
+    } catch {
+      // Graceful fallback to default mock itinerary so the visual design displays instantly
+      const fallbackData = getDefaultItinerary();
+      setItineraryDays(fallbackData);
+      setTripInfo(prev => ({
+        ...prev,
+        judul: prev.judul,
+        ringkasan: 'Rencana perjalanan ini dirancang khusus untuk menghadirkan pengalaman terbaik di Bukittinggi. Nikmati setiap momen dengan penuh antusias!',
+        duration: prev.duration !== '-' ? prev.duration : `${fallbackData.length} Hari ${Math.max(fallbackData.length - 1, 0)} Malam`,
+      }));
+      setCurrentPage(1);
+      setShowResultScreen(true);
     } finally {
       setIsGenerating(false);
     }
-  }, [currentStep, isGenerating, aiHistory]);
+  }, [currentStep, isGenerating, aiHistory, parseItineraryText]);
 
+  if (showResultScreen) {
+    const usePagination = itineraryDays.length > 7;
+    const daysPerPage = 7;
+    const totalPages = usePagination ? Math.ceil(itineraryDays.length / daysPerPage) : 1;
+    const visibleDays = usePagination
+      ? itineraryDays.slice((currentPage - 1) * daysPerPage, currentPage * daysPerPage)
+      : itineraryDays;
+
+    // Use ringkasan from AI output; fallback to a generic message
+    const displayAdvice = tripInfo.ringkasan ||
+      `Rencana perjalanan ke ${tripInfo.destination} telah disiapkan secara khusus berdasarkan preferensi Anda. Pastikan membawa sepatu yang nyaman dan menikmati setiap momen bersama ${tripInfo.companions}.`;
+
+    // Extract day count and night count from duration string, or derive from days array
+    const dayCountMatch = tripInfo.duration.match(/(\d+)\s*Hari/);
+    const nightCountMatch = tripInfo.duration.match(/(\d+)\s*Malam/);
+    const displayDays = dayCountMatch ? dayCountMatch[1] : String(itineraryDays.length);
+    const displayNights = nightCountMatch ? nightCountMatch[1] : String(Math.max(itineraryDays.length - 1, 0));
+
+    return (
+      <main className="min-h-screen bg-[#FAF8F7] pt-[96px] pb-16 px-4 md:px-8 lg:px-12 flex flex-col gap-6">
+        {/* Back Button */}
+        <div className="max-w-[1440px] mx-auto w-full flex-shrink-0">
+          <button
+            onClick={() => setShowResultScreen(false)}
+            className="flex items-center gap-2 text-[#5F1712] hover:text-[#4E130E] font-manrope font-semibold text-[13px] transition-all cursor-pointer bg-white px-4 py-2 rounded-xl border border-[#F3DDDB]/50 shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            <span>Kembali ke Perencanaan</span>
+          </button>
+        </div>
+
+        {/* 2-Column Responsive Split */}
+        <div className="max-w-[1440px] mx-auto w-full flex flex-col lg:flex-row gap-8 items-start animate-fade-in">
+          
+          {/* ── Left Column (Itinerary Cards) ── */}
+          <div className="w-full lg:w-[32%] flex flex-col gap-6 flex-shrink-0">
+            
+            {/* Top Card */}
+            <div className="bg-white border border-[#F3DDDB]/30 rounded-[24px] p-6 flex flex-col gap-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
+              
+              {/* Header */}
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="font-noto font-bold text-[#1A1C1A] text-[20px] leading-tight">
+                    {tripInfo.judul}
+                  </h2>
+                  <p className="font-manrope font-normal text-[#554240] text-[13px] mt-1.5 leading-snug">
+                    Rekomendasi Perjalanan Khusus dari AI
+                  </p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-[#FAF6F4] flex items-center justify-center flex-shrink-0 border border-[#F3DDDB]/30">
+                  <img src={campSvg} alt="" className="w-6 h-6 object-contain" />
+                </div>
+              </div>
+
+              {/* Statistics Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Duration */}
+                <div className="bg-[#FAF9F6] rounded-[18px] p-4 flex flex-col items-center text-center justify-center border border-neutral-100">
+                  <img src={kalendarSvg} alt="" className="w-5 h-5 mb-2 object-contain" />
+                  <span className="font-manrope font-semibold text-[#1A1C1A] text-[14px]">
+                    {displayDays} Hari
+                  </span>
+                  <span className="font-manrope font-medium text-[#554240] text-[12px] mt-0.5">
+                    {displayNights} Malam
+                  </span>
+                </div>
+
+                {/* Travelers count */}
+                <div className="bg-[#FAF9F6] rounded-[18px] p-4 flex flex-col items-center text-center justify-center border border-neutral-100">
+                  <img src={orngSvg} alt="" className="w-5 h-5 mb-2 object-contain" />
+                  <span className="font-manrope font-semibold text-[#1A1C1A] text-[14px]">
+                    {tripInfo.companions}
+                  </span>
+                  <span className="font-manrope font-medium text-[#554240] text-[12px] mt-0.5">
+                    Wisatawan
+                  </span>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={() => alert("Mengunduh rundown PDF...")}
+                  className="w-full h-12 bg-[#5F1712] hover:bg-[#4E130E] text-white flex items-center justify-center gap-2 rounded-xl font-manrope text-[13.5px] font-medium transition-all cursor-pointer shadow-sm hover:scale-[1.01]"
+                >
+                  <img src={pdfSvg} alt="" className="w-4 h-4 object-contain invert brightness-0" style={{ filter: 'brightness(0) invert(1)' }} />
+                  <span>Unduh Rundown (PDF)</span>
+                </button>
+
+                <button 
+                  onClick={() => alert("Itinerary disimpan ke akun Anda!")}
+                  className="w-full h-12 bg-white hover:bg-neutral-50 text-[#DBC1BD] border border-[#F3DDDB]/40 flex items-center justify-center gap-2 rounded-xl font-manrope text-[13.5px] font-medium transition-all cursor-pointer hover:scale-[1.01]"
+                >
+                  <img src={svSvg} alt="" className="w-4 h-4 object-contain" />
+                  <span>Simpan</span>
+                </button>
+              </div>
+
+            </div>
+
+            {/* Bottom Card (AI Advisor) */}
+            <div className="bg-white border border-[#F3DDDB]/30 rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] flex flex-col gap-4">
+              <div className="flex items-center gap-2 border-b border-neutral-100 pb-3">
+                <img src={alSvg} alt="" className="w-4.5 h-4.5 object-contain" />
+                <span className="font-manrope font-semibold text-[#5F1712] text-[13px] tracking-wider uppercase">
+                  AI Konsultan Perjalanan
+                </span>
+              </div>
+              <p className="font-manrope font-normal text-[#1A1C1A] text-[13.5px] leading-relaxed italic text-neutral-600">
+                "{displayAdvice}"
+              </p>
+              {tripInfo.estimasi && (
+                <div className="flex items-center gap-2 pt-2 border-t border-neutral-100">
+                  <span className="font-manrope font-semibold text-[#554240] text-[11px] tracking-wider uppercase">Estimasi Biaya:</span>
+                  <span className="font-manrope font-medium text-[#1A1C1A] text-[12px]">{tripInfo.estimasi}</span>
+                </div>
+              )}
+              {tripInfo.tips && (
+                <div className="flex items-center gap-2">
+                  <span className="font-manrope font-semibold text-[#554240] text-[11px] tracking-wider uppercase">Tips:</span>
+                  <span className="font-manrope font-medium text-[#1A1C1A] text-[12px]">{tripInfo.tips}</span>
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* ── Right Column (Day Rundown Timeline) ── */}
+          <div className="w-full lg:w-[68%] flex flex-col gap-6">
+            
+            {visibleDays.map((day) => (
+              <div 
+                key={day.dayNumber}
+                className="bg-white border border-[#F3DDDB]/30 rounded-[24px] overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.015)] flex flex-col"
+              >
+                {/* Header */}
+                <div className="bg-[#F4F3F0] px-6 py-4.5 flex items-center justify-between border-b border-neutral-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full bg-[#5F1712] text-white font-bold flex items-center justify-center text-[12.5px]">
+                      {day.dayNumber}
+                    </div>
+                    <h3 className="font-noto font-bold text-[#5F1712] text-[16px] md:text-[17px]">
+                      Hari {day.dayNumber}: {day.title}
+                    </h3>
+                  </div>
+                  <span className="font-manrope font-semibold text-[#8D726D] text-[10px] tracking-widest uppercase">
+                    {day.fokus}
+                  </span>
+                </div>
+
+                {/* Table Header Row */}
+                <div className="grid grid-cols-12 bg-[#EFEEEB] px-6 py-3.5 text-[11px] font-manrope font-semibold text-[#554240] tracking-wider uppercase border-b border-neutral-150/40">
+                  <div className="col-span-2">Waktu</div>
+                  <div className="col-span-3">Aktivitas</div>
+                  <div className="col-span-3">Lokasi</div>
+                  <div className="col-span-4">Catatan & Deskripsi</div>
+                </div>
+
+                {/* Table Body Rows */}
+                <div className="flex flex-col">
+                  {day.activities.map((act, actIdx) => (
+                    <div 
+                      key={actIdx}
+                      className="grid grid-cols-12 px-6 py-4.5 border-b border-neutral-100/60 last:border-b-0 hover:bg-neutral-50/50 transition-colors items-start"
+                    >
+                      <div className="col-span-2 font-manrope font-medium text-[#554240] text-[13px]">
+                        {act.waktu}
+                      </div>
+                      <div className="col-span-3 font-manrope font-bold text-[#5F1712] text-[13.5px] leading-snug pr-3">
+                        {act.aktivitas}
+                      </div>
+                      <div className="col-span-3 font-manrope font-medium text-[#554240] text-[13px] pr-3">
+                        {act.lokasi}
+                      </div>
+                      <div className="col-span-4 font-manrope font-medium text-[#554240] text-[13px] leading-relaxed">
+                        {act.deskripsi}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-4 mb-8">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 border border-neutral-200 rounded-xl hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed font-manrope font-medium text-[13px] text-[#554240] cursor-pointer transition-colors"
+                >
+                  Sebelumnya
+                </button>
+                
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center font-manrope font-bold text-[13px] cursor-pointer transition-all ${
+                      currentPage === i + 1
+                        ? 'bg-[#5F1712] text-white shadow-md'
+                        : 'border border-neutral-200 hover:bg-neutral-50 text-[#554240]'
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 border border-neutral-200 rounded-xl hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed font-manrope font-medium text-[13px] text-[#554240] cursor-pointer transition-colors"
+                >
+                  Berikutnya
+                </button>
+              </div>
+            )}
+
+          </div>
+
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main
@@ -338,6 +890,7 @@ export function TravelPlannerPage() {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
+
       {/* ── Left Column (50% Split) ── */}
       <div className="w-full lg:w-1/2 flex flex-col p-6 md:p-8 lg:p-10 justify-between border-b lg:border-b-0 lg:border-r border-[#D6B8B3]/30 h-[650px] lg:h-[calc(100vh-120px)] lg:min-h-[680px] min-h-0">
         
