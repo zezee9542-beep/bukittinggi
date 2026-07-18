@@ -127,6 +127,8 @@ export function TravelPlannerPage() {
   });
   // stepAnswers[i] = what the user said at step i (0-indexed)
   const [stepAnswers, setStepAnswers] = useState<string[]>([]);
+  // Track the number of days the user requested for the itinerary
+  const [requestedDays, setRequestedDays] = useState<number>(3);
 
   // Scroll to bottom of chat when new message is added
   useEffect(() => {
@@ -169,44 +171,67 @@ export function TravelPlannerPage() {
     return 3; // default
   };
 
-  const getDefaultItinerary = (): ItineraryDay[] => [
-    {
-      dayNumber: 1,
-      title: "Kedatangan & Jelajahi Warisan Budaya",
-      fokus: "WARISAN SEJARAH",
-      activities: [
-        { waktu: "08:00 - 10:00", aktivitas: "Kedatangan & Check-in", lokasi: "Bandara BIM", deskripsi: "Tiba di Bandara Internasional Minangkabau dan perjalanan menuju Bukittinggi sekitar 2 jam." },
-        { waktu: "10:30 - 12:30", aktivitas: "Kunjungi Jam Gadang", lokasi: "Jam Gadang", deskripsi: "Mengunjungi ikon Kota Bukittinggi dan menikmati suasana di sekitar alun-alun kota." },
-        { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Khas Minang", lokasi: "Restoran Nasi Kapau", deskripsi: "Nikmati nasi kapau otentik dengan berbagai pilihan lauk pauk khas Minangkabau." },
-        { waktu: "15:30 - 17:30", aktivitas: "Jelajah Pasar Atas", lokasi: "Pasar Atas Bukittinggi", deskripsi: "Berbelanja oleh-oleh, kerajinan tangan, dan mencicipi jajanan khas Sumatera Barat." },
-        { waktu: "19:00 - 21:00", aktivitas: "Makan Malam Kuliner Malam", lokasi: "Kawasan Kuliner Malam", deskripsi: "Mencicipi kuliner malam khas Bukittinggi seperti tahu pong dan sate Padang." },
-      ]
-    },
-    {
-      dayNumber: 2,
-      title: "Keindahan Alam & Jejak Kerajaan",
-      fokus: "PETUALANGAN ALAM",
-      activities: [
-        { waktu: "08:00 - 10:00", aktivitas: "Panorama Ngarai Sianok", lokasi: "Ngarai Sianok", deskripsi: "Menikmati panorama alam yang menakjubkan serta udara segar khas dataran tinggi." },
-        { waktu: "10:30 - 12:30", aktivitas: "Tur Lobang Jepang", lokasi: "Lobang Jepang", deskripsi: "Tur sejarah ke terowongan peninggalan Perang Dunia II di kawasan Ngarai Sianok." },
-        { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Pinggir Jurang", lokasi: "Resto View Ngarai", deskripsi: "Makan siang sambil menikmati pemandangan ngarai yang spektakuler." },
-        { waktu: "15:30 - 17:30", aktivitas: "Kunjungi Istano Pagaruyung", lokasi: "Istano Basa Pagaruyung", deskripsi: "Mengunjungi replika megah istana kerajaan Minangkabau dan berfoto dengan pakaian adat." },
-        { waktu: "19:00 - 21:00", aktivitas: "Makan Malam Tradisional", lokasi: "Restoran Lokal Batusangkar", deskripsi: "Nikmati makan malam dengan masakan Minang otentik khas daerah Batusangkar." },
-      ]
-    },
-    {
-      dayNumber: 3,
-      title: "Wisata Kuliner & Kepulangan",
-      fokus: "KULINER & BELANJA",
-      activities: [
-        { waktu: "08:00 - 10:00", aktivitas: "Sarapan Pagi di Pasar", lokasi: "Pasar Bawah Bukittinggi", deskripsi: "Sarapan dengan berbagai makanan khas seperti lontong sayur dan bubur kampiun." },
-        { waktu: "10:30 - 12:30", aktivitas: "Belanja Oleh-oleh Sanjai", lokasi: "Toko Sanjai Nijai", deskripsi: "Membeli keripik sanjai dan berbagai oleh-oleh khas Sumatera Barat untuk dibawa pulang." },
-        { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Terakhir", lokasi: "Restoran Natrabu", deskripsi: "Menikmati makan siang terakhir dengan hidangan khas Minangkabau yang lezat." },
-        { waktu: "15:30 - 17:00", aktivitas: "Perjalanan ke Bandara", lokasi: "Bandara BIM", deskripsi: "Perjalanan menuju bandara disarankan 2-3 jam sebelum jadwal penerbangan." },
-        { waktu: "17:00 - 19:00", aktivitas: "Check-in & Kepulangan", lokasi: "Bandara BIM", deskripsi: "Proses check-in dan menunggu penerbangan pulang ke kota asal." },
-      ]
+  const getDefaultItinerary = (days: number = 3): ItineraryDay[] => {
+    const baseDays = [
+      {
+        title: "Kedatangan & Jelajahi Warisan Budaya", fokus: "WARISAN SEJARAH", activities: [
+          { waktu: "08:00 - 10:00", aktivitas: "Kedatangan & Check-in", lokasi: "Bandara BIM", deskripsi: "Tiba di Bandara Internasional Minangkabau dan perjalanan menuju Bukittinggi sekitar 2 jam." },
+          { waktu: "10:30 - 12:30", aktivitas: "Kunjungi Jam Gadang", lokasi: "Jam Gadang", deskripsi: "Mengunjungi ikon Kota Bukittinggi dan menikmati suasana di sekitar alun-alun kota." },
+          { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Khas Minang", lokasi: "Restoran Nasi Kapau", deskripsi: "Nikmati nasi kapau otentik dengan berbagai pilihan lauk pauk khas Minangkabau." },
+          { waktu: "15:30 - 17:30", aktivitas: "Jelajah Pasar Atas", lokasi: "Pasar Atas Bukittinggi", deskripsi: "Berbelanja oleh-oleh, kerajinan tangan, dan mencicipi jajanan khas Sumatera Barat." },
+          { waktu: "19:00 - 21:00", aktivitas: "Makan Malam Kuliner Malam", lokasi: "Kawasan Kuliner Malam", deskripsi: "Mencicipi kuliner malam khas Bukittinggi seperti tahu pong dan sate Padang." },
+        ]
+      },
+      {
+        title: "Keindahan Alam & Jejak Kerajaan", fokus: "PETUALANGAN ALAM", activities: [
+          { waktu: "08:00 - 10:00", aktivitas: "Panorama Ngarai Sianok", lokasi: "Ngarai Sianok", deskripsi: "Menikmati panorama alam yang menakjubkan serta udara segar khas dataran tinggi." },
+          { waktu: "10:30 - 12:30", aktivitas: "Tur Lobang Jepang", lokasi: "Lobang Jepang", deskripsi: "Tur sejarah ke terowongan peninggalan Perang Dunia II di kawasan Ngarai Sianok." },
+          { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Pinggir Jurang", lokasi: "Restoran View Ngarai", deskripsi: "Makan siang sambil menikmati pemandangan ngarai yang spektakuler." },
+          { waktu: "15:30 - 17:30", aktivitas: "Kunjungi Istano Basa Pagaruyung", lokasi: "Istano Basa Pagaruyung", deskripsi: "Mengunjungi replika megah istana kerajaan Minangkabau dan berfoto dengan pakaian adat." },
+          { waktu: "19:00 - 21:00", aktivitas: "Makan Malam Tradisional", lokasi: "Restoran Lokal Batusangkar", deskripsi: "Nikmati makan malam dengan masakan Minang otentik khas daerah Batusangkar." },
+        ]
+      },
+      {
+        title: "Wisata Kuliner & Kepulangan", fokus: "KULINER & BELANJA", activities: [
+          { waktu: "08:00 - 10:00", aktivitas: "Sarapan Pagi di Pasar", lokasi: "Pasar Bawah Bukittinggi", deskripsi: "Sarapan dengan berbagai makanan khas seperti lontong sayur dan bubur kampiun." },
+          { waktu: "10:30 - 12:30", aktivitas: "Belanja Oleh-oleh Sanjai", lokasi: "Toko Sanjai Nijai", deskripsi: "Membeli keripik sanjai dan berbagai oleh-oleh khas Sumatera Barat untuk dibawa pulang." },
+          { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Terakhir", lokasi: "Restoran Natrabu", deskripsi: "Menikmati makan siang terakhir dengan hidangan khas Minangkabau yang lezat." },
+          { waktu: "15:30 - 17:00", aktivitas: "Perjalanan ke Bandara", lokasi: "Bandara BIM", deskripsi: "Perjalanan menuju bandara disarankan 2-3 jam sebelum jadwal penerbangan." },
+          { waktu: "17:00 - 19:00", aktivitas: "Check-in & Kepulangan", lokasi: "Bandara BIM", deskripsi: "Proses check-in dan menunggu penerbangan pulang ke kota asal." },
+        ]
+      },
+      {
+        title: "Eksplorasi Budaya Lokal", fokus: "BUDAYA & KERAJAAN", activities: [
+          { waktu: "08:00 - 10:00", aktivitas: "Kunjungi Museum Adat", lokasi: "Museum Rumah Kelahiran Bung Hatta", deskripsi: "Melihat rumah masa kecil pahlawan nasional dan mengenal sejarah perjuangan." },
+          { waktu: "10:30 - 12:30", aktivitas: "Mencicipi Kopi Lokal", lokasi: "Kedai Kopi Khas", deskripsi: "Menikmati kopi khas Sumatera Barat dengan suasana yang nyaman." },
+          { waktu: "13:00 - 15:00", aktivitas: "Menonton Tari Piring", lokasi: "Desa Wisata Budaya", deskripsi: "Menyaksikan tari piring, tari tradisional Minangkabau yang penuh semangat." },
+          { waktu: "15:30 - 17:30", aktivitas: "Belanja Kerajinan", lokasi: "Sentra Kerajinan Tangan", deskripsi: "Membeli kerajinan tangan seperti songket dan perak khas Bukittinggi." },
+          { waktu: "19:00 - 21:00", aktivitas: "Makan Malam Bersama", lokasi: "Rumah Makan Adat", deskripsi: "Menikmati hidangan bersama dengan konsep makan bersama (padusan)." },
+        ]
+      },
+      {
+        title: "Relaksasi & Persiapan Pulang", fokus: "RELAKSASI & KESENANGAN", activities: [
+          { waktu: "08:00 - 10:00", aktivitas: "Pemandangan Sunrise", lokasi: "Puncak Lawang", deskripsi: "Menikmati pemandangan sunrise yang indah dari puncak lawang." },
+          { waktu: "10:30 - 12:30", aktivitas: "Bersantai di Taman", lokasi: "Taman Margasatwa & Budaya Kinantan", deskripsi: "Bersantai dan melihat hewan-hewan di taman." },
+          { waktu: "13:00 - 15:00", aktivitas: "Makan Siang Ringkas", lokasi: "Warung Nasi Padang", deskripsi: "Menikmati hidangan ringkas namun lezat di warung lokal." },
+          { waktu: "15:30 - 17:30", aktivitas: "Packing & Persiapan", lokasi: "Hotel", deskripsi: "Packing barang dan persiapan untuk kepulangan." },
+          { waktu: "19:00 - 21:00", aktivitas: "Makan Malam Perpisahan", lokasi: "Restoran Favorit", deskripsi: "Menikmati makan malam terakhir di restoran favorit Anda." },
+        ]
+      }
+    ];
+
+    const result: ItineraryDay[] = [];
+    for (let i = 0; i < days; i++) {
+      const base = baseDays[i % baseDays.length];
+      result.push({
+        dayNumber: i + 1,
+        title: base.title,
+        fokus: base.fokus,
+        activities: base.activities.map(act => ({...act}))
+      });
     }
-  ];
+    return result;
+  };
 
   /**
    * Parses the JSON itinerary format from the AI.
@@ -492,8 +517,8 @@ export function TravelPlannerPage() {
       if (currentStep === 1) updated.origin = answerText.substring(0, 40);
       if (currentStep === 2) updated.companions = parseCompanions(answerText);
       if (currentStep === 3) {
-        updated.duration = answerText.substring(0, 50);
         const days = parseDuration(answerText);
+        setRequestedDays(days);
         const nights = Math.max(days - 1, 0);
         updated.duration = `${days} Hari ${nights} Malam`;
       }
@@ -563,7 +588,7 @@ export function TravelPlannerPage() {
       setShowResultScreen(true);
     } catch {
       // Graceful fallback to default mock itinerary so the visual design displays instantly
-      const fallbackData = getDefaultItinerary();
+      const fallbackData = getDefaultItinerary(requestedDays);
       setItineraryDays(fallbackData);
       setTripInfo(prev => ({
         ...prev,
@@ -576,7 +601,7 @@ export function TravelPlannerPage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [currentStep, isGenerating, aiHistory, parseItineraryText]);
+  }, [currentStep, isGenerating, aiHistory, parseItineraryText, requestedDays]);
 
   if (showResultScreen) {
     const usePagination = itineraryDays.length > 7;
