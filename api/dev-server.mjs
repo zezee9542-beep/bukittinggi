@@ -37,7 +37,7 @@ Topics you excel at:
 - 🗺️ Practical travel: tips, best times, transport, accommodation`;
 }
 
-function buildTravelPlannerPrompt() {
+function buildTravelPlannerChatPrompt() {
   return `You are "Rancak Planner" ✈️🌟 — a super excited, warm, and professional AI travel planning assistant for the Bukittinggi Cultural Heritage Hub!
 
 Your personality:
@@ -63,7 +63,51 @@ CRITICAL RULES:
 5. Make each response feel personal and tailored to what the user told you. Reference their specific answers!`;
 }
 
-async function callGemini(systemPrompt, messages) {
+function buildTravelPlannerItineraryPrompt() {
+  return `You are "Rancak Planner" — a professional AI travel planner for the Bukittinggi Cultural Heritage Hub.
+
+Generate a COMPLETE, DETAILED day-by-day travel itinerary using the EXACT machine-readable format below.
+Use ONLY this format. Do NOT add any extra text, greetings, explanations, or markdown.
+
+FORMAT TEMPLATE:
+##JUDUL:Judul perjalanan yang menarik dalam Bahasa Indonesia
+##RINGKASAN:2-3 kalimat ringkasan strategi perjalanan, rekomendasi kuliner wajib coba, dan 1 tips personal
+##ESTIMASI:Estimasi biaya per orang dalam Rupiah, contoh: Rp1.500.000 - Rp2.500.000
+##TIPS:Satu kalimat tips transportasi praktis
+
+##HARI:1
+##JUDUL_HARI:Tema/Judul Hari 1
+##FOKUS:WARISAN SEJARAH
+08:00-10:00|Nama Aktivitas Singkat|Nama Lokasi|Satu kalimat deskripsi jelas apa yang dilakukan di sana.
+10:30-12:30|Nama Aktivitas Singkat|Nama Lokasi|Satu kalimat deskripsi jelas apa yang dilakukan di sana.
+13:00-15:00|Nama Aktivitas Singkat|Nama Lokasi|Satu kalimat deskripsi jelas apa yang dilakukan di sana.
+15:30-17:30|Nama Aktivitas Singkat|Nama Lokasi|Satu kalimat deskripsi jelas apa yang dilakukan di sana.
+19:00-21:00|Nama Aktivitas Singkat|Nama Lokasi|Satu kalimat deskripsi jelas apa yang dilakukan di sana.
+
+##HARI:2
+##JUDUL_HARI:Tema/Judul Hari 2
+##FOKUS:KULINER LOKAL
+08:00-10:00|Nama Aktivitas|Nama Lokasi|Deskripsi singkat.
+10:30-12:30|Nama Aktivitas|Nama Lokasi|Deskripsi singkat.
+13:00-15:00|Nama Aktivitas|Nama Lokasi|Deskripsi singkat.
+15:30-17:30|Nama Aktivitas|Nama Lokasi|Deskripsi singkat.
+19:00-21:00|Nama Aktivitas|Nama Lokasi|Deskripsi singkat.
+
+[Repeat ##HARI blocks for EVERY day the user requested — no more, no less]
+
+ABSOLUTE RULES:
+1. Activity lines MUST follow EXACTLY: HH:MM-HH:MM|Activity|Location|Description
+2. Use single pipe | as separator (no spaces around it)
+3. Write EXACTLY 5 activities per day (morning, mid-morning, afternoon, late afternoon, evening)
+4. Day headers use EXACTLY: ##HARI:N (where N is the day number)
+5. NEVER use asterisks * or markdown formatting
+6. NEVER omit any day — if user asked for 5 days, generate all 5
+7. Write in Bahasa Indonesia throughout
+8. Make activities SPECIFIC and REAL — actual places in Bukittinggi/West Sumatra
+9. ##FOKUS: must be 2-4 words in ALL CAPS describing the day's theme`;
+}
+
+async function callGemini(systemPrompt, messages, generationConfigOverrides = {}) {
   const apiKey = process.env.GEMINI_API_KEY;
   const model = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
 
@@ -83,7 +127,11 @@ async function callGemini(systemPrompt, messages) {
     body: JSON.stringify({
       system_instruction: { parts: [{ text: systemPrompt }] },
       contents,
-      generationConfig: { temperature: 0.85, maxOutputTokens: 800 },
+      generationConfig: {
+        temperature: 0.85,
+        maxOutputTokens: 800,
+        ...generationConfigOverrides
+      },
     }),
   });
 
@@ -94,9 +142,9 @@ async function callGemini(systemPrompt, messages) {
 
   const data = await response.json();
   const parts = data?.candidates?.[0]?.content?.parts;
-  const reply = parts?.map(p => p.text ?? '').join('').trim();
-  if (!reply) throw new Error('Gemini returned empty response');
-  return reply;
+  const rawReply = parts?.map(p => p.text ?? '').join('').trim();
+  if (!rawReply) throw new Error('Gemini returned empty response');
+  return rawReply;
 }
 
 async function readBody(req) {
@@ -144,25 +192,32 @@ const server = http.createServer(async (req, res) => {
 
     let systemPrompt;
     let finalMessages = [...messages];
+    let generationConfig = {};
 
     if (req.url === '/api/chat') {
       systemPrompt = buildRancakBotPrompt();
     } else if (req.url === '/api/travel-planner') {
-      systemPrompt = buildTravelPlannerPrompt();
       if (generateItinerary) {
+        systemPrompt = buildTravelPlannerItineraryPrompt();
+        generationConfig = { temperature: 0.25, maxOutputTokens: 6000 };
         finalMessages.push({
           role: 'user',
           content: 'Semua informasi sudah terkumpul! Tolong buatkan rencana perjalanan lengkap dan mendetail dalam format yang rapi dengan hari per hari, aktivitas pagi/siang/sore/malam, rekomendasi kuliner spesifik, tips transportasi, estimasi biaya, dan tips lokal yang menarik. Buat itinerary yang sangat personal sesuai semua informasi yang sudah saya berikan!'
         });
+      } else {
+        systemPrompt = buildTravelPlannerChatPrompt();
       }
     } else {
       send(404, { error: 'Not found' });
       return;
     }
 
-    const rawReply = await callGemini(systemPrompt, finalMessages);
-    // Remove all markdown asterisks (bold ** and italic *) so text renders clean
-    const reply = rawReply.replace(/\*+/g, '');
+    const rawReply = await callGemini(systemPrompt, finalMessages, generationConfig);
+    // Clean up any accidental markdown the model might add
+    const reply = rawReply
+      .replace(/\*\*/g, '')
+      .replace(/\*/g, '')
+      .replace(/^#+\s*/gm, '');
     send(200, { reply });
 
   } catch (err) {
