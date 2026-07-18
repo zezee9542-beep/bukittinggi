@@ -53,12 +53,16 @@ interface TripInfo {
   tips: string;          // TIPS_TRANSPORTASI from AI
 }
 
-interface AiItineraryJson {
-  tripTitle: string;
-  summary: string;
-  estimatedCost: string;
-  travelTip: string;
+interface AiItinerarySummary {
+  title: string;
   totalDays: number;
+  travelerCount: number;
+  budget: string;
+  destination: string;
+}
+
+interface AiItineraryJson {
+  summary: AiItinerarySummary;
   days: Array<{
     day: number;
     title: string;
@@ -234,7 +238,7 @@ export function TravelPlannerPage() {
   };
 
   /**
-   * Parses the JSON itinerary format from the AI.
+   * Parses the combined chat + JSON format from the AI.
    * Falls back to default itinerary if parsing fails.
    */
   const parseItineraryText = (text: string): { days: ItineraryDay[]; meta: Partial<TripInfo> } => {
@@ -243,21 +247,22 @@ export function TravelPlannerPage() {
     let parsedDays: ItineraryDay[] = [];
 
     try {
-      // Try to find JSON in the text (in case AI adds extra text)
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('No JSON found');
-      
-      const jsonStr = jsonMatch[0];
+      // First, split text into chat and JSON parts (JSON starts with '{')
+      const splitIndex = text.indexOf('{');
+      if (splitIndex === -1) throw new Error('No JSON found');
+
+      // Extract JSON
+      const jsonStr = text.substring(splitIndex).trim();
       console.log('🔍 Extracted JSON:', jsonStr);
-      
+
+      // Parse the new JSON format
       const itinerary = JSON.parse(jsonStr) as AiItineraryJson;
       console.log('✅ Parsed AI Itinerary:', itinerary);
 
-      // Map to our internal types
-      meta.judul = itinerary.tripTitle;
-      meta.ringkasan = itinerary.summary;
-      meta.estimasi = itinerary.estimatedCost;
-      meta.tips = itinerary.travelTip;
+      // Map to our internal types from the new structure
+      meta.judul = itinerary.summary.title;
+      meta.estimasi = itinerary.summary.budget;
+      // If we want to use travelerCount, we could, but let's keep meta as is for now
 
       parsedDays = itinerary.days.map(day => ({
         dayNumber: day.day,
@@ -274,12 +279,12 @@ export function TravelPlannerPage() {
       console.log('✅ Mapped days:', parsedDays);
     } catch (err) {
       console.error('❌ Failed to parse JSON, using default itinerary:', err);
-      parsedDays = getDefaultItinerary();
+      parsedDays = getDefaultItinerary(requestedDays);
     }
 
     // Ensure we have at least some activities
     if (parsedDays.length === 0) {
-      parsedDays = getDefaultItinerary();
+      parsedDays = getDefaultItinerary(requestedDays);
     }
 
     return { days: parsedDays, meta };
@@ -565,7 +570,12 @@ export function TravelPlannerPage() {
       const reply = await askTravelPlanner(aiHistory, true);
       console.log('🤖 RAW AI ITINERARY RESPONSE:', reply); // Debug log
       setRawAiResponse(reply); // Save raw response
-      setChatLog(prev => [...prev, { sender: 'bot', text: reply, isItinerary: true }]);
+
+      // Extract chat part (before the '{')
+      const splitIndex = reply.indexOf('{');
+      const chatPart = splitIndex === -1 ? reply : reply.substring(0, splitIndex).trim();
+
+      setChatLog(prev => [...prev, { sender: 'bot', text: chatPart, isItinerary: true }]);
       setAiHistory(prev => [...prev, { role: 'assistant', content: reply }]);
 
       const { days, meta } = parseItineraryText(reply);
