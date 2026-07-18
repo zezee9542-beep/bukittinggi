@@ -202,28 +202,39 @@ export function TravelPlannerPage() {
    * Falls back to legacy bullet-list parsing, then to default itinerary.
    */
   const parseItineraryText = (text: string): { days: ItineraryDay[]; meta: Partial<TripInfo> } => {
+    console.log('🔍 PARSING TEXT:', text); // Debug log
     const meta: Partial<TripInfo> = {};
     const parsedDays: ItineraryDay[] = [];
 
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    // Preprocess: remove any extra markdown and split lines
+    const lines = text
+      .replace(/\*\*/g, '')
+      .replace(/\*/g, '')
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
     let currentDay: ItineraryDay | null = null;
 
     for (const line of lines) {
       // ── Meta headers (allow spaces around colon) ──────────────────────────
       if (/^##JUDUL\s*:/i.test(line) && !/^##JUDUL_HARI\s*:/i.test(line)) {
         meta.judul = line.replace(/^##JUDUL\s*:/i, '').trim();
+        console.log('✅ Parsed JUDUL:', meta.judul);
         continue;
       }
       if (/^##RINGKASAN\s*:/i.test(line)) {
         meta.ringkasan = line.replace(/^##RINGKASAN\s*:/i, '').trim();
+        console.log('✅ Parsed RINGKASAN:', meta.ringkasan);
         continue;
       }
       if (/^##ESTIMASI\s*:/i.test(line)) {
         meta.estimasi = line.replace(/^##ESTIMASI\s*:/i, '').trim();
+        console.log('✅ Parsed ESTIMASI:', meta.estimasi);
         continue;
       }
       if (/^##TIPS\s*:/i.test(line)) {
         meta.tips = line.replace(/^##TIPS\s*:/i, '').trim();
+        console.log('✅ Parsed TIPS:', meta.tips);
         continue;
       }
 
@@ -238,26 +249,30 @@ export function TravelPlannerPage() {
           fokus: 'RENCANA PERJALANAN',
           activities: [],
         };
+        console.log('✅ Starting new day:', currentDay.dayNumber);
         continue;
       }
       if (/^##JUDUL_HARI\s*:/i.test(line) && currentDay) {
         currentDay.title = line.replace(/^##JUDUL_HARI\s*:/i, '').trim() || currentDay.title;
+        console.log('✅ Set day title:', currentDay.title);
         continue;
       }
       if (/^##FOKUS\s*:/i.test(line) && currentDay) {
         currentDay.fokus = line.replace(/^##FOKUS\s*:/i, '').trim().toUpperCase() || 'RENCANA PERJALANAN';
+        console.log('✅ Set day fokus:', currentDay.fokus);
         continue;
       }
       if (/^##AKTIVITAS/i.test(line)) continue; // section marker, skip
 
       // ── Activity line: split by pipe '|' for extreme robustness ──────────
       if (currentDay && !line.startsWith('##')) {
-        const parts = line.split('|');
+        const parts = line.split('|').map(p => p.trim());
+        console.log('🔍 Checking activity line parts:', parts);
         if (parts.length >= 4) {
-          const rawWaktu = parts[0].trim();
-          const aktivitas = parts[1].trim();
-          const lokasi = parts[2].trim();
-          const deskripsi = parts.slice(3).join('|').trim();
+          const rawWaktu = parts[0];
+          const aktivitas = parts[1];
+          const lokasi = parts[2];
+          const deskripsi = parts.slice(3).join(' | ');
 
           // Normalise time separator
           const waktu = rawWaktu
@@ -266,17 +281,8 @@ export function TravelPlannerPage() {
             .replace(/\s*-\s*/g, ' - ');
 
           currentDay.activities.push({ waktu, aktivitas, lokasi, deskripsi });
+          console.log('✅ Added activity:', { waktu, aktivitas, lokasi, deskripsi });
           continue;
-        }
-
-        // ── Fallback Activity line (old WAKTU|NAMA|LOKASI|DESKRIPSI pipe format) ──────
-        const oldRe = /WAKTU\s*:\s*([^|]+)\|\s*(?:NAMA|AKTIVITAS)\s*:\s*([^|]+)\|\s*LOKASI\s*:\s*([^|]+)\|\s*(?:DESKRIPSI|KETERANGAN)\s*:\s*(.+)/i;
-        const om = oldRe.exec(line);
-        if (om) {
-          const rawW = om[1].trim().replace(/\./g, ':').replace(/[–—]/g, '-').replace(/\s*-\s*/g, ' - ');
-          currentDay.activities.push({
-            waktu: rawW, aktivitas: om[2].trim(), lokasi: om[3].trim(), deskripsi: om[4].trim(),
-          });
         }
       }
     }
@@ -284,8 +290,10 @@ export function TravelPlannerPage() {
     // Push last day
     if (currentDay) parsedDays.push(currentDay);
 
+    console.log('📅 Parsed days before fallback:', parsedDays);
     // If new format yielded nothing, try legacy bullet parser
     if (parsedDays.length === 0) {
+      console.log('⚠️ Using legacy parser');
       return { days: parseLegacyFormat(text), meta };
     }
 
@@ -297,6 +305,7 @@ export function TravelPlannerPage() {
       }
     });
 
+    console.log('✅ Final parsed days:', parsedDays);
     return { days: parsedDays, meta };
   };
 
@@ -619,10 +628,13 @@ export function TravelPlannerPage() {
 
     try {
       const reply = await askTravelPlanner(aiHistory, true);
+      console.log('🤖 RAW AI ITINERARY RESPONSE:', reply); // Debug log
       setChatLog(prev => [...prev, { sender: 'bot', text: reply, isItinerary: true }]);
       setAiHistory(prev => [...prev, { role: 'assistant', content: reply }]);
 
       const { days, meta } = parseItineraryText(reply);
+      console.log('📅 PARSED DAYS:', days); // Debug log
+      console.log('📋 PARSED META:', meta); // Debug log
       setItineraryDays(days);
 
       // Merge AI-extracted metadata into tripInfo
