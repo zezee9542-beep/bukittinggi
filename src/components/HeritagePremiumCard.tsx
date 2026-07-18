@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface HeritagePremiumCardProps {
   title: string;
@@ -20,6 +21,7 @@ export function HeritagePremiumCard({
   borderRadius,
 }: HeritagePremiumCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // 'idle' | 'opening' | 'open' | 'closing'
   const [phase, setPhase] = useState<'idle' | 'opening' | 'open' | 'closing'>('idle');
@@ -53,6 +55,19 @@ export function HeritagePremiumCard({
     closeTimer.current = setTimeout(() => setPhase('idle'), 850);
   }, []);
 
+  const getPath = useCallback(() => {
+    switch (title.toLowerCase()) {
+      case 'sejarah':
+        return '/sejarah';
+      case 'budaya':
+        return '/budaya';
+      case 'kuliner':
+        return '/kuliner';
+      default:
+        return null;
+    }
+  }, [title]);
+
   const handleCardClick = useCallback((e: React.MouseEvent) => {
     if (!checkIsMobile()) return;
     
@@ -64,10 +79,25 @@ export function HeritagePremiumCard({
       setPhase('opening');
       openTimer.current = setTimeout(() => setPhase('open'), 950);
     } else {
-      setPhase('closing');
-      closeTimer.current = setTimeout(() => setPhase('idle'), 850);
+      const path = getPath();
+      if (path) {
+        navigate(path);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setPhase('closing');
+        closeTimer.current = setTimeout(() => setPhase('idle'), 850);
+      }
     }
-  }, [phase]);
+  }, [phase, navigate, getPath]);
+
+  const handleDesktopClick = useCallback((e: React.MouseEvent) => {
+    if (checkIsMobile()) return;
+    const path = getPath();
+    if (path) {
+      navigate(path);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [navigate, getPath]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (checkIsMobile()) return;

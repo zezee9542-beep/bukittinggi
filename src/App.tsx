@@ -6,11 +6,13 @@ import { FeatureSection } from './components/FeatureSection';
 import { Navigation } from './components/Navigation';
 import { HistoryPage } from './components/HistoryPage';
 import { BudayaPage } from './components/BudayaPage';
+import { KulinerPage } from './components/KulinerPage';
 import { TravelPlannerPage } from './components/TravelPlannerPage';
 import { ParijsSection } from './components/ParijsSection';
 import { HeritageSection } from './components/HeritageSection';
 import { RancakBotWidget } from './components/RancakBotWidget';
 import { useMode } from './context/ModeContext';
+import { AITravelPlannerSection } from './components/AITravelPlannerSection';
 
 
 function HomePage() {
@@ -23,6 +25,7 @@ function HomePage() {
         <EditorialIntro />
       </div>
       <ParijsSection />
+      <AITravelPlannerSection />
       <HeritageSection />
     </>
   );
@@ -72,6 +75,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/sejarah" element={<HistoryPage />} />
           <Route path="/budaya" element={<BudayaPage />} />
+          <Route path="/kuliner" element={<KulinerPage />} />
           <Route path="/travel-planner" element={<TravelPlannerPage />} />
         </Routes>
       </main>

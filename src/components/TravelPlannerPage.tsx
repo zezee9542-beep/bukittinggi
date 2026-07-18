@@ -632,7 +632,7 @@ export function TravelPlannerPage() {
     const displayNights = nightCountMatch ? nightCountMatch[1] : String(Math.max(itineraryDays.length - 1, 0));
 
     return (
-      <main className="min-h-screen bg-[#FAF8F7] pt-[96px] pb-16 px-4 md:px-8 lg:px-12 flex flex-col gap-6">
+      <main className="min-h-screen bg-[#FAF8F7] pt-[96px] pb-16 px-4 md:px-8 lg:px-12 flex flex-col gap-6 overflow-visible">
         {/* Back Button */}
         <div className="max-w-[1440px] mx-auto w-full flex-shrink-0 flex items-center justify-between">
           <button
@@ -665,10 +665,10 @@ export function TravelPlannerPage() {
         )}
 
         {/* 2-Column Responsive Split */}
-        <div className="max-w-[1440px] mx-auto w-full flex flex-col lg:flex-row gap-8 items-start animate-fade-in">
+        <div className="max-w-[1440px] mx-auto w-full flex flex-col lg:flex-row gap-8 items-start animate-fade-in overflow-visible">
           
           {/* ── Left Column (Itinerary Cards) ── */}
-          <div className="w-full lg:w-[32%] flex flex-col gap-6 flex-shrink-0">
+          <div className="w-full lg:w-[32%] flex flex-col gap-6 flex-shrink-0 sticky lg:sticky top-24 lg:top-24 self-start lg:self-start z-10">
             
             {/* Top Card */}
             <div className="bg-white border border-[#F3DDDB]/30 rounded-[24px] p-6 flex flex-col gap-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">

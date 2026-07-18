@@ -107,7 +107,7 @@ export function Navigation() {
   const jelajahiLinks = [
     { label: t('nav_history'), path: '/sejarah' },
     { label: t('nav_culture'), path: '/budaya' },
-    { label: t('nav_culinary'), path: '/', targetId: 'heritage-heading' },
+    { label: t('nav_culinary'), path: '/kuliner' },
     { label: t('nav_tourism'), path: '/', targetId: 'heritage-heading' },
   ];
 
