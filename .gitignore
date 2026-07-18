@@ -1,25 +1,101 @@
-# Dependencies
-node_modules/
-
-# Build outputs
-dist/
-build/
-
-# Environment variables (contains API keys!)
-.env
-.env.local
-.env.*.local
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS files
-.DS_Store
-Thumbs.db
-
 # Logs
+logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables (contains API keys — never commit)
+.env
+.env.*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Ignore all assets in public/assets except folders
+public/assets/*
+!public/assets/.gitkeep
+
+# Ignore all assets in src/assets
+src/assets/*
+
+# Exceptions - Allow specific files in src/assets that are statically imported  
+!src/assets/01.webp
+!src/assets/02.webp
+!src/assets/03.webp
+!src/assets/04.webp
+!src/assets/05.webp
+!src/assets/06.webp
+!src/assets/11.webp
+!src/assets/12.webp
+!src/assets/13.webp
+!src/assets/14.webp
+!src/assets/15.webp
+!src/assets/bg.webp
+!src/assets/menara.webp
+!src/assets/menara.png
+!src/assets/cht.png
+!src/assets/enter.png
+!src/assets/imgg.webp
+!src/assets/gunung.webp
+!src/assets/frame.svg
+!src/assets/gadang.svg
+!src/assets/segitiga.svg
+!src/assets/maps.svg
+!src/assets/minNG.svg
+!src/assets/logo.svg
+!src/assets/1.svg
+!src/assets/2.svg
+!src/assets/3.svg
+!src/assets/4.svg
+!src/assets/5.svg
+!src/assets/6.svg
+!src/assets/7.svg
+!src/assets/tiga.svg
+!src/assets/Rectangle 1385 (2).svg
+!src/assets/Rectangle 1385 (3).svg
+!src/assets/Rectangle 1385 (4).svg
+!src/assets/Rectangle 1385 (5).svg
+!src/assets/Rectangle 1385 (6).svg
+!src/assets/Rectangle 1385 (7).svg
+!src/assets/Rectangle 1385 (8).svg
+!src/assets/Budaya 4k.mp4
+!src/assets/Bukittinggi 4K.mp4
+!src/assets/image.png
+!src/assets/rumah.png
+!src/assets/musik.mp3
+!src/assets/image copy.png
+!src/assets/c1.svg
+!src/assets/c2.svg
+!src/assets/link.svg
+!src/assets/kalend.svg
+!src/assets/voic.svg
+
+!src/assets/lok.svg
+!src/assets/pesa.svg
+!src/assets/orng.svg
+!src/assets/kalendar.svg
+!src/assets/luv.svg
+
+!src/assets/ai.svg
+!src/assets/al.svg
+!src/assets/camp.svg
+!src/assets/pdf.svg
+!src/assets/sv.svg
+!src/assets/flag.png
+!src/assets/sawah.png
