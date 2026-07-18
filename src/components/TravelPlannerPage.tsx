@@ -53,6 +53,25 @@ interface TripInfo {
   tips: string;          // TIPS_TRANSPORTASI from AI
 }
 
+interface AiItineraryJson {
+  tripTitle: string;
+  summary: string;
+  estimatedCost: string;
+  travelTip: string;
+  totalDays: number;
+  days: Array<{
+    day: number;
+    title: string;
+    category: string;
+    activities: Array<{
+      time: string;
+      activity: string;
+      location: string;
+      description: string;
+    }>;
+  }>;
+}
+
 
 const WELCOME = 'Selamat datang di Bukittinggi Heritage. Saya akan membantu menyusun perjalanan yang sesuai dengan minat, waktu, dan gaya liburan Anda.\n\nUntuk memulai, destinasi mana yang ingin Anda jelajahi? Atau biarkan saya memberikan rekomendasi terbaik.';
 
@@ -190,124 +209,54 @@ export function TravelPlannerPage() {
   ];
 
   /**
-   * Parses the new ##KEY:value line-based AI itinerary format.
-   * Format:
-   *   ##JUDUL:Trip title
-   *   ##RINGKASAN:Summary text
-   *   ##ESTIMASI:Cost estimate
-   *   ##TIPS:Transport tip
-   *   ##HARI:1
-   *   ##JUDUL_HARI:Day title
-   *   ##FOKUS:FOCUS THEME
-   *   HH:MM-HH:MM|Activity|Location|Description
-   *
-   * Falls back to legacy bullet-list parsing, then to default itinerary.
+   * Parses the JSON itinerary format from the AI.
+   * Falls back to default itinerary if parsing fails.
    */
   const parseItineraryText = (text: string): { days: ItineraryDay[]; meta: Partial<TripInfo> } => {
     console.log('🔍 PARSING TEXT:', text); // Debug log
     const meta: Partial<TripInfo> = {};
-    const parsedDays: ItineraryDay[] = [];
+    let parsedDays: ItineraryDay[] = [];
 
-    // Preprocess: remove any extra markdown and split lines
-    const lines = text
-      .replace(/\*\*/g, '')
-      .replace(/\*/g, '')
-      .split('\n')
-      .map(l => l.trim())
-      .filter(l => l.length > 0);
-    let currentDay: ItineraryDay | null = null;
+    try {
+      // Try to find JSON in the text (in case AI adds extra text)
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('No JSON found');
+      
+      const jsonStr = jsonMatch[0];
+      console.log('🔍 Extracted JSON:', jsonStr);
+      
+      const itinerary = JSON.parse(jsonStr) as AiItineraryJson;
+      console.log('✅ Parsed AI Itinerary:', itinerary);
 
-    for (const line of lines) {
-      // ── Meta headers (allow spaces around colon) ──────────────────────────
-      if (/^##JUDUL\s*:/i.test(line) && !/^##JUDUL_HARI\s*:/i.test(line)) {
-        meta.judul = line.replace(/^##JUDUL\s*:/i, '').trim();
-        console.log('✅ Parsed JUDUL:', meta.judul);
-        continue;
-      }
-      if (/^##RINGKASAN\s*:/i.test(line)) {
-        meta.ringkasan = line.replace(/^##RINGKASAN\s*:/i, '').trim();
-        console.log('✅ Parsed RINGKASAN:', meta.ringkasan);
-        continue;
-      }
-      if (/^##ESTIMASI\s*:/i.test(line)) {
-        meta.estimasi = line.replace(/^##ESTIMASI\s*:/i, '').trim();
-        console.log('✅ Parsed ESTIMASI:', meta.estimasi);
-        continue;
-      }
-      if (/^##TIPS\s*:/i.test(line)) {
-        meta.tips = line.replace(/^##TIPS\s*:/i, '').trim();
-        console.log('✅ Parsed TIPS:', meta.tips);
-        continue;
-      }
+      // Map to our internal types
+      meta.judul = itinerary.tripTitle;
+      meta.ringkasan = itinerary.summary;
+      meta.estimasi = itinerary.estimatedCost;
+      meta.tips = itinerary.travelTip;
 
-      // ── Day header (allow spaces around colon, e.g. ##HARI: 1 or ##HARI:1) ──
-      if (/^##HARI\s*:\s*\d+/i.test(line)) {
-        if (currentDay) parsedDays.push(currentDay);
-        const dayNumStr = line.replace(/^##HARI\s*:/i, '').trim();
-        const dayNum = parseInt(dayNumStr, 10);
-        currentDay = {
-          dayNumber: isNaN(dayNum) ? parsedDays.length + 1 : dayNum,
-          title: `Hari ${isNaN(dayNum) ? parsedDays.length + 1 : dayNum}`,
-          fokus: 'RENCANA PERJALANAN',
-          activities: [],
-        };
-        console.log('✅ Starting new day:', currentDay.dayNumber);
-        continue;
-      }
-      if (/^##JUDUL_HARI\s*:/i.test(line) && currentDay) {
-        currentDay.title = line.replace(/^##JUDUL_HARI\s*:/i, '').trim() || currentDay.title;
-        console.log('✅ Set day title:', currentDay.title);
-        continue;
-      }
-      if (/^##FOKUS\s*:/i.test(line) && currentDay) {
-        currentDay.fokus = line.replace(/^##FOKUS\s*:/i, '').trim().toUpperCase() || 'RENCANA PERJALANAN';
-        console.log('✅ Set day fokus:', currentDay.fokus);
-        continue;
-      }
-      if (/^##AKTIVITAS/i.test(line)) continue; // section marker, skip
+      parsedDays = itinerary.days.map(day => ({
+        dayNumber: day.day,
+        title: day.title,
+        fokus: day.category.toUpperCase(),
+        activities: day.activities.map(act => ({
+          waktu: act.time,
+          aktivitas: act.activity,
+          lokasi: act.location,
+          deskripsi: act.description
+        }))
+      }));
 
-      // ── Activity line: split by pipe '|' for extreme robustness ──────────
-      if (currentDay && !line.startsWith('##')) {
-        const parts = line.split('|').map(p => p.trim());
-        console.log('🔍 Checking activity line parts:', parts);
-        if (parts.length >= 4) {
-          const rawWaktu = parts[0];
-          const aktivitas = parts[1];
-          const lokasi = parts[2];
-          const deskripsi = parts.slice(3).join(' | ');
-
-          // Normalise time separator
-          const waktu = rawWaktu
-            .replace(/\./g, ':')
-            .replace(/[–—]/g, '-')
-            .replace(/\s*-\s*/g, ' - ');
-
-          currentDay.activities.push({ waktu, aktivitas, lokasi, deskripsi });
-          console.log('✅ Added activity:', { waktu, aktivitas, lokasi, deskripsi });
-          continue;
-        }
-      }
+      console.log('✅ Mapped days:', parsedDays);
+    } catch (err) {
+      console.error('❌ Failed to parse JSON, using default itinerary:', err);
+      parsedDays = getDefaultItinerary();
     }
 
-    // Push last day
-    if (currentDay) parsedDays.push(currentDay);
-
-    console.log('📅 Parsed days before fallback:', parsedDays);
-    // If new format yielded nothing, try legacy bullet parser
+    // Ensure we have at least some activities
     if (parsedDays.length === 0) {
-      console.log('⚠️ Using legacy parser');
-      return { days: parseLegacyFormat(text), meta };
+      parsedDays = getDefaultItinerary();
     }
 
-    // Ensure each day has title + at least 1 activity
-    parsedDays.forEach(d => {
-      if (!d.title) d.title = `Hari ${d.dayNumber}`;
-      if (d.activities.length === 0) {
-        d.activities.push({ waktu: '09:00 - 17:00', aktivitas: 'Jelajahi Bukittinggi', lokasi: 'Kota Bukittinggi', deskripsi: 'Nikmati berbagai aktivitas menarik sesuai jadwal harian Anda.' });
-      }
-    });
-
-    console.log('✅ Final parsed days:', parsedDays);
     return { days: parsedDays, meta };
   };
 

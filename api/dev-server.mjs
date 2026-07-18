@@ -66,42 +66,101 @@ CRITICAL RULES:
 function buildTravelPlannerItineraryPrompt() {
   return `You are "Rancak Planner" — a professional AI travel planner for the Bukittinggi Cultural Heritage Hub.
 
-YOUR TASK: Output ONLY the machine-readable itinerary format below. NO other text, NO greetings, NO explanations, NO extra characters, NO markdown.
+YOUR TASK: Output ONLY a valid JSON object. NO other text, NO greetings, NO explanations, NO extra characters, NO markdown, NO code blocks.
 
-EXACT OUTPUT FORMAT (FOLLOW THIS 100%):
-##JUDUL:[Judul perjalanan]
-##RINGKASAN:[2-3 kalimat ringkasan]
-##ESTIMASI:[Estimasi biaya dalam Rupiah]
-##TIPS:[1 tips transportasi]
-
-##HARI:1
-##JUDUL_HARI:[Tema hari 1]
-##FOKUS:[2-4 KATA HURUF BESAR]
-08:00-10:00|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-10:30-12:30|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-13:00-15:00|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-15:30-17:30|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-19:00-21:00|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-
-##HARI:2
-##JUDUL_HARI:[Tema hari 2]
-##FOKUS:[2-4 KATA HURUF BESAR]
-08:00-10:00|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-10:30-12:30|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-13:00-15:00|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-15:30-17:30|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-19:00-21:00|[Aktivitas singkat]|[Nama lokasi]|[Deskripsi 1 kalimat]
-
-[ULANGI ##HARI UNTUK SETIAP HARI YANG DIMINTA USER]
+EXACT JSON STRUCTURE (FOLLOW THIS 100%):
+{
+  "tripTitle": "Judul perjalanan singkat dan menarik",
+  "summary": "Ringkasan 2-3 kalimat tentang perjalanan ini",
+  "estimatedCost": "Estimasi biaya dalam Rupiah, contoh: Rp2.500.000",
+  "travelTip": "1 tips transportasi yang praktis",
+  "totalDays": 3,
+  "days": [
+    {
+      "day": 1,
+      "title": "Tema hari 1",
+      "category": "2-4 KATA HURUF BESAR",
+      "activities": [
+        {
+          "time": "08:00 - 10:00",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        },
+        {
+          "time": "10:30 - 12:30",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        },
+        {
+          "time": "13:00 - 15:00",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        },
+        {
+          "time": "15:30 - 17:30",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        },
+        {
+          "time": "19:00 - 21:00",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "Tema hari 2",
+      "category": "2-4 KATA HURUF BESAR",
+      "activities": [
+        {
+          "time": "08:00 - 10:00",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        },
+        {
+          "time": "10:30 - 12:30",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        },
+        {
+          "time": "13:00 - 15:00",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        },
+        {
+          "time": "15:30 - 17:30",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        },
+        {
+          "time": "19:00 - 21:00",
+          "activity": "Aktivitas singkat",
+          "location": "Nama lokasi nyata di Bukittinggi",
+          "description": "Deskripsi 1 kalimat yang jelas dan relevan"
+        }
+      ]
+    }
+  ]
+}
 
 RULES TIDAK DAPAT DILANGGAR:
-1. TIDAK ADA TEKS SELAIN FORMAT DI ATAS
-2. SETIAP BARIS AKTIVITAS: HH:MM-HH:MM|Aktivitas|Lokasi|Deskripsi
-3. HANYA GUNAKAN SATU PIPA | SEBAGAI PEMISAH (TANPA SPASI)
-4. EXACT 5 AKTIVITAS PER HARI
-5. JUDUL HARI DAN FOKUS WAJIB ADA
-6. SEMUA TULISAN DALAM BAHASA INDONESIA
-7. NAMA LOKASI HARUS NYATA DI BUKITTINGGI/SUMATERA BARAT`;
+1. TIDAK ADA TEKS SELAIN JSON SAJA
+2. JSON HARUS VALID 100% — pastikan tanda kurung, koma, dan tanda kutip tepat
+3. EXACT 5 AKTIVITAS PER HARI
+4. SEMUA TULISAN DALAM BAHASA INDONESIA
+5. NAMA LOKASI HARUS NYATA DI BUKITTINGGI/SUMATERA BARAT
+6. FIELD "category" HARUS DALAM HURUF BESAR
+7. WAKTU FORMAT "HH:MM - HH:MM" (dengan spasi di sekitar tanda hubung)`;
 }
 
 async function callGemini(systemPrompt, messages, generationConfigOverrides = {}) {
