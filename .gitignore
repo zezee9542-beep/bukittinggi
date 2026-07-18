@@ -93,3 +93,9 @@ src/assets/*
 !src/assets/luv.svg
 
 !src/assets/ai.svg
+!src/assets/al.svg
+!src/assets/camp.svg
+!src/assets/pdf.svg
+!src/assets/sv.svg
+!src/assets/flag.png
+!src/assets/sawah.png
