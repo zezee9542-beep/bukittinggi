@@ -260,48 +260,7 @@ export function TravelPlannerPage() {
     return { days: parsedDays, meta };
   };
 
-  /** Legacy fallback: parse old markdown bullet list format */
-  const parseLegacyFormat = (text: string): ItineraryDay[] => {
-    const dayRegex = /(?:^|\n)(?:###?\s*)?(?:Hari|Day|##HARI)\s*[:\-–\s]*(\d+)[:\s-]*([^\n]*)/gi;
-    const dayIndices: { index: number; dayNum: number; title: string }[] = [];
-    let m;
-    while ((m = dayRegex.exec(text)) !== null) {
-      dayIndices.push({ index: m.index, dayNum: parseInt(m[1], 10), title: m[2].trim() });
-    }
-    if (dayIndices.length === 0) return getDefaultItinerary();
-    const fokusList = ['WARISAN BUDAYA', 'PETUALANGAN ALAM', 'KULINER & BELANJA', 'WISATA SEJARAH', 'RELAKSASI'];
-    const result: ItineraryDay[] = [];
-    for (let i = 0; i < dayIndices.length; i++) {
-      const start = dayIndices[i].index;
-      const end   = i < dayIndices.length - 1 ? dayIndices[i + 1].index : text.length;
-      const block = text.substring(start, end);
-      const activities: ItineraryActivity[] = [];
-      block.split('\n').forEach(line => {
-        const cl = line.trim();
-        if (!cl || cl.startsWith('Hari') || cl.startsWith('Day')) return;
-        if (cl.startsWith('-') || cl.startsWith('*') || /^\d+\./.test(cl)) {
-          const content = cl.replace(/^[-*\d.]+\s*/, '').replace(/[\u{1F300}-\u{1FFFF}]/gu, '').replace(/[\u2600-\u26FF]/g, '').trim();
-          const tm = content.match(/(\d{1,2}[:.]\d{2})\s*[-–]\s*(\d{1,2}[:.]\d{2})/);
-          let waktu = '09:00 - 12:00', remaining = content;
-          if (tm) {
-            waktu = `${tm[1].replace('.', ':')} - ${tm[2].replace('.', ':')}`;
-            remaining = content.replace(tm[0], '').replace(/^[:\s]+/, '').trim();
-          } else {
-            const lc = content.toLowerCase();
-            if (lc.includes('pagi')) waktu = '08:00 - 12:00';
-            else if (lc.includes('siang')) waktu = '12:00 - 15:00';
-            else if (lc.includes('sore')) waktu = '15:00 - 18:00';
-            else if (lc.includes('malam')) waktu = '18:00 - 21:00';
-          }
-          const parts = remaining.split(/[|,–\-]/).map(s => s.trim()).filter(Boolean);
-          activities.push({ waktu, aktivitas: (parts[0] || remaining).substring(0, 60), lokasi: (parts[1] || 'Bukittinggi').substring(0, 50), deskripsi: remaining.substring(0, 200) });
-        }
-      });
-      if (activities.length === 0) activities.push({ waktu: '09:00 - 17:00', aktivitas: 'Jelajahi Bukittinggi', lokasi: 'Kota Bukittinggi', deskripsi: 'Nikmati aktivitas menarik sesuai jadwal.' });
-      result.push({ dayNumber: dayIndices[i].dayNum, title: dayIndices[i].title || `Hari ${dayIndices[i].dayNum}`, fokus: fokusList[i % fokusList.length], activities });
-    }
-    return result;
-  };
+
 
   // ── Date Picker Helper Functions ──
 
