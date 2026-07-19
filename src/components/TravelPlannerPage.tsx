@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { askTravelPlanner, type AiChatMessage } from '../lib/aiClient';
+import { downloadRundownPdf } from '../lib/rundownPdf';
 
 // SVG Asset Imports
 import linkSvg from '../assets/link.svg';
@@ -141,7 +142,7 @@ export function TravelPlannerPage() {
   /**
    * Extract companion count & label from step 3 answer (e.g. "Bersama Pasangan", "Solo Traveler", "Liburan Keluarga 4 orang")
    */
-  const parseCompanions = (raw: string): string => {
+  const parseCompanions = useCallback((raw: string): string => {
     const lower = raw.toLowerCase();
     if (lower.includes('solo') || lower.includes('sendiri')) return '1 Orang';
     if (lower.includes('pasangan') || lower.includes('couple') || lower.includes('berdua')) return '2 Orang';
@@ -155,12 +156,12 @@ export function TravelPlannerPage() {
     }
     const numMatch = raw.match(/(\d+)/);
     return numMatch ? `${numMatch[1]} Orang` : '2 Orang';
-  };
+  }, []);
 
   /**
    * Extract duration (number of days) from step 4 answer
    */
-  const parseDuration = (raw: string): number => {
+  const parseDuration = useCallback((raw: string): number => {
     const lower = raw.toLowerCase();
     // "3 hari", "5 days", "3-day"
     const dayMatch = raw.match(/(\d+)\s*(?:hari|day)/);
@@ -170,9 +171,9 @@ export function TravelPlannerPage() {
     // "sepekan" / "seminggu"
     if (lower.includes('seminggu') || lower.includes('sepekan')) return 7;
     return 3; // default
-  };
+  }, []);
 
-  const getDefaultItinerary = (days: number = 3): ItineraryDay[] => {
+  const getDefaultItinerary = useCallback((days: number = 3): ItineraryDay[] => {
     const baseDays = [
       {
         title: "Kedatangan & Jelajahi Warisan Budaya", fokus: "WARISAN SEJARAH", activities: [
@@ -232,16 +233,16 @@ export function TravelPlannerPage() {
       });
     }
     return result;
-  };
+  }, []);
 
   /**
    * Parses the combined chat + JSON format from the AI.
    * Falls back to default itinerary if parsing fails.
    */
-  const parseItineraryText = (text: string): { days: ItineraryDay[]; meta: Partial<TripInfo> } => {
+  const parseItineraryText = useCallback((text: string): { days: ItineraryDay[]; meta: Partial<TripInfo> } => {
     console.log('🔍 PARSING TEXT:', text); // Debug log
     const meta: Partial<TripInfo> = {};
-    let parsedDays: ItineraryDay[] = [];
+    let parsedDays: ItineraryDay[];
 
     try {
       // First, split text into chat and JSON parts (JSON starts with '{')
@@ -285,7 +286,7 @@ export function TravelPlannerPage() {
     }
 
     return { days: parsedDays, meta };
-  };
+  }, [getDefaultItinerary, requestedDays]);
 
 
 
@@ -607,7 +608,7 @@ export function TravelPlannerPage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [currentStep, isGenerating, aiHistory, parseItineraryText, requestedDays]);
+  }, [currentStep, isGenerating, aiHistory, parseItineraryText, requestedDays, getDefaultItinerary]);
 
   if (showResultScreen) {
     const usePagination = itineraryDays.length > 7;
@@ -626,6 +627,27 @@ export function TravelPlannerPage() {
     const nightCountMatch = tripInfo.duration.match(/(\d+)\s*Malam/);
     const displayDays = dayCountMatch ? dayCountMatch[1] : String(itineraryDays.length);
     const displayNights = nightCountMatch ? nightCountMatch[1] : String(Math.max(itineraryDays.length - 1, 0));
+
+    const handleDownloadPdf = () => {
+      if (itineraryDays.length === 0) return;
+      try {
+        downloadRundownPdf(
+          {
+            destination: tripInfo.destination,
+            companions: tripInfo.companions,
+            duration: tripInfo.duration,
+            judul: tripInfo.judul,
+            ringkasan: tripInfo.ringkasan || displayAdvice,
+            estimasi: tripInfo.estimasi,
+            tips: tripInfo.tips,
+          },
+          itineraryDays,
+        );
+      } catch (err) {
+        console.error('Gagal membuat PDF rundown:', err);
+        alert('Maaf, terjadi kesalahan saat membuat PDF. Silakan coba lagi.');
+      }
+    };
 
     return (
       <main className="min-h-screen bg-[#FAF8F7] pt-[96px] pb-16 px-4 md:px-8 lg:px-12 flex flex-col gap-6 overflow-visible">
@@ -693,8 +715,8 @@ export function TravelPlannerPage() {
 
               {/* Actions */}
               <div className="flex flex-col gap-3">
-                <button 
-                  onClick={() => alert("Mengunduh rundown PDF...")}
+                <button
+                  onClick={handleDownloadPdf}
                   className="w-full h-12 bg-[#5F1712] hover:bg-[#4E130E] text-white flex items-center justify-center gap-2 rounded-xl font-manrope text-[13.5px] font-medium transition-all cursor-pointer shadow-sm hover:scale-[1.01]"
                 >
                   <img src={pdfSvg} alt="" className="w-4 h-4 object-contain invert brightness-0" style={{ filter: 'brightness(0) invert(1)' }} />

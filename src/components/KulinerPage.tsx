@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 // ── Assets ─────────────────────────────────────────────────────────
@@ -196,6 +197,7 @@ const KULINER_DATA: Record<'makanan' | 'manisan' | 'minuman', KulinerItem[]> = {
 };
 
 export function KulinerPage() {
+  const navigate = useNavigate();
   const { ref: heroRef, isVisible: heroVisible } = useScrollReveal<HTMLElement>({ threshold: 0.01 });
   const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.15 });
   const { ref: decorationRef, isVisible: decorationVisible } = useScrollReveal<HTMLElement>({ threshold: 0.2 });
@@ -704,6 +706,7 @@ export function KulinerPage() {
 
             {/* Button — smaller on mobile */}
             <button
+              onClick={() => navigate('/game')}
               className="self-end text-white font-poppins font-medium text-[13px] sm:text-[15px] px-6 sm:px-8 py-2 sm:py-3 rounded-[10px] sm:rounded-[12px] flex items-center gap-1.5 sm:gap-2 transition-all hover:bg-[#521717] active:scale-95 cursor-pointer mt-auto"
               style={{ backgroundColor: '#6E1F1F' }}
             >

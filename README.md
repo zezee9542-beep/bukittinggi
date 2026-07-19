@@ -1,77 +1,92 @@
-# React + TypeScript + Vite
+# Bukittinggi Heritage
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Situs pengalaman digital untuk menjelajahi sejarah, budaya, kuliner, dan pariwisata Bukittinggi. Proyek ini mengimplementasikan desain **Bukittinggi Heritage** dari Figma sebagai aplikasi React responsif, lengkap dengan AI Travel Planner dan RancakBot.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19
+- TypeScript
+- Vite 8
+- Tailwind CSS 4
+- React Router
+- Vercel Serverless Functions
+- Gemini API untuk RancakBot dan Travel Planner
 
-## React Compiler
+## Menjalankan proyek
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Prasyarat
 
-Note: This will impact Vite dev & build performances.
+- Node.js 20 atau lebih baru
+- npm
 
-## Expanding the ESLint configuration
+### Instalasi
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm ci
+cp .env.example .env
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Isi `GEMINI_API_KEY` di `.env` jika ingin menguji fitur AI. Jangan commit file `.env`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Development
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Jalankan API lokal pada terminal pertama:
 
+```bash
+npm run dev:api
 ```
+
+Jalankan frontend pada terminal kedua:
+
+```bash
+npm run dev
+```
+
+Buka `http://localhost:5173`. Vite meneruskan request `/api/*` ke server lokal pada port `3001`.
+
+Frontend tetap dapat digunakan tanpa API key. RancakBot dan Travel Planner memiliki fallback lokal ketika endpoint AI tidak tersedia.
+
+## Quality checks
+
+```bash
+npm run lint
+npm run build
+```
+
+Build produksi tersedia di folder `dist/`.
+
+## Struktur utama
+
+```text
+api/                    Serverless functions dan API server lokal
+src/components/         Halaman dan komponen UI
+src/context/            State mode, bahasa, dan musik
+src/data/               Konten heritage
+src/hooks/              Hook animasi dan interaksi
+src/lib/                Klien AI dan generator PDF
+src/assets/             Gambar, ikon, audio, dan model 3D
+```
+
+## Halaman
+
+- `/` — landing page Bukittinggi Heritage
+- `/sejarah` — linimasa sejarah
+- `/budaya` — eksplorasi budaya
+- `/kuliner` — kuliner khas
+- `/travel-planner` — AI Travel Planner
+- `/game` — permainan interaktif
+
+## Environment variables
+
+| Variable | Wajib | Keterangan |
+| --- | --- | --- |
+| `GEMINI_API_KEY` | Untuk fitur AI | API key Gemini; hanya digunakan di server |
+| `GEMINI_MODEL` | Tidak | Model Gemini, default `gemini-3.1-flash-lite` |
+
+## Deployment
+
+Konfigurasi `vercel.json` sudah menyertakan SPA rewrite. Tambahkan `GEMINI_API_KEY` sebagai environment variable pada project Vercel sebelum deployment agar fitur AI aktif.
+
+## Design source
+
+Figma: [Bukittinggi Heritage](https://www.figma.com/design/6GmusBiaoRHmm20A1qslEm/Bukittinggi-Heritage)

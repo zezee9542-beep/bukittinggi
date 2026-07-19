@@ -10,7 +10,6 @@ export function Navigation() {
   const { musicPlaying, setMusicPlaying } = useMode();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isJelajahiOpen, setIsJelajahiOpen] = useState(false);
-  const [showGameToast, setShowGameToast] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,7 +19,6 @@ export function Navigation() {
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
   const [navMounted, setNavMounted] = useState(false);
-  const closeToastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Mount animation
   useEffect(() => {
@@ -101,20 +99,6 @@ export function Navigation() {
       }
     }
   };
-
-  const triggerGameToast = () => {
-    if (closeToastTimer.current) clearTimeout(closeToastTimer.current);
-    setShowGameToast(true);
-    closeToastTimer.current = setTimeout(() => {
-      setShowGameToast(false);
-    }, 4500);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (closeToastTimer.current) clearTimeout(closeToastTimer.current);
-    };
-  }, []);
 
   const { t } = useTranslation();
 
@@ -276,12 +260,17 @@ export function Navigation() {
             Peta
           </button>
 
-          {/* Game shows a beautiful coming soon notification */}
+          {/* Game — memory-match culinary game */}
           <button
-            onClick={triggerGameToast}
-            className="relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5"
+            onClick={() => handleNavClick('/game')}
+            className={`relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 ${
+              location.pathname === '/game' ? 'text-[#6E1F1F] font-bold' : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5'
+            }`}
           >
             Game
+            {location.pathname === '/game' && (
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#6E1F1F] rounded-full animate-line-grow" />
+            )}
           </button>
         </nav>
 
@@ -339,37 +328,6 @@ export function Navigation() {
           onClose={() => setIsMenuOpen(false)}
         />
       )}
-
-      {/* ── Premium Custom Game Toast Notification ── */}
-      <div
-        className={`fixed z-[99] bottom-6 right-6 md:right-10 max-w-sm bg-white border border-neutral-200/80 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-5 flex items-start gap-4 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          showGameToast
-            ? 'translate-y-0 opacity-100 scale-100'
-            : 'translate-y-12 opacity-0 scale-90 pointer-events-none'
-        }`}
-      >
-        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#F7E0E0] flex items-center justify-center text-xl">
-          🎮
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-poppins font-bold text-[#6E1F1F] text-[15px] mb-1">
-            Game Segera Hadir!
-          </p>
-          <p className="font-poppins text-neutral-500 text-[13px] leading-relaxed">
-            Permainan Kebudayaan Bukittinggi sedang dalam pengembangan dan segera hadir di Hub Warisan Budaya! Pantau terus ya!
-          </p>
-        </div>
-        <button
-          onClick={() => setShowGameToast(false)}
-          className="flex-shrink-0 text-neutral-400 hover:text-[#6E1F1F] transition-colors cursor-pointer"
-          aria-label="Tutup notifikasi"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
     </>
   );
 }

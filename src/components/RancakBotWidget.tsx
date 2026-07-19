@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import chtPng from '../assets/cht.png';
 import enterPng from '../assets/enter.png';
@@ -6,63 +5,63 @@ import { useMode } from '../context/ModeContext';
 import { useTranslation } from '../hooks/useTranslation';
 import { askAi, type AiChatMessage } from '../lib/aiClient';
 
-// Inject float keyframe + tilt styles once
-const FLOAT_STYLE = `
-@keyframes rancakbotFloat {
-  0%   { transform: translateY(0px) rotate(-1deg); }
-  30%  { transform: translateY(-8px) rotate(0.5deg); }
-  60%  { transform: translateY(-5px) rotate(-0.5deg); }
-  100% { transform: translateY(0px) rotate(-1deg); }
-}
-.rancakbot-float {
-  animation: rancakbotFloat 3.8s ease-in-out infinite;
-  transform-origin: bottom center;
-}
-.rancakbot-tilting {
-  animation: none !important;
-}
-@keyframes hiPop {
-  0%   { opacity: 0; transform: translateX(-50%) scale(0.6) translateY(10px); }
-  60%  { opacity: 1; transform: translateX(-50%) scale(1.05) translateY(-2px); }
-  80%  { transform: translateX(-50%) scale(0.97) translateY(0px); }
-  100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0px); }
-}
-@keyframes hiFade {
-  0%   { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { opacity: 0; }
-}
-.rancakbot-hi {
-  animation: hiPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards, hiFade 2s ease 1s forwards;
-  pointer-events: none;
-}
-model-viewer {
-  outline: none !important;
-  border: none !important;
-  --poster-color: transparent !important;
-}
-model-viewer:focus, model-viewer:focus-visible {
-  outline: none !important;
-  border: none !important;
-}
-`;
 
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'model-viewer': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          src?: string; alt?: string; 'auto-rotate'?: boolean;
-          'camera-controls'?: boolean; 'disable-zoom'?: boolean;
-          'shadow-intensity'?: string; 'environment-image'?: string;
-          'auto-rotate-delay'?: string; 'interaction-prompt'?: string;
-          loading?: string; reveal?: string; style?: React.CSSProperties;
-        },
-        HTMLElement
-      >;
-    }
-  }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 interface ChatMessage {
   sender: 'bot' | 'user';
@@ -321,318 +320,316 @@ function generateAiResponse(userText: string, lang: Lang): string {
 }
 
 
-// ─── 3D Character with tilt + drag + hi ─────────────────────────────────────
-function TiltableCharacter({
-  onClick,
-  bubbleText,
-  pos,
-  setPos,
-  showBubble = true,
-  isFixed = true,
-  isOpen = false,
-}: {
-  onClick: () => void;
-  bubbleText: string;
-  pos: { bottom: number; right: number };
-  setPos: React.Dispatch<React.SetStateAction<{ bottom: number; right: number }>>;
-  showBubble?: boolean;
-  isFixed?: boolean;
-  isOpen?: boolean;
-}) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [isTilting, setIsTilting] = useState(false);
-  const [showHi, setShowHi] = useState(false);
-  const dragging = useRef(false);
-  const dragStart = useRef({ mx: 0, my: 0, bottom: 0, right: 0 });
-  const hiTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hasDragged = useRef(false);
 
-  const clickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const applyTilt = (clientX: number, clientY: number) => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
 
-    const dx = clientX - cx;
-    const dy = clientY - cy;
 
-    // Calculate angle in degrees for 360-degree Y rotation
-    const angleRad = Math.atan2(dx, -dy);
-    const angleDeg = angleRad * (180 / Math.PI);
 
-    // Calculate X tilt (limited lookup/lookdown tilt)
-    const ny = dy / (window.innerHeight / 2);
-    const tiltX = Math.max(-25, Math.min(25, -ny * 25));
 
-    setTilt({
-      x: tiltX,
-      y: angleDeg,
-    });
-    setIsTilting(true);
-  };
 
-  const resetTilt = () => {
-    setTilt({ x: 0, y: 0 });
-    setIsTilting(false);
-  };
 
-  // Mouse events
-  const onMouseMove = (e: React.MouseEvent) => {
-    if (dragging.current) return;
-    applyTilt(e.clientX, e.clientY);
-  };
-  const onMouseLeave = () => { if (!dragging.current) resetTilt(); };
 
-  // Touch events for tilt (single finger)
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (dragging.current) return;
-    const t = e.touches[0];
-    if (t) applyTilt(t.clientX, t.clientY);
-  };
-  const onTouchEnd = () => { if (!dragging.current) resetTilt(); };
 
-  const handleDoubleClickAction = () => {
-    setShowHi(false);
-    requestAnimationFrame(() => {
-      setShowHi(true);
-      if (hiTimer.current) clearTimeout(hiTimer.current);
-      hiTimer.current = setTimeout(() => setShowHi(false), 2500);
-    });
-  };
 
-  const handleSingleClickAction = () => {
-    onClick();
-  };
 
-  // Click → single/double click handler
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (hasDragged.current) {
-      return;
-    }
-    if (clickTimeout.current) {
-      clearTimeout(clickTimeout.current);
-      clickTimeout.current = null;
-      handleDoubleClickAction();
-    } else {
-      clickTimeout.current = setTimeout(() => {
-        clickTimeout.current = null;
-        handleSingleClickAction();
-      }, 220);
-    }
-  };
 
-  const startDrag = (clientX: number, clientY: number) => {
-    dragging.current = true;
-    dragStart.current = {
-      mx: clientX,
-      my: clientY,
-      bottom: pos.bottom,
-      right: pos.right,
-    };
-  };
 
-  useEffect(() => {
-    let moved = false;
-    const onMouseMove = (e: MouseEvent) => {
-      if (!dragging.current) return;
-      moved = true;
-      const dx = e.clientX - dragStart.current.mx;
-      const dy = e.clientY - dragStart.current.my;
 
-      const isDesktop = window.innerWidth >= 768;
-      const maxRight = isDesktop
-        ? (isOpen ? window.innerWidth - 490 : window.innerWidth - 120)
-        : (isOpen ? window.innerWidth - 90 : window.innerWidth - 90);
-      const maxBottom = isDesktop
-        ? (isOpen ? window.innerHeight - 520 : window.innerHeight - 130)
-        : (isOpen ? window.innerHeight - 520 : window.innerHeight - 100);
 
-      setPos({
-        right: Math.max(0, Math.min(maxRight, dragStart.current.right - dx)),
-        bottom: Math.max(0, Math.min(maxBottom, dragStart.current.bottom - dy)),
-      });
-    };
-    const onMouseUp = () => {
-      if (moved) {
-        hasDragged.current = true;
-        setTimeout(() => {
-          hasDragged.current = false;
-        }, 50);
-      }
-      dragging.current = false;
-      moved = false;
-      resetTilt();
-    };
-    const onTouchMoveDoc = (e: TouchEvent) => {
-      if (!dragging.current) return;
-      const t = e.touches[0];
-      if (!t) return;
-      moved = true;
-      const dx = t.clientX - dragStart.current.mx;
-      const dy = t.clientY - dragStart.current.my;
 
-      const isDesktop = window.innerWidth >= 768;
-      const maxRight = isDesktop
-        ? (isOpen ? window.innerWidth - 490 : window.innerWidth - 120)
-        : (isOpen ? window.innerWidth - 90 : window.innerWidth - 90);
-      const maxBottom = isDesktop
-        ? (isOpen ? window.innerHeight - 520 : window.innerHeight - 130)
-        : (isOpen ? window.innerHeight - 520 : window.innerHeight - 100);
 
-      setPos({
-        right: Math.max(0, Math.min(maxRight, dragStart.current.right - dx)),
-        bottom: Math.max(0, Math.min(maxBottom, dragStart.current.bottom - dy)),
-      });
-    };
-    const onTouchEndDoc = () => {
-      if (moved) {
-        hasDragged.current = true;
-        setTimeout(() => {
-          hasDragged.current = false;
-        }, 50);
-      }
-      dragging.current = false;
-      moved = false;
-      resetTilt();
-    };
 
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-    window.addEventListener('touchmove', onTouchMoveDoc, { passive: true });
-    window.addEventListener('touchend', onTouchEndDoc);
-    return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
-      window.removeEventListener('touchmove', onTouchMoveDoc);
-      window.removeEventListener('touchend', onTouchEndDoc);
-    };
-  }, [isOpen, setPos]);
 
-  const tiltStyle: React.CSSProperties = {
-    perspective: '400px',
-    perspectiveOrigin: '50% 50%',
-    width: '100%',
-    height: '100%',
-  };
 
-  const innerStyle: React.CSSProperties = {
-    width: '100%',
-    height: '100%',
-    transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-    transition: isTilting ? 'transform 80ms linear' : 'transform 600ms cubic-bezier(0.16,1,0.3,1)',
-    transformStyle: 'preserve-3d',
-    willChange: 'transform',
-  };
 
-  return (
-    <div
-      style={{
-        position: isFixed ? 'fixed' : undefined,
-        zIndex: 50,
-        bottom: isFixed ? `${pos.bottom}px` : undefined,
-        right: isFixed ? `${pos.right}px` : undefined,
-        cursor: dragging.current ? 'grabbing' : 'grab',
-        userSelect: 'none',
-        touchAction: 'none',
-      }}
-      ref={wrapperRef}
-      className={isFixed
-        ? "w-[80px] h-[90px] md:w-[115px] md:h-[125px]"
-        : "w-full h-full"
-      }
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      onMouseDown={(e) => { e.preventDefault(); startDrag(e.clientX, e.clientY); }}
-      onTouchStart={(e) => {
-        const t = e.touches[0];
-        if (t) startDrag(t.clientX, t.clientY);
-      }}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      onClick={handleClick}
-    >
-      {/* Tanya Ambo Rancak Bot Bubble — moves with character, positioned beside/above head on desktop */}
-      {showBubble && bubbleText && (
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            onClick();
-          }}
-          onMouseDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-          className="hidden md:flex absolute items-center gap-3 px-5 py-3.5 bg-[#4A0808] border-[1.5px] border-[#F9CE65] shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] cursor-pointer"
-          style={{
-            right: 'calc(100% + 14px)',
-            bottom: '35%',
-            borderRadius: '24px 24px 0px 24px',
-            whiteSpace: 'nowrap',
-            zIndex: 49,
-          }}
-        >
-          <div className="relative flex-shrink-0 w-[11px] h-[11px] rounded-full bg-[#00B242]">
-            <div className="absolute inset-0 rounded-full bg-[#00B242] animate-ping opacity-70" />
-          </div>
-          <span className="font-poppins text-white text-[13px] font-semibold tracking-wide leading-none">{bubbleText}</span>
-        </div>
-      )}
 
-      {/* Hi bubble */}
-      {showHi && (
-        <div
-          className="rancakbot-hi absolute z-[60] pointer-events-none"
-          style={{
-            bottom: 'calc(100% + 8px)',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: '#4A0808',
-            border: '1.5px solid #F9CE65',
-            borderRadius: '14px 14px 14px 2px',
-            padding: '6px 14px',
-            whiteSpace: 'nowrap',
-            color: '#F9CE65',
-            fontSize: '14px',
-            fontWeight: 700,
-            fontFamily: 'Poppins, sans-serif',
-            boxShadow: '0 4px 18px rgba(0,0,0,0.35)',
-          }}
-        >
-          Hai! 👋
-        </div>
-      )}
 
-      {/* Perspective tilt wrapper */}
-      <div style={tiltStyle}>
-        <div style={innerStyle}>
-          <div
-            className={`w-full h-full ${!isTilting ? 'rancakbot-float' : 'rancakbot-tilting'}`}
-          >
-            <model-viewer
-              src="/textured.glb" alt="RancakBot 3D Avatar"
-              auto-rotate camera-controls={false} disable-zoom
-              shadow-intensity="0.8" environment-image="neutral"
-              auto-rotate-delay="0" interaction-prompt="none"
-              loading="lazy" reveal="auto"
-              style={{ width: '100%', height: '100%', background: 'transparent', outline: 'none' }}
-            >
-              <div slot="poster" className="absolute inset-0 flex items-center justify-center bg-transparent">
-                <img src={chtPng} className="w-[28px] h-[28px] animate-pulse opacity-50 brightness-0 invert" alt="Loading" />
-              </div>
-            </model-viewer>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export function RancakBotWidget() {
-  const [pos, setPos] = useState<{ bottom: number; right: number }>({ bottom: 20, right: 12 });
-  const [wantsOpen, setWantsOpen] = useState(false);
   const [mounted, setMounted]     = useState(false);
   const [visible, setVisible]     = useState(false);
   const [messages, setMessages]   = useState<ChatMessage[]>([]);
@@ -647,23 +644,15 @@ export function RancakBotWidget() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  useEffect(() => {
-    if (document.getElementById('rancakbot-style')) return;
-    const el = document.createElement('style');
-    el.id = 'rancakbot-style';
-    el.textContent = FLOAT_STYLE;
-    document.head.appendChild(el);
-  }, []);
-
   const openModal = useCallback(() => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-    setWantsOpen(true);
+    window.dispatchEvent(new CustomEvent('rancakbot:visibility', { detail: { open: true } }));
     setMounted(true);
     requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)));
   }, []);
 
   const closeModal = useCallback(() => {
-    setWantsOpen(false);
+    window.dispatchEvent(new CustomEvent('rancakbot:visibility', { detail: { open: false } }));
     setVisible(false);
     closeTimerRef.current = setTimeout(() => setMounted(false), 380);
   }, []);
@@ -736,26 +725,24 @@ export function RancakBotWidget() {
   return (
     <>
       {/* ── CLOSED STATE ── */}
-      {!wantsOpen && (
-        <TiltableCharacter
-          onClick={openModal}
-          bubbleText={t('bot_bubble')}
-          pos={pos}
-          setPos={setPos}
-          showBubble={true}
-          isFixed={true}
-          isOpen={false}
-        />
-      )}
+      {/* 
+        [Refactor]: Duplikat model-viewer (TiltableCharacter) telah dihapus.
+        MascotLauncher sekarang menjadi satu-satunya entry point (single WebGL canvas) 
+        untuk menghindari bentrok rendering dan DOM ganda.
+      */}
 
       {/* ── OPEN STATE ── */}
+      {/* 
+        [Refactor]: Memposisikan widget chat di sebelah KIRI maskot 3D.
+        Kalkulasi md:right-[126px] pada desktop didapat dari:
+        Lebar Mascot (104px) + Jarak Gap (10px) + Offset Kanan Anchor Mascot (12px).
+        Pada mobile, Mascot disembunyikan sehingga widget ini bebas menggunakan right-3.
+      */}
       {mounted && (
         <div
-          className="fixed z-50 flex flex-row items-end select-none pointer-events-none max-w-[calc(100vw-24px)]"
+          className="fixed z-50 flex flex-row items-end select-none pointer-events-none max-w-[calc(100vw-24px)] bottom-5 right-3 md:right-[126px]"
           style={{
             gap: '12px',
-            bottom: `${pos.bottom}px`,
-            right: `${pos.right}px`,
           }}
         >
           <div
@@ -845,20 +832,7 @@ export function RancakBotWidget() {
           </div>
 
           {/* 3D Character */}
-          <div
-            className="pointer-events-auto cursor-pointer flex-shrink-0 absolute sm:relative bottom-0 right-0 sm:bottom-auto sm:right-auto z-50 w-[75px] h-[85px] sm:w-[115px] sm:h-[125px]"
-            style={{ margin: '0' }}
-          >
-            <TiltableCharacter
-              onClick={closeModal}
-              bubbleText=""
-              pos={pos}
-              setPos={setPos}
-              showBubble={false}
-              isFixed={false}
-              isOpen={true}
-            />
-          </div>
+          {/* Removed duplicate Mascot to enforce single WebGL canvas */}
         </div>
       )}
     </>

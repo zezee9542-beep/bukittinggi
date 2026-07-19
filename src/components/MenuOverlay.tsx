@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import logoSvg from '../assets/logo.svg';
 import { useMode } from '../context/ModeContext';
@@ -11,8 +11,6 @@ interface MenuOverlayProps {
 export function MenuOverlay({ onClose }: MenuOverlayProps) {
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
-  const [showGameToast, setShowGameToast] = useState(false);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { mode } = useMode();
 
   const location = useLocation();
@@ -27,7 +25,6 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
     return () => {
       document.body.style.overflow = '';
       clearTimeout(id);
-      if (toastTimer.current) clearTimeout(toastTimer.current);
     };
   }, []);
 
@@ -52,14 +49,8 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
     }, 380);
   };
 
-  const triggerGameToast = () => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    setShowGameToast(true);
-    toastTimer.current = setTimeout(() => setShowGameToast(false), 4500);
-  };
-
   const navItems: {
-    path: string | null;
+    path: string;
     label: string;
     sub: string;
     sectionId?: string;
@@ -70,7 +61,7 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
     { path: '/kuliner', label: t('nav_culinary'), sub: 'Jelajahi Kuliner Khas' },
     { path: '/travel-planner', label: 'AI Planner', sub: 'Rencanakan Perjalananmu' },
     { path: '/', label: 'Peta', sub: 'Peta Warisan Budaya', sectionId: 'heritage-heading' },
-    { path: null, label: 'Game', sub: 'Segera Hadir' },
+    { path: '/game', label: 'Game', sub: 'Mainkan Sekarang' },
   ];
 
   return (
@@ -186,7 +177,7 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
         <nav className="flex flex-col gap-4 md:gap-7" aria-label="Menu navigasi overlay">
           {navItems.map(({ path, label, sub, sectionId }, idx) => {
-            const isActive = path !== null && location.pathname === path && !sectionId;
+            const isActive = location.pathname === path && !sectionId;
             const activeColor = isExplorer ? 'text-[#F9CE65]' : 'text-[#6E1F1F]';
             const inactiveColor = isExplorer
               ? 'text-[#FFEAA7]/65 hover:text-[#F9CE65]'
@@ -196,13 +187,7 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
               : 'text-neutral-500 group-hover:text-[#6E1F1F]/80';
             const underlineColor = isExplorer ? 'bg-[#F9CE65]' : 'bg-[#6E1F1F]';
 
-            const handleClick = () => {
-              if (path === null) {
-                triggerGameToast();
-              } else {
-                handleNavigate(path, sectionId);
-              }
-            };
+            const handleClick = () => handleNavigate(path, sectionId);
 
             return (
               <button
@@ -241,37 +226,6 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
             );
           })}
         </nav>
-      </div>
-
-      {/* Game Toast — shown inside the overlay */}
-      <div
-        className={`absolute bottom-24 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-sm bg-white border border-neutral-200/80 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-4 flex items-start gap-4 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          showGameToast
-            ? 'translate-y-0 opacity-100 scale-100'
-            : 'translate-y-6 opacity-0 scale-90 pointer-events-none'
-        }`}
-      >
-        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F7E0E0] flex items-center justify-center text-lg">
-          🎮
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-poppins font-bold text-[#6E1F1F] text-[14px] mb-0.5">
-            Game Segera Hadir!
-          </p>
-          <p className="font-poppins text-neutral-500 text-[12px] leading-relaxed">
-            Permainan Kebudayaan Bukittinggi sedang dalam pengembangan. Pantau terus ya!
-          </p>
-        </div>
-        <button
-          onClick={() => setShowGameToast(false)}
-          className="flex-shrink-0 text-neutral-400 hover:text-[#6E1F1F] transition-colors cursor-pointer"
-          aria-label="Tutup notifikasi"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
       </div>
 
       {/* Decorative footer */}

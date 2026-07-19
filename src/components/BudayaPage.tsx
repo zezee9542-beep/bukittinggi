@@ -181,185 +181,79 @@ export function BudayaPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Slide index — fractional while a gesture is actively moving it, snapped
-  // to the nearest whole slide once the gesture ends.
+  // Scroll progress maps directly to a fractional horizontal slide position.
   const [activeSlide, setActiveSlide] = useState(0);
   const activeSlideRef = useRef(0);
 
-  // Whether the user has already scrolled all the way through slides 1-8 once
-  // during this visit to the page. Once true, the section never locks scroll
-  // again and slide navigation switches to cursor-driven left/right control.
+  // Whether the user has already scrolled all the way through slides 1-8 once.
+  // This enables cursor-driven navigation without disabling later wheel/touch
+  // passes through the carousel in either direction.
   const [hasCompletedIntro, setHasCompletedIntro] = useState(false);
   const hasCompletedIntroRef = useRef(false);
 
-  // True only while an active wheel/touch gesture is driving the slide —
-  // disables the CSS transition so per-frame updates track the gesture
-  // instantly instead of fighting a transition (which is what felt glitchy).
-  const [isGesturing, setIsGesturing] = useState(false);
 
   // Which half of the slide area the cursor is hovering (for the left/right
   // navigation cursor shown once the intro pass is complete).
   const [hoverSide, setHoverSide] = useState<'prev' | 'next' | null>(null);
 
-  // ── Scroll lock for the intro pass ──────────────────────────────────────
-  // The section is a normal single-viewport block — no artificial extra
-  // height — so the page length and layout stay exactly as they were.
-  // While the section is in view and the intro hasn't been completed yet,
-  // wheel/touch scrolling is intercepted and converted into slide movement
-  // instead of page scroll. React state is only written once per animation
-  // frame (never synchronously inside the raw event handler), which is what
-  // keeps this smooth on every device instead of glitching under rapid
-  // wheel/touch events.
+  // ── Native vertical-scroll → horizontal-carousel mapping ─────────────────
+  // The outer track supplies natural vertical travel; the inner scene is
+  // sticky for that interval. No wheel prevention or programmatic pinning is
+  // needed, so momentum, trackpads, touch, and browser navigation stay stable.
   useEffect(() => {
-    const PIXELS_PER_SLIDE = 320;
     const clampSlide = (v: number) => Math.max(0, Math.min(slides.length - 1, v));
-
-    let inView = false;
-    let isLocked = false;
     let rafId = 0;
-    let pendingSlide: number | null = null;
-    let settleTimer: ReturnType<typeof setTimeout> | undefined;
-    let touchStartY = 0;
-    let touchStartSlide = 0;
-
-    const flush = () => {
-      rafId = 0;
-      if (pendingSlide === null) return;
-      activeSlideRef.current = pendingSlide;
-      setActiveSlide(pendingSlide);
-      pendingSlide = null;
-    };
-
-    const scheduleUpdate = (value: number) => {
-      pendingSlide = value;
-      if (!rafId) rafId = requestAnimationFrame(flush);
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        inView = (entry?.intersectionRatio ?? 0) > 0.6;
-      },
-      { threshold: [0, 0.6, 1] }
-    );
     const section = sectionRef.current;
-    if (section) observer.observe(section);
+    if (!section) return;
 
-    const complete = () => {
-      isLocked = false;
-      hasCompletedIntroRef.current = true;
-      setHasCompletedIntro(true);
-      setIsGesturing(false);
-    };
-
-    const release = () => {
-      isLocked = false;
-      setIsGesturing(false);
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      if (hasCompletedIntroRef.current) return;
-      const cur = activeSlideRef.current;
-
-      if (!isLocked) {
-        if (inView && e.deltaY > 0) {
-          isLocked = true;
-          setIsGesturing(true);
-        } else {
-          return;
-        }
-      }
-
-      // Finished slide 8 and still scrolling down — release for good.
-      if (cur >= slides.length - 1 && e.deltaY > 0) {
-        complete();
-        return;
-      }
-      // Back at slide 1 and scrolling up — let the page scroll away normally.
-      if (cur <= 0 && e.deltaY < 0) {
-        release();
-        return;
-      }
-
-      e.preventDefault();
-      scheduleUpdate(clampSlide(cur + e.deltaY / PIXELS_PER_SLIDE));
-
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => {
-        scheduleUpdate(clampSlide(Math.round(activeSlideRef.current)));
-        setIsGesturing(false);
-      }, 140);
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (hasCompletedIntroRef.current) return;
-      touchStartY = e.touches[0]!.clientY;
-      touchStartSlide = activeSlideRef.current;
-      if (!isLocked && inView) {
-        isLocked = true;
-        setIsGesturing(true);
+    const updateFromScroll = () => {
+      rafId = 0;
+      const travel = Math.max(1, section.offsetHeight - window.innerHeight);
+      const progress = Math.max(0, Math.min(1, (window.scrollY - section.offsetTop) / travel));
+      const nextSlide = clampSlide(progress * (slides.length - 1));
+      activeSlideRef.current = nextSlide;
+      setActiveSlide(nextSlide);
+      const completed = progress >= 0.999;
+      if (completed && !hasCompletedIntroRef.current) {
+        hasCompletedIntroRef.current = true;
+        setHasCompletedIntro(true);
       }
     };
 
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isLocked) return;
-      const dy = touchStartY - e.touches[0]!.clientY;
-      const cur = activeSlideRef.current;
-
-      if (cur >= slides.length - 1 && dy > 0) {
-        complete();
-        return;
-      }
-      if (cur <= 0 && dy < 0) {
-        release();
-        return;
-      }
-
-      e.preventDefault();
-      scheduleUpdate(clampSlide(touchStartSlide + dy / (window.innerHeight * 0.55)));
+    const requestUpdate = () => {
+      if (!rafId) rafId = requestAnimationFrame(updateFromScroll);
     };
 
-    const handleTouchEnd = () => {
-      if (!isLocked) return;
-      scheduleUpdate(clampSlide(Math.round(activeSlideRef.current)));
-      setIsGesturing(false);
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+    requestUpdate();
 
     return () => {
-      observer.disconnect();
-      clearTimeout(settleTimer);
       if (rafId) cancelAnimationFrame(rafId);
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('scroll', requestUpdate);
+      window.removeEventListener('resize', requestUpdate);
     };
   }, []);
 
   const activeSlideInt = Math.min(slides.length - 1, Math.round(activeSlide));
   const slideProgress  = Math.max(0, Math.min(1, activeSlide / (slides.length - 1)));
-  const progressPercent = ((activeSlideInt + 1) / slides.length) * 100;
+  const progressPercent = ((activeSlide + 1) / slides.length) * 100;
 
   const goToSlide = (next: number) => {
     const clamped = Math.max(0, Math.min(slides.length - 1, next));
-    activeSlideRef.current = clamped;
-    setActiveSlide(clamped);
+    const section = sectionRef.current;
+    if (!section) return;
+    const travel = Math.max(1, section.offsetHeight - window.innerHeight);
+    window.scrollTo({
+      top: section.offsetTop + (clamped / (slides.length - 1)) * travel,
+      behavior: 'smooth',
+    });
   };
 
-  // SCROLL button — advances one slide directly; also completes the intro
-  // once it reaches the last slide, same as scrolling would.
+  // SCROLL button advances the native vertical track by one slide interval.
   const handleNextSlide = () => {
     if (activeSlideInt >= slides.length - 1) return;
-    const next = activeSlideInt + 1;
-    goToSlide(next);
-    if (next >= slides.length - 1 && !hasCompletedIntroRef.current) {
-      hasCompletedIntroRef.current = true;
-      setHasCompletedIntro(true);
-    }
+    goToSlide(activeSlideInt + 1);
   };
 
   // Cursor-driven left/right navigation — only active once the intro pass is done
@@ -390,7 +284,7 @@ export function BudayaPage() {
 
 
   return (
-    <div className="relative min-h-screen bg-[#3A0D0D] text-white overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#3A0D0D] text-white overflow-x-clip">
       {/* ── Hero Section ── */}
       <section
         ref={heroRef}
@@ -476,14 +370,16 @@ export function BudayaPage() {
         </div>
       </section>
 
-      {/* ── Featured Carousel Section (slides 1-8) ── */}
+      {/* ── Native vertical track with a sticky horizontal carousel ── */}
       <section
         ref={sectionRef}
-        className="relative w-full bg-[#3A0D0D] min-h-screen flex flex-col justify-start pt-0 pb-10"
+        className="relative w-full bg-[#3A0D0D]"
+        style={{ height: `calc(100dvh + ${(slides.length - 1) * 100}dvh)` }}
       >
+        <div className="sticky top-0 h-[100dvh] overflow-hidden flex flex-col justify-center">
           <div
             ref={featureRef}
-            className={`w-full max-w-[1160px] mx-auto px-6 pt-10 md:pt-14 pb-8 overflow-hidden transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`w-full max-w-[1160px] mx-auto px-6 pt-10 md:pt-14 pb-8 overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
             }`}
           >
@@ -499,7 +395,7 @@ export function BudayaPage() {
               className="flex"
               style={{
                 transform: `translateX(-${slideProgress * 100 * (slides.length - 1)}%)`,
-                transition: isGesturing ? 'none' : 'transform 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+                transition: 'none',
                 willChange: 'transform',
               }}
             >
@@ -606,6 +502,7 @@ export function BudayaPage() {
               </button>
             </div>
           </div>{/* end featureRef div */}
+        </div>{/* end sticky scene */}
       </section>
 
 
