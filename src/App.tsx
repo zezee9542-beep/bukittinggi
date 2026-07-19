@@ -13,6 +13,7 @@ import { HeritageSection } from './components/HeritageSection';
 import { RancakBotWidget } from './components/RancakBotWidget';
 import { useMode } from './context/ModeContext';
 import { AITravelPlannerSection } from './components/AITravelPlannerSection';
+import { ProfilBukittinggiPage } from './components/ProfilBukittinggiPage';
 
 
 function HomePage() {
@@ -64,7 +65,7 @@ function App() {
 
   return (
     <div className="relative min-h-[100dvh] overflow-x-hidden bg-white">
-      <Navigation />
+      {location.pathname !== '/profil-bukittinggi' && <Navigation />}
       <main
         className={`overflow-x-hidden w-full ${
           transitioning ? 'page-exit' : 'page-enter'
@@ -77,9 +78,10 @@ function App() {
           <Route path="/budaya" element={<BudayaPage />} />
           <Route path="/kuliner" element={<KulinerPage />} />
           <Route path="/travel-planner" element={<TravelPlannerPage />} />
+          <Route path="/profil-bukittinggi" element={<ProfilBukittinggiPage />} />
         </Routes>
       </main>
-      {location.pathname !== '/travel-planner' && <RancakBotWidget />}
+      {location.pathname !== '/travel-planner' && location.pathname !== '/profil-bukittinggi' && <RancakBotWidget />}
     </div>
   );
 }

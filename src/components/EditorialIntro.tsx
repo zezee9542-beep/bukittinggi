@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import { siteContent } from '../data/stories';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import menaraPng from '../assets/menara.webp';
 import earthPng from '../assets/earth.png';
 
 export function EditorialIntro() {
+  const navigate = useNavigate();
   const { intro } = siteContent;
   const { ref, isVisible } = useScrollReveal<HTMLElement>();
 
@@ -114,6 +116,7 @@ export function EditorialIntro() {
             style={{ transitionDelay: '550ms' }}
           >
             <button
+              onClick={() => navigate('/profil-bukittinggi')}
               className="w-[220px] h-[52px] rounded-[12px] bg-[#6E1F1F] text-white font-poppins font-medium text-[18px] flex items-center justify-center gap-2 hover:bg-[#521616] active:scale-[0.98] transition-all duration-300 shadow-md cursor-pointer"
               style={{ width: '220px', height: '52px', borderRadius: '12px' }}
             >
