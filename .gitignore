@@ -148,3 +148,5 @@ src/assets/*
 !src/assets/124.png
 !src/assets/125.png
 !src/assets/126.png
+!src/assets/game.png
+!src/assets/earth.png

@@ -1,6 +1,7 @@
 import { siteContent } from '../data/stories';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import menaraPng from '../assets/menara.webp';
+import earthPng from '../assets/earth.png';
 
 export function EditorialIntro() {
   const { intro } = siteContent;
@@ -9,7 +10,7 @@ export function EditorialIntro() {
   return (
     <section
       ref={ref}
-      className="relative z-20 bg-white py-16 md:py-36 min-h-[650px] md:min-h-[850px] overflow-hidden flex items-center"
+      className="relative z-20 bg-white py-16 md:py-36 min-h-[650px] md:min-h-[850px] overflow-hidden flex items-center border-none shadow-none"
       aria-labelledby="intro-heading"
     >
       {/* ── Decorative background circles — subtle depth ── */}
@@ -32,7 +33,7 @@ export function EditorialIntro() {
 
       {/* ── Tall Jam Gadang tower image (menara.png) stretching from top to bottom ── */}
       <div
-        className={`absolute top-0 bottom-0 left-0 md:left-[4%] lg:left-[8%] w-full md:w-[42%] flex items-end justify-center pointer-events-none transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`absolute top-[-30px] bottom-[-40px] left-[-4%] md:left-[-1%] lg:left-[2%] w-full md:w-[44%] lg:w-[42%] flex items-end justify-center pointer-events-none transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isVisible ? 'translate-x-0 opacity-15 md:opacity-100' : '-translate-x-16 opacity-0'
         }`}
         style={{ zIndex: 10 }}
@@ -40,7 +41,7 @@ export function EditorialIntro() {
         <img
           src={menaraPng}
           alt="Jam Gadang Tower"
-          className="w-auto h-full max-h-none object-contain select-none filter drop-shadow-[0_16px_40px_rgba(0,0,0,0.12)]"
+          className="w-auto h-full max-h-none object-contain select-none filter drop-shadow-[0_16px_40px_rgba(0,0,0,0.12)] scale-110 origin-bottom"
           draggable={false}
         />
       </div>
@@ -49,11 +50,11 @@ export function EditorialIntro() {
       <div className="relative mx-auto flex flex-col md:flex-row items-center justify-end w-full max-w-[1280px] px-6 md:px-12 z-20">
         
         {/* Spacer for absolute left tower */}
-        <div className="hidden md:block md:w-[45%] lg:w-[42%] flex-shrink-0" />
+        <div className="hidden md:block md:w-[35%] lg:w-[32%] flex-shrink-0" />
 
         {/* Right column: Content Text Block */}
         <div
-          className={`flex-1 flex flex-col items-center md:items-start text-center md:text-left transition-all duration-[1300ms] delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`flex-1 flex flex-col items-center md:items-start text-center md:text-left pt-6 md:pt-10 transition-all duration-[1300ms] delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isVisible
               ? 'translate-y-0 opacity-100 blur-0'
               : 'translate-y-6 opacity-0 blur-[3px]'
@@ -90,8 +91,8 @@ export function EditorialIntro() {
             {intro.heading}
           </h2>
 
-          {/* Paragraph description - centered text inside container */}
-          <div className="w-full max-w-[620px] mx-auto md:mx-0 leading-relaxed text-neutral-800 text-center flex flex-col items-center">
+          {/* Paragraph description - centered text inside container, left-aligned on md */}
+          <div className="w-full max-w-[620px] mx-auto md:mx-0 leading-relaxed text-neutral-800 text-center md:text-left flex flex-col items-center md:items-start">
             {intro.paragraphs.map((paragraph, idx) => (
               <p
                 key={paragraph.slice(0, 24)}
@@ -105,18 +106,30 @@ export function EditorialIntro() {
             ))}
           </div>
 
-          {/* Staggered decorative bottom separator line */}
+          {/* Button "Profil Bukittinggi" */}
           <div
-            className={`mt-10 flex justify-center w-full md:justify-start transition-all duration-[800ms] delay-200 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            className={`mt-8 flex justify-center w-full md:justify-end md:pr-16 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
-            style={{ transitionDelay: '600ms' }}
-            aria-hidden="true"
+            style={{ transitionDelay: '550ms' }}
           >
-            <div className="h-[1.5px] w-24 bg-[#6E1F1F]/20" />
+            <button
+              className="w-[220px] h-[52px] rounded-[12px] bg-[#6E1F1F] text-white font-poppins font-medium text-[18px] flex items-center justify-center gap-2 hover:bg-[#521616] active:scale-[0.98] transition-all duration-300 shadow-md cursor-pointer"
+              style={{ width: '220px', height: '52px', borderRadius: '12px' }}
+            >
+              Profil Bukittinggi <span className="text-[22px] leading-none mb-[2px]">→</span>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Earth background image at bottom right */}
+      <img
+        src={earthPng}
+        alt="Earth Background"
+        className="absolute bottom-[-20px] right-0 pointer-events-none z-0 w-[1050px] h-[155px] object-right-bottom object-cover"
+        style={{ width: '1050px', height: '155px', maxWidth: 'none' }}
+      />
     </section>
 
   );

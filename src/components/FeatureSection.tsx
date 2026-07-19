@@ -2,6 +2,7 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useNavigate } from 'react-router-dom';
 import c1Icon from '../assets/c1.svg';
 import c2Icon from '../assets/c2.svg';
+import gameIcon from '../assets/game.png';
 
 export function FeatureSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>();
@@ -31,15 +32,22 @@ export function FeatureSection() {
         'Buat rencana perjalanan personal berdasarkan jumlah hari dan budget Anda.',
       action: () => navigate('/travel-planner'),
     },
+    {
+      icon: gameIcon,
+      title: 'Jelajahi & Mainkan',
+      description:
+        'Pelajari Bukittinggi dengan cara yang lebih seru melalui berbagai tantangan dan permainan interaktif.',
+      action: undefined,
+    },
   ];
 
   return (
     <section
       ref={ref}
-      className="relative bg-white py-16 md:py-28 overflow-hidden flex items-center"
+      className="relative bg-white py-16 md:py-28 overflow-hidden flex items-center border-none shadow-none"
       aria-labelledby="features-heading"
     >
-      <div className="relative mx-auto w-full max-w-[1280px] px-6 md:px-12 z-10 flex flex-col items-center">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col items-center px-6 md:px-12">
 
         {/* Subtitle label */}
         <span
@@ -76,7 +84,7 @@ export function FeatureSection() {
 
         {/* ── Cards wrapper ── */}
         <div
-          className={`relative w-full max-w-[1100px] mx-auto transition-all duration-700 delay-200 ${
+          className={`relative mx-auto w-full max-w-[1332px] transition-all duration-700 delay-200 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}
         >
@@ -113,12 +121,14 @@ export function FeatureSection() {
           />
 
           {/* ── Three separate cards ── */}
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="relative z-10 grid grid-cols-1 justify-items-center gap-6 md:grid-cols-2 md:gap-7 lg:grid-cols-4 lg:gap-6">
             {features.map((feature, idx) => (
               <div
                 key={feature.title}
                 onClick={feature.action}
-                className={`group flex flex-col items-center text-center bg-white rounded-[24px] px-8 py-10 md:px-10 md:py-12 transition-all duration-500 border border-neutral-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] cursor-pointer select-none ${
+                className={`group flex h-[268px] w-full max-w-[315px] flex-col items-center justify-center rounded-[24px] border border-neutral-200/50 bg-white px-6 py-5 text-center shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] select-none ${
+                  feature.action ? 'cursor-pointer' : 'cursor-default'
+                } ${
                   isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                 }`}
                 style={{
@@ -127,7 +137,7 @@ export function FeatureSection() {
               >
                 {/* Circle icon background */}
                 <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-400"
+                  className="mb-4 flex h-16 w-16 items-center justify-center rounded-full transition-transform duration-400 group-hover:scale-110"
                   style={{ background: '#F7E0E0' }}
                 >
                   <img
@@ -140,7 +150,7 @@ export function FeatureSection() {
 
                 {/* Title */}
                 <h3
-                  className="font-poppins font-semibold text-[#1a1a1a] mb-4 text-center"
+                  className="mb-3 text-center font-poppins font-semibold text-[#1a1a1a]"
                   style={{ fontSize: 'clamp(16px, 1.8vw, 19.5px)' }}
                 >
                   {feature.title}

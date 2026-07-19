@@ -18,9 +18,9 @@ export const siteContent: SiteContent = {
   },
   intro: {
     scriptTitle: 'Bukittinggi',
-    heading: 'THE HEART OF MINANGKABAU',
+    heading: 'The Heart Of Minangkabau',
     paragraphs: [
-      'Bukittinggi adalah permata di dataran tinggi Sumatera Barat, dikenal dengan udara sejuk, panorama alam yang memikat, dan budaya Minangkabau yang memikat. Sebagai salah satu kota bersejarah dan destinasi wisata unggulan di Indonesia, Bukittinggi memiliki berbagai daya tarik yang mencerminkan karakter dan jati dirinya. Di pusat kota berdiri Jam Gadang, ikon kebanggaan yang menjadi simbol sejarah dan warisan masyarakatnya.',
+      'Bukittinggi adalah permata di dataran tinggi Sumatera Barat, dikenal dengan udara sejuk, panorama alam yang memikat, dan budaya Minangkabau yang memikat. Sebagai salah satu kota bersejarah dan destinasi wisata unggulan di Indonesia, Di pusat kota berdiri Jam Gadang, ikon kebanggaan yang menjadi simbol sejarah dan warisan masyarakatnya.',
     ],
   },
   timeline: {
