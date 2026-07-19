@@ -337,6 +337,20 @@ html.kuliner-scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
 
+/* On mobile, cover.png is one continuous background layer. This prevents
+   repeated background tiles from appearing in front of later Kuliner content. */
+.kuliner-page {
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 768px) {
+  .kuliner-page {
+    background-size: 100% auto;
+    background-repeat: repeat-y;
+  }
+}
+
 /* Hide the browser's native scrollbar only while the Culinary page is open.
    Scrolling itself remains available by mouse wheel, touch, and keyboard. */
 html.kuliner-scrollbar-hidden {

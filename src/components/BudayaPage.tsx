@@ -140,9 +140,9 @@ const slides: SlideData[] = [
 
 const gridItems = [
   {
-    title: 'Adat Basandi Syarak',
+    title: 'Sebelum 1825 - Asal Usul',
     img: grid1,
-    desc: 'Masyarakat Minangkabau menjunjung tinggi nilai adat dan agama dalam kehidupan sehari-hari.'
+    desc: 'Dalam buku Asal Usul Kota-Kota di Indonesia Tempo Doeloe yang ditulis Zainuddin HM dan tulisan “Sejarah Kota Bukittinggi” di laman resmi Pemerintah Kota Bukittinggi, disebutkan berdirinya Kota Bukittinggi seiring dengan kedatangan Belanda ke Indonesia pada tahun 1825, khususnya daerah Sumatera Barat.'
   },
   {
     title: 'Hormati Tempat Ibadah',

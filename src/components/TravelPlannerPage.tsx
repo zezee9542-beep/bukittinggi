@@ -15,7 +15,6 @@ import aiSvg from '../assets/ai.svg';
 import alSvg from '../assets/al.svg';
 import campSvg from '../assets/camp.svg';
 import pdfSvg from '../assets/pdf.svg';
-import svSvg from '../assets/sv.svg';
 
 // Custom PNG Asset Imports
 import flagPng from '../assets/flag.png';
@@ -116,8 +115,6 @@ export function TravelPlannerPage() {
     const [showResultScreen, setShowResultScreen] = useState<boolean>(false);
     const [itineraryDays, setItineraryDays] = useState<ItineraryDay[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [rawAiResponse, setRawAiResponse] = useState<string>('');
-    const [showRawResponse, setShowRawResponse] = useState<boolean>(false);
   const [tripInfo, setTripInfo] = useState<TripInfo>({
     destination: 'Bukittinggi',
     origin: '-',
@@ -569,7 +566,6 @@ export function TravelPlannerPage() {
     try {
       const reply = await askTravelPlanner(aiHistory, true);
       console.log('🤖 RAW AI ITINERARY RESPONSE:', reply); // Debug log
-      setRawAiResponse(reply); // Save raw response
 
       // Extract chat part (before the '{')
       const splitIndex = reply.indexOf('{');
@@ -644,25 +640,7 @@ export function TravelPlannerPage() {
             </svg>
             <span>Kembali ke Perencanaan</span>
           </button>
-          <button
-            onClick={() => setShowRawResponse(!showRawResponse)}
-            className="flex items-center gap-2 text-[#5F1712] hover:text-[#4E130E] font-manrope font-semibold text-[13px] transition-all cursor-pointer bg-white px-4 py-2 rounded-xl border border-[#F3DDDB]/50 shadow-sm"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            <span>{showRawResponse ? 'Sembunyikan Respon AI' : 'Tampilkan Respon AI Mentah'}</span>
-          </button>
         </div>
-        {/* Raw AI Response Section */}
-        {showRawResponse && rawAiResponse && (
-          <div className="max-w-[1440px] mx-auto w-full bg-white border border-[#F3DDDB]/30 rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
-            <h3 className="font-noto font-bold text-[#5F1712] text-[18px] mb-4">Respon AI Mentah</h3>
-            <pre className="bg-[#FAF9F6] rounded-xl p-4 overflow-x-auto text-[12px] font-mono whitespace-pre-wrap">
-              {rawAiResponse}
-            </pre>
-          </div>
-        )}
 
         {/* 2-Column Responsive Split */}
         <div className="max-w-[1440px] mx-auto w-full flex flex-col lg:flex-row gap-8 items-start animate-fade-in overflow-visible">
@@ -723,13 +701,6 @@ export function TravelPlannerPage() {
                   <span>Unduh Rundown (PDF)</span>
                 </button>
 
-                <button 
-                  onClick={() => alert("Itinerary disimpan ke akun Anda!")}
-                  className="w-full h-12 bg-white hover:bg-neutral-50 text-[#DBC1BD] border border-[#F3DDDB]/40 flex items-center justify-center gap-2 rounded-xl font-manrope text-[13.5px] font-medium transition-all cursor-pointer hover:scale-[1.01]"
-                >
-                  <img src={svSvg} alt="" className="w-4 h-4 object-contain" />
-                  <span>Simpan</span>
-                </button>
               </div>
 
             </div>

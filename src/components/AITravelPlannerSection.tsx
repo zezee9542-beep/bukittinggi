@@ -16,7 +16,7 @@ export const AITravelPlannerSection: React.FC = () => {
         </h2>
 
         {/* Outer wrapper — gives bottom space for the overflowing images */}
-        <div className="relative pb-16 sm:pb-20">
+        <div className="relative pb-12 sm:pb-16">
           {/* ── Card (Extended) ── */}
           <div className="relative rounded-[24px] shadow-xl overflow-visible">
             {/* Dark-red background */}
@@ -30,26 +30,19 @@ export const AITravelPlannerSection: React.FC = () => {
             />
 
             {/* Card content */}
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
+            <div className="relative z-10 grid grid-cols-1 gap-0 lg:grid-cols-2">
 
               {/* ── LEFT: Mockup images ── */}
-              <div
-                className="relative flex items-end justify-center lg:justify-start overflow-visible"
-                style={{ minHeight: { sm: '480px', xs: '320px' } as any, paddingTop: { lg: '24px', xs: '16px' } as any, paddingLeft: { lg: '24px', xs: '16px' } as any, paddingBottom: 0, paddingRight: { lg: '0', xs: '16px' } as any }}
-              >
+              <div className="relative flex min-h-[280px] items-end justify-center overflow-visible px-5 pt-7 sm:min-h-[325px] sm:px-8 lg:min-h-[360px] lg:justify-start lg:px-0 lg:pt-8">
                 {/* ss.png — main table, overflows bottom */}
                 <div
                   className="relative z-10"
-                  style={{
-                    width: { lg: '78%', xs: '90%' } as any,
-                    marginLeft: { lg: '16px', xs: '0' } as any,
-                    marginBottom: { lg: '-50px', xs: '-30px' } as any,
-                  }}
+                  className="relative z-10 mb-[-28px] w-[88%] sm:mb-[-34px] sm:w-[76%] lg:mb-[-36px] lg:ml-6 lg:w-[76%]"
                 >
                   <img
                     src={ssImage}
                     alt="Travel Planner Table"
-                    className="w-full h-auto object-cover rounded-[14px] shadow-2xl"
+                    className="h-auto w-full rounded-[14px] object-cover shadow-2xl"
                   />
                 </div>
 
@@ -57,10 +50,10 @@ export const AITravelPlannerSection: React.FC = () => {
                 <div
                   className="absolute z-20 hidden lg:block"
                   style={{
-                    width: '44%',
-                    right: '24px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
+                    width: '46%',
+                    left: '72%',
+                    top: '54%',
+                    transform: 'translate(-50%, -50%)',
                   }}
                 >
                   <img
@@ -72,12 +65,12 @@ export const AITravelPlannerSection: React.FC = () => {
               </div>
 
               {/* ── RIGHT: Content Right SVG image (stepper text visual) ── */}
-              <div className="flex items-center justify-center py-8 px-4 lg:py-8 lg:pr-8 lg:pl-6">
+              <div className="flex items-center justify-center px-5 py-6 lg:px-8 lg:py-5">
                 <img
                   src={contentRightSvg}
                   alt="AI Travel Planner Steps"
                   className="w-full h-auto object-contain"
-                  style={{ maxHeight: '400px' }}
+                  style={{ maxHeight: '355px' }}
                   draggable={false}
                 />
               </div>

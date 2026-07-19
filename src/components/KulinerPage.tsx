@@ -232,12 +232,10 @@ export function KulinerPage() {
       cover.png sebagai background dasar seluruh halaman
     */
     <div
-      className="relative min-h-[250vh] overflow-x-hidden select-none"
+      className="kuliner-page relative min-h-[250vh] overflow-x-hidden select-none"
       style={{
         backgroundImage: `url(${coverBg})`,
-        backgroundSize: '100% auto',
         backgroundPosition: 'center top',
-        backgroundRepeat: 'repeat-y',
       }}
     >
       {/* ═══════════════════════════════════════════
@@ -637,7 +635,7 @@ export function KulinerPage() {
         />
 
         {/* Content Container (z-10, behind leaf but in front of background) */}
-        <div className={`relative z-10 flex flex-col items-center w-full max-w-[616px] transition-all duration-700 ease-out ${
+        <div className={`relative z-10 flex w-full max-w-[360px] flex-col items-center transition-all duration-700 ease-out sm:max-w-[616px] ${
           gameVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
 

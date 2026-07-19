@@ -2,7 +2,6 @@ import { useState, useRef } from 'react';
 import imgSejarah from '../assets/11.webp';
 import imgBudaya from '../assets/12.webp';
 import imgKuliner from '../assets/13.webp';
-import imgPariwisata from '../assets/14.webp';
 import imgPeta from '../assets/15.webp';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { HeritagePremiumCard } from './HeritagePremiumCard';
@@ -16,8 +15,7 @@ export function HeritageSection() {
     { title: 'Sejarah', img: imgSejarah },
     { title: 'Budaya', img: imgBudaya },
     { title: 'Kuliner', img: imgKuliner },
-    { title: 'Pariwisata', img: imgPariwisata },
-    { title: 'Peta', img: imgPeta },
+    { title: 'Peta Wisata', img: imgPeta },
   ];
 
   const handleScroll = () => {
@@ -128,7 +126,7 @@ export function HeritageSection() {
                 revealDelay={idx * 80}
                 width="clamp(220px, 68vw, 290px)"
                 height="clamp(293px, 90vw, 386px)"
-                borderRadius="18px 0px 18px 18px"
+                borderRadius="24px"
               />
             </div>
           ))}
@@ -157,38 +155,19 @@ export function HeritageSection() {
 
       {/* ── DESKTOP/TABLET: Grid layout with premium hover cards ── */}
       <div className="hidden md:block mx-auto max-w-[1512px] px-6">
-        <div className="flex flex-col items-center gap-4">
-          {/* Row 1 */}
-          <div className="flex flex-wrap justify-center gap-4 w-full">
-            {cards.slice(0, 3).map((card, idx) => (
-              <HeritagePremiumCard
-                key={card.title}
-                title={card.title}
-                img={card.img}
-                isVisible={isVisible}
-                revealDelay={idx * 130}
-                width="clamp(320px, 28vw, 477px)"
-                height="clamp(413px, 36vw, 616px)"
-                borderRadius="24px 0px 24px 24px"
-              />
-            ))}
-          </div>
-
-          {/* Row 2 */}
-          <div className="flex flex-wrap justify-center gap-4 w-full">
-            {cards.slice(3, 5).map((card, idx) => (
-              <HeritagePremiumCard
-                key={card.title}
-                title={card.title}
-                img={card.img}
-                isVisible={isVisible}
-                revealDelay={(idx + 3) * 130}
-                width="clamp(320px, 28vw, 477px)"
-                height="clamp(413px, 36vw, 616px)"
-                borderRadius="24px 0px 24px 24px"
-              />
-            ))}
-          </div>
+        <div className="flex w-full justify-center gap-3">
+          {cards.map((card, idx) => (
+            <HeritagePremiumCard
+              key={card.title}
+              title={card.title}
+              img={card.img}
+              isVisible={isVisible}
+              revealDelay={idx * 130}
+              width="clamp(155px, 21vw, 315px)"
+              height="clamp(250px, 30vw, 430px)"
+              borderRadius="24px"
+            />
+          ))}
         </div>
       </div>
     </section>

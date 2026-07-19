@@ -150,10 +150,10 @@ export function HeritagePremiumCard({
         boxShadow: isHovered
           ? '0 28px 70px rgba(0,0,0,0.42), 0 4px 20px rgba(0,0,0,0.18)'
           : '0 6px 32px rgba(0,0,0,0.22)',
-        // Thin black border
+        // Heritage maroon stroke
         border: isHovered
-          ? '1px solid rgba(0,0,0,0.35)'
-          : '1px solid rgba(0,0,0,0.15)',
+          ? '2px solid #6E1F1F'
+          : '1.5px solid #6E1F1F',
         overflow: 'hidden',
         willChange: 'transform, box-shadow',
         isolation: 'isolate',
@@ -383,8 +383,8 @@ export function HeritagePremiumCard({
         }}
       >
         <h3
-          className="font-corinthia text-white font-bold leading-none select-none mb-1"
-          style={{ fontSize: 'clamp(36px, 4.5vw, 54px)' }}
+          className="mb-1 select-none whitespace-nowrap font-corinthia font-bold leading-none text-white"
+          style={{ fontSize: 'clamp(28px, 4vw, 54px)' }}
         >
           {title}
         </h3>
