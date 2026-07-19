@@ -253,11 +253,11 @@ export function ProfilBukittinggiPage() {
             </div>
           </div>
 
-          {/* Right Side: Landscape image with Maps overlay */}
-          <div className="flex-shrink-0 relative w-[420px] h-[430px] max-w-full mt-8 lg:mt-0">
+          {/* Right Side: Landscape image with Maps overlay (Fully Responsive) */}
+          <div className="flex-shrink-0 relative w-full max-w-[420px] aspect-[420/430] mt-8 lg:mt-0">
             {/* Main Landscape Frame (jek.png) with inner shadow */}
-            <div className="w-[380px] h-[410px] rounded-[24px] overflow-hidden relative ml-auto shadow-[0_12px_28px_rgba(0,0,0,0.15)]">
-              <img src={jekImage} alt="Ngarai Sianok" className="w-full h-full object-cover" />
+            <div className="w-[90%] h-[95%] rounded-[24px] overflow-hidden relative ml-auto shadow-[0_12px_28px_rgba(0,0,0,0.15)]">
+              <img src={jekImage} alt="Ngarai Sianok" className="w-full h-full object-cover select-none" draggable={false} />
               {/* Inner shadow overlay */}
               <div
                 className="absolute inset-0 pointer-events-none rounded-[24px]"
@@ -266,8 +266,8 @@ export function ProfilBukittinggiPage() {
             </div>
 
             {/* Map Overlay (oke.png) overlapping bottom-left */}
-            <div className="absolute bottom-[-16px] left-0 z-10 w-[240px] rounded-[16px] overflow-hidden border-2 border-[#6E1F1F] bg-white p-1 shadow-[0_12px_24px_rgba(0,0,0,0.2)]">
-              <img src={okeImage} alt="Peta Administratif" className="w-full h-auto object-contain rounded-[10px]" />
+            <div className="absolute bottom-0 left-0 z-10 w-[55%] max-w-[240px] rounded-[16px] overflow-hidden border-2 border-[#6E1F1F] bg-white p-1 shadow-[0_12px_24px_rgba(0,0,0,0.2)]">
+              <img src={okeImage} alt="Peta Administratif" className="w-full h-auto object-contain rounded-[10px]" draggable={false} />
             </div>
           </div>
 

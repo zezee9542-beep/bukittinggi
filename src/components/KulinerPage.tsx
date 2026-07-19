@@ -252,12 +252,12 @@ export function KulinerPage() {
         <img
           src={sonBg}
           alt=""
-          className="relative z-[1] block h-full w-full -translate-y-16 sm:-translate-y-2 scale-[1.08] sm:scale-[1.03] object-cover object-[center_42%] md:-mt-[4%] md:h-auto md:translate-y-0 md:scale-100 md:object-contain"
+          className="relative z-[1] block h-full w-full -translate-y-28 sm:-translate-y-2 scale-[1.14] sm:scale-[1.03] object-cover object-[center_42%] md:-mt-[4%] md:h-auto md:translate-y-0 md:scale-100 md:object-contain"
         />
 
         {/* ── [LAYER 2] 14.PNG (Overlay Gradient Merah) — raised up on mobile ── */}
         <div
-          className="absolute inset-0 z-[2] -translate-y-20 sm:-translate-y-8 scale-[1.08] sm:scale-[1.03] md:-mt-[4%] md:translate-y-0 md:scale-100"
+          className="absolute inset-0 z-[2] -translate-y-32 sm:-translate-y-8 scale-[1.14] sm:scale-[1.03] md:-mt-[4%] md:translate-y-0 md:scale-100"
           style={{
             backgroundImage: `url(${gradientBg})`,
             backgroundSize: '100% 100%',
@@ -383,7 +383,7 @@ export function KulinerPage() {
 
         {/* ── TEKS MELENGKUNG (Group.png) — lowered on mobile ── */}
         <div
-          className={`pointer-events-none absolute bottom-[0%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
+          className={`pointer-events-none absolute bottom-[3%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
             heroVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-12'
           }`}
         >
