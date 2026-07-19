@@ -862,13 +862,13 @@ export function TravelPlannerPage() {
   return (
     <main
       ref={revealRef}
-      className={`min-h-screen bg-[#FAF8F7] flex flex-col lg:flex-row pt-[76px] transition-all duration-1000 ${
+      className={`min-h-screen bg-[#FAF8F7] flex flex-col lg:flex-row pt-[76px] overflow-x-hidden transition-opacity duration-1000 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
 
       {/* ── Left Column (50% Split) ── */}
-      <div className="w-full lg:w-1/2 flex flex-col p-6 md:p-8 lg:p-10 justify-between border-b lg:border-b-0 lg:border-r border-[#D6B8B3]/30 h-[650px] lg:h-[calc(100vh-120px)] lg:min-h-[680px] min-h-0">
+      <div className="w-full lg:w-1/2 flex flex-col p-6 md:p-8 lg:p-10 justify-between border-b lg:border-b-0 lg:border-r border-[#D6B8B3]/30 h-[560px] sm:h-[620px] lg:h-[calc(100vh-76px)] lg:min-h-[680px] min-h-0">
         
         {/* Welcome Card & Conversation scrollable container */}
         <div className="flex-1 flex flex-col min-h-0">
@@ -1072,7 +1072,7 @@ export function TravelPlannerPage() {
       </div>
 
       {/* ── Right Column (50% Split) ── */}
-      <div className="w-full lg:w-1/2 bg-[#F3DDDB] p-6 md:p-8 lg:p-12 flex flex-col justify-between h-[650px] lg:h-[calc(100vh-120px)] lg:min-h-[680px] min-h-0">
+      <div className="w-full lg:w-1/2 bg-[#F3DDDB] p-6 md:p-8 lg:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[640px] lg:h-[calc(100vh-76px)] lg:min-h-[680px]">
         
         {/* Progress Header */}
         <div className="flex items-center gap-5 mb-6 flex-shrink-0">
