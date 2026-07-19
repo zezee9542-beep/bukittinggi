@@ -228,16 +228,25 @@ export function KulinerPage() {
 
   return (
     /*
-      [LAYER 0 - PALING BELAKANG]
-      cover.png sebagai background dasar seluruh halaman
+      [LAYER 0 - PALING BELAKANG] bg putih
+      [LAYER 1] cover.png di atas bg putih
     */
-    <div
-      className="kuliner-page relative min-h-[250vh] overflow-x-hidden select-none"
-      style={{
-        backgroundImage: `url(${coverBg})`,
-        backgroundPosition: 'center top',
-      }}
-    >
+    <div className="kuliner-page relative min-h-[250vh] overflow-x-hidden select-none">
+
+      {/* ── [LAYER 0] White background — paling belakang ── */}
+      <div className="pointer-events-none absolute inset-0 z-[-2] bg-white" />
+
+      {/* ── [LAYER 1] cover.png — di depan bg putih, di belakang konten ── */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[-1]"
+        style={{
+          backgroundImage: `url(${coverBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+
       {/* ═══════════════════════════════════════════
           HERO SECTION
       ═══════════════════════════════════════════ */}
