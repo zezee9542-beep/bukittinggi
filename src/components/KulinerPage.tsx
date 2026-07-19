@@ -248,18 +248,18 @@ export function KulinerPage() {
           HERO SECTION
       ═══════════════════════════════════════════ */}
       {/* overflow-hidden on mobile stops decorative elements from blocking scroll */}
-      <section ref={heroRef} className="relative z-10 mt-[76px] h-[460px] w-full overflow-hidden sm:h-[520px] md:mt-0 md:h-auto md:overflow-visible">
+      <section ref={heroRef} className="relative z-10 mt-[76px] h-[500px] w-full overflow-hidden sm:h-[520px] md:mt-0 md:h-auto md:overflow-visible">
 
         {/* ── [LAYER 1] SON.PNG ── */}
         <img
           src={sonBg}
           alt=""
-          className="relative z-[1] block h-full w-full -translate-y-2 scale-[1.03] object-cover object-[center_42%] md:-mt-[4%] md:h-auto md:translate-y-0 md:scale-100 md:object-contain"
+          className="relative z-[1] block h-full w-full -translate-y-44 sm:-translate-y-2 scale-[1.14] sm:scale-[1.03] object-cover object-[center_42%] md:-mt-[4%] md:h-auto md:translate-y-0 md:scale-100 md:object-contain"
         />
 
         {/* ── [LAYER 2] 14.PNG (Overlay Gradient Merah) — raised up on mobile ── */}
         <div
-          className="absolute inset-0 z-[2] -translate-y-8 scale-[1.03] md:-mt-[4%] md:translate-y-0 md:scale-100"
+          className="absolute inset-0 z-[2] -translate-y-44 sm:-translate-y-8 scale-[1.14] sm:scale-[1.03] md:-mt-[4%] md:translate-y-0 md:scale-100"
           style={{
             backgroundImage: `url(${gradientBg})`,
             backgroundSize: '100% 100%',
@@ -324,7 +324,7 @@ export function KulinerPage() {
 
         {/* Left Large Leaf (leaf.png) */}
         <div
-          className={`absolute left-[-8%] top-[35%] z-20 w-[86px] pointer-events-none transition-all duration-[1400ms] delay-0 ease-out sm:w-[110px] md:left-[-2%] md:top-[25%] md:w-[clamp(120px,18vw,240px)] ${
+          className={`absolute left-[-8%] top-[28%] z-20 w-[86px] pointer-events-none transition-all duration-[1400ms] delay-0 ease-out sm:w-[110px] md:left-[-2%] md:top-[25%] md:w-[clamp(120px,18vw,240px)] ${
             heroVisible ? 'opacity-100 rotate-0 translate-x-0' : 'opacity-0 -rotate-45 -translate-x-8'
           }`}
         >
@@ -337,7 +337,7 @@ export function KulinerPage() {
 
         {/* Leaf (1).png - Right of title */}
         <div
-          className={`absolute right-[4%] top-[42%] z-20 w-[48px] pointer-events-none transition-all duration-[1500ms] delay-200 ease-out sm:w-[60px] md:right-[15%] md:top-[48%] md:w-[clamp(60px,10vw,120px)] ${
+          className={`absolute right-[4%] top-[33%] z-20 w-[48px] pointer-events-none transition-all duration-[1500ms] delay-200 ease-out sm:w-[60px] md:right-[15%] md:top-[48%] md:w-[clamp(60px,10vw,120px)] ${
             heroVisible ? 'opacity-100 rotate-15 scale-100' : 'opacity-0 rotate-90 scale-75'
           }`}
         >
@@ -349,9 +349,9 @@ export function KulinerPage() {
           />
         </div>
 
-        {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) — lowered on mobile ── */}
+        {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) — naik lebih ke atas di mobile ── */}
         <div
-          className="pointer-events-none absolute bottom-[-5%] left-1/2 z-30 flex w-[88%] max-w-[430px] -translate-x-1/2 flex-col items-center md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
+          className="pointer-events-none absolute bottom-[22%] left-1/2 z-30 flex w-[88%] max-w-[430px] -translate-x-1/2 flex-col items-center md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
         >
           {/* Container Piring */}
           <div className={`relative w-full transition-all duration-[1200ms] delay-400 ease-out ${
@@ -383,9 +383,9 @@ export function KulinerPage() {
           </div>
         </div>
 
-        {/* ── TEKS MELENGKUNG (Group.png) — lowered on mobile ── */}
+        {/* ── TEKS MELENGKUNG (Group.png) — naik lebih ke atas di mobile ── */}
         <div
-          className={`pointer-events-none absolute bottom-[-12%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
+          className={`pointer-events-none absolute bottom-[14%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
             heroVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-12'
           }`}
         >
@@ -398,7 +398,7 @@ export function KulinerPage() {
 
         {/* Bottom Left Leaf (leaf (3).png) */}
         <div
-          className={`absolute bottom-[-4%] left-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1600ms] delay-450 ease-out sm:w-[90px] md:bottom-[-12%] md:left-[-1%] md:w-[clamp(85px,12vw,160px)] ${
+          className={`absolute bottom-[12%] left-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1600ms] delay-450 ease-out sm:w-[90px] md:bottom-[-12%] md:left-[-1%] md:w-[clamp(85px,12vw,160px)] ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
           }`}
         >
@@ -407,7 +407,7 @@ export function KulinerPage() {
 
         {/* Bottom Right Leaf (leaf (1).png) */}
         <div
-          className={`absolute bottom-[-4%] right-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1550ms] delay-500 ease-out sm:w-[90px] md:bottom-[-12%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)] ${
+          className={`absolute bottom-[12%] right-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1550ms] delay-500 ease-out sm:w-[90px] md:bottom-[-12%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)] ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -417,7 +417,7 @@ export function KulinerPage() {
       </section>
 
       {/* ── AREA SECTION BAWAH ── */}
-      <div ref={sectionRef} className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-44 pb-0 sm:px-6 sm:pt-52 md:px-12 md:pt-64 lg:px-16">
+      <div ref={sectionRef} className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-40 pb-0 sm:px-6 sm:pt-52 md:px-12 md:pt-64 lg:px-16">
 
         {/* ── Tab Navigation with white background ── */}
         <div
@@ -701,7 +701,7 @@ export function KulinerPage() {
 
             {/* Description — smaller on mobile */}
             <p className="font-poppins font-normal text-[#444651] text-[12px] sm:text-[14.5px] leading-relaxed mb-4 sm:mb-6">
-              Uji daya ingatmu dengan mencocokkan kartu nama dan gambar kuliner khas Bukittinggi. Temukan seluruh pasangan yang sesuai untuk mempelajari berbagai hidangan tradisional dengan cara yang lebih menyenangkan.
+              Uji daya ingatmu dengan mencocokkan kartu kuliner khas Bukittinggi. Temukan seluruh pasangan yang sesuai untuk mempelajari berbagai hidangan tradisional dengan cara yang lebih menyenangkan.
             </p>
 
             {/* Button — smaller on mobile */}

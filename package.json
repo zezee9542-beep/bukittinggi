@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@fontsource/corinthia": "^5.3.0",
     "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/manrope": "^5.3.0",
@@ -24,6 +25,13 @@
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
     "three": "^0.185.1"
+=======
+    "leaflet": "^1.9.4",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.18.1"
+>>>>>>> 00d1baf47c23a4f3192d973557bf4ad70e29eb28
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
@@ -31,6 +39,7 @@
     "@rolldown/plugin-babel": "^0.2.3",
     "@tailwindcss/postcss": "^4.3.1",
     "@types/babel__core": "^7.20.5",
+    "@types/leaflet": "^1.9.21",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

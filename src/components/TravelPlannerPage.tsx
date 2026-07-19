@@ -132,8 +132,14 @@ export function TravelPlannerPage() {
   // Track the number of days the user requested for the itinerary
   const [requestedDays, setRequestedDays] = useState<number>(3);
 
-  // Scroll to bottom of chat when new message is added
+  const isInitialMount = useRef(true);
+
+  // Scroll to bottom of chat when new message is added (skip on initial mount)
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatLog, isGenerating]);
 
