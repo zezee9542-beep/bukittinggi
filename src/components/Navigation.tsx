@@ -268,13 +268,20 @@ export function Navigation() {
             )}
           </button>
 
-          {/* Peta smooth scrolls to heritage section map */}
+          {/* Peta link to PetaPage */}
           <button
-            onClick={() => handleNavClick('/', 'heritage-heading')}
+            onClick={() => {
+              navigate('/peta');
+              window.scrollTo({ top: 0, behavior: 'instant' });
+            }}
             className="relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 text-[#6E1F1F]/70 hover:text-[#6E1F1F] hover:-translate-y-0.5"
           >
             Peta
+            {location.pathname === '/peta' && (
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#6E1F1F] rounded-full animate-line-grow" />
+            )}
           </button>
+
 
           {/* Game shows a beautiful coming soon notification */}
           <button

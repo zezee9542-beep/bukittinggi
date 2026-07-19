@@ -63,10 +63,13 @@ export function HeritagePremiumCard({
         return '/budaya';
       case 'kuliner':
         return '/kuliner';
+      case 'peta wisata':
+        return '/peta';
       default:
         return null;
     }
   }, [title]);
+
 
   const handleCardClick = useCallback((e: React.MouseEvent) => {
     if (!checkIsMobile()) {

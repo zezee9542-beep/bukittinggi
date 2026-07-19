@@ -69,8 +69,9 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
     { path: '/budaya', label: t('nav_culture'), sub: t('nav_culture_sub') },
     { path: '/kuliner', label: t('nav_culinary'), sub: 'Jelajahi Kuliner Khas' },
     { path: '/travel-planner', label: 'AI Planner', sub: 'Rencanakan Perjalananmu' },
-    { path: '/', label: 'Peta', sub: 'Peta Warisan Budaya', sectionId: 'heritage-heading' },
+    { path: '/peta', label: 'Peta', sub: 'Peta Warisan Budaya' },
     { path: null, label: 'Game', sub: 'Segera Hadir' },
+
   ];
 
   return (

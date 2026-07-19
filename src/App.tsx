@@ -14,6 +14,7 @@ import { RancakBotWidget } from './components/RancakBotWidget';
 import { useMode } from './context/ModeContext';
 import { AITravelPlannerSection } from './components/AITravelPlannerSection';
 import { ProfilBukittinggiPage } from './components/ProfilBukittinggiPage';
+import { PetaPage } from './components/PetaPage';
 
 // Import assets to prefetch for butter-smooth page switching
 import bggImage from './assets/bgg.png';
@@ -133,9 +134,11 @@ function App() {
           <Route path="/kuliner" element={<KulinerPage />} />
           <Route path="/travel-planner" element={<TravelPlannerPage />} />
           <Route path="/profil-bukittinggi" element={<ProfilBukittinggiPage />} />
+          <Route path="/peta" element={<PetaPage />} />
         </Routes>
       </main>
-      {location.pathname !== '/travel-planner' && location.pathname !== '/profil-bukittinggi' && <RancakBotWidget />}
+      {location.pathname !== '/travel-planner' && location.pathname !== '/profil-bukittinggi' && location.pathname !== '/peta' && <RancakBotWidget />}
+
     </div>
   );
 }

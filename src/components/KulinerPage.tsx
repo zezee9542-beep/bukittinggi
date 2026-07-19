@@ -252,12 +252,12 @@ export function KulinerPage() {
         <img
           src={sonBg}
           alt=""
-          className="relative z-[1] block h-full w-full -translate-y-28 sm:-translate-y-2 scale-[1.14] sm:scale-[1.03] object-cover object-[center_42%] md:-mt-[4%] md:h-auto md:translate-y-0 md:scale-100 md:object-contain"
+          className="relative z-[1] block h-full w-full -translate-y-44 sm:-translate-y-2 scale-[1.14] sm:scale-[1.03] object-cover object-[center_42%] md:-mt-[4%] md:h-auto md:translate-y-0 md:scale-100 md:object-contain"
         />
 
         {/* ── [LAYER 2] 14.PNG (Overlay Gradient Merah) — raised up on mobile ── */}
         <div
-          className="absolute inset-0 z-[2] -translate-y-32 sm:-translate-y-8 scale-[1.14] sm:scale-[1.03] md:-mt-[4%] md:translate-y-0 md:scale-100"
+          className="absolute inset-0 z-[2] -translate-y-44 sm:-translate-y-8 scale-[1.14] sm:scale-[1.03] md:-mt-[4%] md:translate-y-0 md:scale-100"
           style={{
             backgroundImage: `url(${gradientBg})`,
             backgroundSize: '100% 100%',
@@ -347,9 +347,9 @@ export function KulinerPage() {
           />
         </div>
 
-        {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) — lowered on mobile ── */}
+        {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) — naik lebih ke atas di mobile ── */}
         <div
-          className="pointer-events-none absolute bottom-[6%] left-1/2 z-30 flex w-[88%] max-w-[430px] -translate-x-1/2 flex-col items-center md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
+          className="pointer-events-none absolute bottom-[22%] left-1/2 z-30 flex w-[88%] max-w-[430px] -translate-x-1/2 flex-col items-center md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
         >
           {/* Container Piring */}
           <div className={`relative w-full transition-all duration-[1200ms] delay-400 ease-out ${
@@ -381,9 +381,9 @@ export function KulinerPage() {
           </div>
         </div>
 
-        {/* ── TEKS MELENGKUNG (Group.png) — lowered on mobile ── */}
+        {/* ── TEKS MELENGKUNG (Group.png) — naik lebih ke atas di mobile ── */}
         <div
-          className={`pointer-events-none absolute bottom-[3%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
+          className={`pointer-events-none absolute bottom-[14%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
             heroVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-12'
           }`}
         >
@@ -396,7 +396,7 @@ export function KulinerPage() {
 
         {/* Bottom Left Leaf (leaf (3).png) */}
         <div
-          className={`absolute bottom-[2%] left-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1600ms] delay-450 ease-out sm:w-[90px] md:bottom-[-12%] md:left-[-1%] md:w-[clamp(85px,12vw,160px)] ${
+          className={`absolute bottom-[12%] left-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1600ms] delay-450 ease-out sm:w-[90px] md:bottom-[-12%] md:left-[-1%] md:w-[clamp(85px,12vw,160px)] ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
           }`}
         >
@@ -405,7 +405,7 @@ export function KulinerPage() {
 
         {/* Bottom Right Leaf (leaf (1).png) */}
         <div
-          className={`absolute bottom-[2%] right-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1550ms] delay-500 ease-out sm:w-[90px] md:bottom-[-12%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)] ${
+          className={`absolute bottom-[12%] right-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1550ms] delay-500 ease-out sm:w-[90px] md:bottom-[-12%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)] ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -415,7 +415,7 @@ export function KulinerPage() {
       </section>
 
       {/* ── AREA SECTION BAWAH ── */}
-      <div ref={sectionRef} className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-64 pb-0 sm:px-6 sm:pt-52 md:px-12 md:pt-64 lg:px-16">
+      <div ref={sectionRef} className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-40 pb-0 sm:px-6 sm:pt-52 md:px-12 md:pt-64 lg:px-16">
 
         {/* ── Tab Navigation with white background ── */}
         <div
