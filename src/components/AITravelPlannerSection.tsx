@@ -36,7 +36,6 @@ export const AITravelPlannerSection: React.FC = () => {
               <div className="relative flex min-h-[280px] items-end justify-center overflow-visible px-5 pt-7 sm:min-h-[325px] sm:px-8 lg:min-h-[360px] lg:justify-start lg:px-0 lg:pt-8">
                 {/* ss.png — main table, overflows bottom */}
                 <div
-                  className="relative z-10"
                   className="relative z-10 mb-[-28px] w-[88%] sm:mb-[-34px] sm:w-[76%] lg:mb-[-36px] lg:ml-6 lg:w-[76%]"
                 >
                   <img
