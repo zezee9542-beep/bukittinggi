@@ -247,18 +247,18 @@ export function KulinerPage() {
       {/* ═══════════════════════════════════════════
           HERO SECTION
       ═══════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative w-full z-10">
+      <section ref={heroRef} className="relative z-10 mt-[76px] h-[420px] w-full overflow-visible sm:h-[480px] md:mt-0 md:h-auto">
         
         {/* ── [LAYER 1] SON.PNG ── */}
         <img 
           src={sonBg} 
           alt="" 
-          className="w-full h-auto block relative z-[1] -mt-[4%]" 
+          className="relative z-[1] block h-full w-full -translate-y-2 scale-[1.03] object-cover object-[center_42%] md:-mt-[4%] md:h-auto md:translate-y-0 md:scale-100 md:object-contain" 
         />
 
         {/* ── [LAYER 2] 14.PNG (Overlay Gradient Merah) ── */}
         <div
-          className="absolute inset-0 z-[2] -mt-[4%]"
+          className="absolute inset-0 z-[2] -translate-y-2 scale-[1.03] md:-mt-[4%] md:translate-y-0 md:scale-100"
           style={{
             backgroundImage: `url(${gradientBg})`,
             backgroundSize: '100% 100%',
@@ -271,14 +271,14 @@ export function KulinerPage() {
 
         {/* Judul: "Cita Rasa Bukittinggi" */}
         <div
-          className={`absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 z-10 text-center w-full px-4 transition-all duration-1000 delay-150 ease-out ${
+          className={`absolute left-1/2 top-[19%] z-10 w-full -translate-x-1/2 -translate-y-1/2 px-4 text-center transition-all duration-1000 delay-150 ease-out md:top-[42%] ${
             heroVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-8 scale-90'
           }`}
         >
           <h1
             className="font-poppins font-medium text-white tracking-wide"
             style={{
-              fontSize: 'clamp(1.6rem, 4.2vw, 3.5rem)',
+              fontSize: 'clamp(1.45rem, 4.2vw, 3.5rem)',
               textShadow: '0 4px 14px rgba(0,0,0,0.5)',
             }}
           >
@@ -288,7 +288,7 @@ export function KulinerPage() {
 
         {/* Top Right Floating Badge */}
         <div
-          className={`absolute top-[108px] sm:top-[118px] right-[5%] sm:right-[6%] z-10 flex items-center gap-3 rounded-[14px] px-5 py-3 shadow-md transition-[opacity,transform] duration-500 ease-out ${
+          className={`absolute right-4 top-4 z-10 flex items-center gap-2 rounded-[12px] px-3 py-2 shadow-md transition-[opacity,transform] duration-500 ease-out sm:right-5 sm:top-5 sm:gap-2.5 sm:px-4 sm:py-2.5 md:right-[6%] md:top-[118px] md:gap-3 md:rounded-[14px] md:px-5 md:py-3 ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'
           }`}
           style={{
@@ -299,21 +299,21 @@ export function KulinerPage() {
           }}
         >
           <div
-            className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0"
+            className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-[8px] sm:h-8 sm:w-8 md:h-9 md:w-9 md:rounded-[10px]"
             style={{ background: 'rgba(255,255,255,0.12)' }}
           >
             <img
               src={foodIcon}
               alt=""
-              className="w-5 h-5 object-contain"
+              className="h-4 w-4 object-contain md:h-5 md:w-5"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-poppins font-medium text-white text-[11px] sm:text-[12px] mb-0.5">
+            <span className="mb-0.5 font-poppins text-[9px] font-medium text-white sm:text-[10px] md:text-[12px]">
               Meal Planning
             </span>
-            <span className="font-poppins text-white/75 text-[10px] sm:text-[11px]">
+            <span className="font-poppins text-[8px] text-white/75 sm:text-[9px] md:text-[11px]">
               Assistance
             </span>
           </div>
@@ -323,10 +323,9 @@ export function KulinerPage() {
         
         {/* Left Large Leaf (leaf.png) -> DITURUNKAN KE TOP-[25%] */}
         <div
-          className={`absolute left-[-2%] top-[25%] z-20 pointer-events-none transition-all duration-[1400ms] delay-0 ease-out ${
+          className={`absolute left-[-8%] top-[35%] z-20 w-[86px] pointer-events-none transition-all duration-[1400ms] delay-0 ease-out sm:w-[110px] md:left-[-2%] md:top-[25%] md:w-[clamp(120px,18vw,240px)] ${
             heroVisible ? 'opacity-100 rotate-0 translate-x-0' : 'opacity-0 -rotate-45 -translate-x-8'
           }`}
-          style={{ width: 'clamp(120px, 18vw, 240px)' }}
         >
           <img 
             src={leafBig} 
@@ -337,10 +336,9 @@ export function KulinerPage() {
 
         {/* Leaf (1).png - Right of title */}
         <div
-          className={`absolute right-[15%] top-[48%] z-20 pointer-events-none transition-all duration-[1500ms] delay-200 ease-out ${
+          className={`absolute right-[4%] top-[42%] z-20 w-[48px] pointer-events-none transition-all duration-[1500ms] delay-200 ease-out sm:w-[60px] md:right-[15%] md:top-[48%] md:w-[clamp(60px,10vw,120px)] ${
             heroVisible ? 'opacity-100 rotate-15 scale-100' : 'opacity-0 rotate-90 scale-75'
           }`}
-          style={{ width: 'clamp(60px, 10vw, 120px)' }}
         >
           <img 
             src={leaf1} 
@@ -354,11 +352,7 @@ export function KulinerPage() {
 
         {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) ── */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 z-30 pointer-events-none flex flex-col items-center"
-          style={{
-            width: 'clamp(350px, 55vw, 680px)',
-            bottom: '-20%', 
-          }}
+          className="pointer-events-none absolute bottom-[5%] left-1/2 z-30 flex w-[88%] max-w-[430px] -translate-x-1/2 flex-col items-center md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
         >
           {/* Container Piring */}
           <div className={`relative w-full transition-all duration-1200 delay-400 ease-out ${
@@ -393,13 +387,9 @@ export function KulinerPage() {
 
         {/* ── TEKS MELENGKUNG (Group.png) ── */}
         <div
-          className={`absolute left-1/2 -translate-x-1/2 z-35 pointer-events-none transition-all duration-1100 delay-550 ease-out ${
+          className={`pointer-events-none absolute bottom-[-1%] left-1/2 z-35 w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-1100 delay-550 ease-out sm:w-[92%] md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
             heroVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-12'
           }`}
-          style={{
-            width: 'clamp(350px, 55vw, 680px)',
-            bottom: '-20%', 
-          }}
         >
           <img
             src={groupText}
@@ -410,20 +400,18 @@ export function KulinerPage() {
 
         {/* Bottom Left Leaf (leaf (3).png) */}
         <div
-          className={`absolute z-30 pointer-events-none transition-all duration-[1600ms] delay-450 ease-out ${
+          className={`absolute bottom-[-4%] left-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1600ms] delay-450 ease-out sm:w-[90px] md:bottom-[-12%] md:left-[-1%] md:w-[clamp(85px,12vw,160px)] ${
             heroVisible ? 'opacity-100 rotate--12 translate-y-0' : 'opacity-0 rotate-60 translate-y-12'
           }`}
-          style={{ left: '-1%', bottom: '-12%', width: 'clamp(85px, 12vw, 160px)' }}
         >
           <img src={leaf3} alt="" className="w-full h-auto object-contain filter drop-shadow(0 6px 10px rgba(0,0,0,0.2))" style={{ transform: 'rotate(-12deg)' }} />
         </div>
 
         {/* Bottom Right Leaf (leaf (1).png) */}
         <div
-          className={`absolute z-30 pointer-events-none transition-all duration-[1550ms] delay-500 ease-out ${
+          className={`absolute bottom-[-4%] right-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1550ms] delay-500 ease-out sm:w-[90px] md:bottom-[-12%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)] ${
             heroVisible ? 'opacity-100 rotate-0 translate-y-0' : 'opacity-0 rotate--60 translate-y-10'
           }`}
-          style={{ right: '-1%', bottom: '-12%', width: 'clamp(85px, 12vw, 160px)' }}
         >
           <img src={leaf1} alt="" className="w-full h-auto object-contain filter drop-shadow(0 6px 10px rgba(0,0,0,0.2))" />
         </div>
@@ -431,7 +419,7 @@ export function KulinerPage() {
       </section>
 
       {/* ── AREA SECTION BAWAH ── */}
-      <div ref={sectionRef} className="w-full pt-64 pb-0 relative z-10 px-4 sm:px-6 md:px-12 lg:px-16 max-w-7xl mx-auto">
+      <div ref={sectionRef} className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-36 pb-0 sm:px-6 sm:pt-48 md:px-12 md:pt-64 lg:px-16">
 
         {/* ── Tab Navigation with white background ── */}
         <div className={`inline-flex max-w-full items-end overflow-x-auto bg-white rounded-t-[24px] pt-4 pl-2 transition-[opacity,transform] duration-500 ease-out hide-scrollbar ${

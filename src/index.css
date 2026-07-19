@@ -325,6 +325,31 @@ body {
   display: none;
 }
 
+/* Keep native browser chrome hidden only while the Culinary route is active. */
+html.kuliner-scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html.kuliner-scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* Hide the browser's native scrollbar only while the Culinary page is open.
+   Scrolling itself remains available by mouse wheel, touch, and keyboard. */
+html.kuliner-scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html.kuliner-scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 /* ── Touch momentum scrolling ── */
 .touch-scroll {
   -webkit-overflow-scrolling: touch;
