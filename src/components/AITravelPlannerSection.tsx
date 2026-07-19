@@ -11,7 +11,7 @@ export const AITravelPlannerSection: React.FC = () => {
     >
       <div className="max-w-[1150px] mx-auto">
         {/* Section Title */}
-        <h2 className="font-poppins font-semibold text-[#3D0000] text-[2rem] md:text-[2.4rem] mb-10 text-center tracking-tight">
+        <h2 className="font-poppins font-semibold text-[#3D0000] text-[1.5rem] sm:text-[2rem] md:text-[2.4rem] mb-10 text-center tracking-tight">
           AI Travel Planner
         </h2>
 
@@ -30,20 +30,20 @@ export const AITravelPlannerSection: React.FC = () => {
             />
 
             {/* Card content */}
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0 min-h-[480px]">
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
 
               {/* ── LEFT: Mockup images ── */}
               <div
-                className="relative flex items-end justify-start overflow-visible"
-                style={{ minHeight: '480px', paddingTop: '24px', paddingLeft: '24px', paddingBottom: 0 }}
+                className="relative flex items-end justify-center lg:justify-start overflow-visible"
+                style={{ minHeight: { sm: '480px', xs: '320px' } as any, paddingTop: { lg: '24px', xs: '16px' } as any, paddingLeft: { lg: '24px', xs: '16px' } as any, paddingBottom: 0, paddingRight: { lg: '0', xs: '16px' } as any }}
               >
                 {/* ss.png — main table, overflows bottom */}
                 <div
                   className="relative z-10"
                   style={{
-                    width: '78%',
-                    marginLeft: '16px',
-                    marginBottom: '-50px',
+                    width: { lg: '78%', xs: '90%' } as any,
+                    marginLeft: { lg: '16px', xs: '0' } as any,
+                    marginBottom: { lg: '-50px', xs: '-30px' } as any,
                   }}
                 >
                   <img
@@ -55,7 +55,7 @@ export const AITravelPlannerSection: React.FC = () => {
 
                 {/* Calendar.png — centered vertically, overlapping right side of ss.png (bigger, no white border) */}
                 <div
-                  className="absolute z-20"
+                  className="absolute z-20 hidden lg:block"
                   style={{
                     width: '44%',
                     right: '24px',
@@ -72,12 +72,12 @@ export const AITravelPlannerSection: React.FC = () => {
               </div>
 
               {/* ── RIGHT: Content Right SVG image (stepper text visual) ── */}
-              <div className="flex items-center justify-center py-8 pr-8 pl-4 lg:pl-6">
+              <div className="flex items-center justify-center py-8 px-4 lg:py-8 lg:pr-8 lg:pl-6">
                 <img
                   src={contentRightSvg}
                   alt="AI Travel Planner Steps"
                   className="w-full h-auto object-contain"
-                  style={{ maxHeight: '480px' }}
+                  style={{ maxHeight: '400px' }}
                   draggable={false}
                 />
               </div>
