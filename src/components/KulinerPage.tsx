@@ -9,7 +9,8 @@ import leafBig from '../assets/leaf.png';
 import leaf1 from '../assets/leaf (1).png';   
 import leaf2 from '../assets/leaf (2).png';   
 import leaf3 from '../assets/leaf (3).png';   
-import makanPlate from '../assets/makan.png'; 
+import makanPlate from '../assets/makan.png';
+import piringImg from '../assets/piring.png';
 import groupText from '../assets/Group.png';  
 import group6 from '../assets/Group 6.png';  
 import group7 from '../assets/Group 7.png';  
@@ -20,19 +21,23 @@ import mknIcon from '../assets/mkn.png';
 import mnsIcon from '../assets/mns.png';
 import drnkIcon from '../assets/drnk.png';
 
-import katupekImg from '../assets/katupek_kapau.png';
-import itiakImg from '../assets/itiak_lado_mudo.png';
-import tambusuImg from '../assets/gulai_tambusu.png';
-import cancangImg from '../assets/gulai_cancang.png';
-import dendengImg from '../assets/dendeng_batokok.png';
-import tunjangImg from '../assets/gulai_tunjang.png';
-import apopImg from '../assets/ayam_pop.png';
-import kapauImg from '../assets/gulai_kapau.png';
+import img111 from '../assets/111.png';
+import img222 from '../assets/222.png';
+import img333 from '../assets/333.png';
+import img444 from '../assets/444.png';
+import img555 from '../assets/555.png';
+import img666 from '../assets/666.png';
+import img777 from '../assets/777.png';
+import img888 from '../assets/888.png';
 
-import galamaiImg from '../assets/galamai.png';
-import wajikImg from '../assets/wajik.png';
-import karakKaliangImg from '../assets/karak_kaliang.png';
-import barehRandangImg from '../assets/bareh_randang.png';
+import img889 from '../assets/889.png';
+import img890 from '../assets/890.png';
+import img891 from '../assets/891.png';
+import img892 from '../assets/892.png';
+import img893 from '../assets/893.png';
+import img894 from '../assets/894.png';
+import img895 from '../assets/895.png';
+import img896 from '../assets/896.png';
 
 import tehTaluaImg from '../assets/teh_talua.png';
 import esTebakImg from '../assets/es_tebak.png';
@@ -48,81 +53,113 @@ interface KulinerItem {
 
 const KULINER_DATA: Record<'makanan' | 'manisan' | 'minuman', KulinerItem[]> = {
   makanan: [
-    {
-      id: 'mak-1',
-      title: 'Katupek Kapau',
-      description: 'Ketupat dengan kuah gulai nangka, sayuran rebus, bihun, dan siraman bumbu pecel khas',
-      image: katupekImg,
-    },
-    {
-      id: 'mak-2',
-      title: 'Itiak Lado Mudo',
-      description: 'Daging bebek yang dimasak dengan racikan rempah dan cabai hijau keriting.',
-      image: itiakImg,
-    },
-    {
-      id: 'mak-3',
-      title: 'Gulai Tambusu',
-      description: 'Daging usus sapi diisi dengan adonan telur dan tahu, dimasak dengan racikan rempah.',
-      image: tambusuImg,
-    },
-    {
-      id: 'mak-4',
-      title: 'Gulai Cancang',
-      description: 'Potongan daging, tetelan, jeroan sapi/kambing yang dicincang dimasak rempah',
-      image: cancangImg,
-    },
-    {
-      id: 'mak-5',
-      title: 'Dendeng Batokok',
-      description: 'Daging sapi pipih berbumbu rempah khas Minang dengan sambal pedas menggugah.',
-      image: dendengImg,
-    },
-    {
-      id: 'mak-6',
-      title: 'Gulai Tunjang',
-      description: 'Tunjang sapi empuk dimasak dalam kuah gulai kaya rempah khas.',
-      image: tunjangImg,
-    },
-    {
-      id: 'mak-7',
-      title: 'Ayam Pop',
-      description: 'Ayam khas Minang yang direbus dalam air kelapa sebelum disajikan.',
-      image: apopImg,
-    },
-    {
-      id: 'mak-8',
-      title: 'Gulai Kapau',
-      description: 'Masakan berkuah santan dari Kapau yang disajikan bersama aneka lauk.',
-      image: kapauImg,
-    },
-  ],
+  {
+    id: 'mak-1',
+    title: 'Katupek Kapau',
+    description:
+      'Ketupat dengan kuah gulai nangka, sayuran rebus, bihun, dan siraman bumbu pecel khas.',
+    image: img111,
+  },
+  {
+    id: 'mak-2',
+    title: 'Itiak Lado Mudo',
+    description:
+      'Daging bebek yang dimasak dengan racikan rempah dan cabai hijau keriting.',
+    image: img222,
+  },
+  {
+    id: 'mak-3',
+    title: 'Gulai Tambusu',
+    description:
+      'Daging usus sapi diisi dengan adonan telur dan tahu, dimasak menggunakan bumbu rempah khas.',
+    image: img333,
+  },
+  {
+    id: 'mak-4',
+    title: 'Gulai Cancang',
+    description:
+      'Potongan daging, tetelan, dan jeroan sapi atau kambing dimasak dengan kuah gulai kaya rempah.',
+    image: img444,
+  },
+  {
+    id: 'mak-5',
+    title: 'Dendeng Batokok',
+    description:
+      'Daging sapi pipih berbumbu khas Minang dengan sambal pedas yang menggugah selera.',
+    image: img555,
+  },
+  {
+    id: 'mak-6',
+    title: 'Gulai Tunjang',
+    description:
+      'Tunjang sapi yang dimasak hingga empuk dengan kuah santan dan rempah khas Minangkabau.',
+    image: img666,
+  },
+  {
+    id: 'mak-7',
+    title: 'Ayam Pop',
+    description:
+      'Ayam khas Minang yang direbus dalam air kelapa hingga lembut dan gurih.',
+    image: img777,
+  },
+  {
+    id: 'mak-8',
+    title: 'Gulai Kapau',
+    description:
+      'Masakan khas Kapau berkuah santan yang disajikan dengan beragam lauk tradisional.',
+    image: img888,
+  },
+],
   manisan: [
-    {
-      id: 'mns-1',
-      title: 'Galamai',
-      description: 'Camilan manis sejenis dodol khas Minangkabau dengan tekstur kenyal dari kelapa dan gula aren.',
-      image: galamaiImg,
-    },
-    {
-      id: 'mns-2',
-      title: 'Wajik Ketan',
-      description: 'Kue ketan tradisional bercita rasa manis gula merah khas masakan rumah gadang.',
-      image: wajikImg,
-    },
-    {
-      id: 'mns-3',
-      title: 'Karak Kaliang',
-      description: 'Camilan khas berbahan ubi kayu dengan bentuk angka delapan yang manis dan renyah.',
-      image: karakKaliangImg,
-    },
-    {
-      id: 'mns-4',
-      title: 'Bareh Randang',
-      description: 'Makanan manis beraroma harum dari olahan tepung beras yang disangrai dengan air gula.',
-      image: barehRandangImg,
-    },
-  ],
+  {
+    id: 'mns-1',
+    title: 'Bubua Kampiun',
+    description: 'Kelezatan tradisional Minang dengan perpaduan bubur, kolak, dan santan.',
+    image: img889,
+  },
+  {
+    id: 'mns-2',
+    title: 'Itiak Lado Mudo',
+    description: 'Daging bebek yang dimasak dengan racikan rempah dan cabai hijau keriting.',
+    image: img890,
+  },
+  {
+    id: 'mns-3',
+    title: 'Pisang Kapik',
+    description: 'Pisang kepok dibakar lalu dipipihkan sebelum diberi taburan kelapa manis.',
+    image: img891,
+  },
+  {
+    id: 'mns-4',
+    title: 'Kacimuiah',
+    description: 'Jajanan tradisional dari singkong kukus dengan kelapa dan taburan gula.',
+    image: img892,
+  },
+  {
+    id: 'mns-5',
+    title: 'Pinukuik',
+    description: 'Kue panggang tradisional dari tepung beras yang disajikan hangat nikmat.',
+    image: img893,
+  },
+  {
+    id: 'mns-6',
+    title: 'Lupis Minang',
+    description: 'Kue ketan tradisional yang disajikan bersama kelapa dan gula merah.',
+    image: img894,
+  },
+  {
+    id: 'mns-7',
+    title: 'Mangkuak Sayak',
+    description: 'Kue kukus tradisional dengan cetakan batok kelapa dan aroma khas.',
+    image: img895,
+  },
+  {
+    id: 'mns-8',
+    title: 'Lamang Tapai',
+    description: 'Ketan bakar dalam bambu disajikan bersama tapai hasil fermentasi tradisional.',
+    image: img896,
+  },
+],
   minuman: [
     {
       id: 'drk-1',
@@ -154,12 +191,22 @@ const KULINER_DATA: Record<'makanan' | 'manisan' | 'minuman', KulinerItem[]> = {
 export function KulinerPage() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollReveal<HTMLElement>({ threshold: 0.01 });
   const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.15 });
+  const { ref: decorationRef, isVisible: decorationVisible } = useScrollReveal<HTMLElement>({ threshold: 0.2 });
   const [activeCategory, setActiveCategory] = useState<'makanan' | 'manisan' | 'minuman'>('makanan');
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayCategory, setDisplayCategory] = useState(activeCategory);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  // The Culinary page uses a clean, scrollbar-free presentation while
+  // preserving normal mouse, touch, and keyboard scrolling.
+  useEffect(() => {
+    document.documentElement.classList.add('kuliner-scrollbar-hidden');
+    return () => {
+      document.documentElement.classList.remove('kuliner-scrollbar-hidden');
+    };
   }, []);
 
   useEffect(() => {
@@ -190,10 +237,9 @@ export function KulinerPage() {
         backgroundImage: `url(${coverBg})`,
         backgroundSize: '100% auto',
         backgroundPosition: 'center top',
-        backgroundRepeat: 'repeat-y'
+        backgroundRepeat: 'repeat-y',
       }}
     >
-
       {/* ═══════════════════════════════════════════
           HERO SECTION
       ═══════════════════════════════════════════ */}
@@ -238,8 +284,8 @@ export function KulinerPage() {
 
         {/* Top Right Floating Badge */}
         <div
-          className={`absolute top-[8%] right-[5%] sm:right-[6%] z-10 flex items-center gap-2.5 rounded-[12px] px-4 py-2.5 shadow-md transition-all duration-800 delay-300 ease-out ${
-            heroVisible ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-75 rotate-12'
+          className={`absolute top-[108px] sm:top-[118px] right-[5%] sm:right-[6%] z-10 flex items-center gap-3 rounded-[14px] px-5 py-3 shadow-md transition-[opacity,transform] duration-500 ease-out ${
+            heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'
           }`}
           style={{
             background: 'rgba(105, 32, 32, 0.45)',
@@ -249,21 +295,21 @@ export function KulinerPage() {
           }}
         >
           <div
-            className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0"
+            className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0"
             style={{ background: 'rgba(255,255,255,0.12)' }}
           >
             <img
               src={foodIcon}
               alt=""
-              className="w-4 h-4 object-contain"
+              className="w-5 h-5 object-contain"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-poppins font-medium text-white text-[10px] sm:text-[11px] mb-0.5">
+            <span className="font-poppins font-medium text-white text-[11px] sm:text-[12px] mb-0.5">
               Meal Planning
             </span>
-            <span className="font-poppins text-white/75 text-[9px] sm:text-[10px]">
+            <span className="font-poppins text-white/75 text-[10px] sm:text-[11px]">
               Assistance
             </span>
           </div>
@@ -384,8 +430,8 @@ export function KulinerPage() {
       <div ref={sectionRef} className="w-full pt-64 pb-0 relative z-10 px-4 sm:px-6 md:px-12 lg:px-16 max-w-7xl mx-auto">
 
         {/* ── Tab Navigation with white background ── */}
-        <div className={`flex items-end bg-white rounded-t-[24px] pt-4 pl-2 transition-all duration-1000 delay-200 ease-out ${
-            sectionVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'
+        <div className={`inline-flex max-w-full items-end overflow-x-auto bg-white rounded-t-[24px] pt-4 pl-2 transition-[opacity,transform] duration-500 ease-out hide-scrollbar ${
+            sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
           }`} style={{
             boxShadow: '0 -4px 12px rgba(0,0,0,0.04), inset 0 0 0 1px rgba(0,0,0,0.05)',
         }}>
@@ -434,14 +480,12 @@ export function KulinerPage() {
               </button>
             );
           })}
-          {/* Empty space to fill the rest */}
-          <div className="flex-1 h-full bg-white pr-2"></div>
         </div>
 
         {/* ── White Card Panel — wraps ONLY the cards ── */}
         <div
-          className={`rounded-b-[24px] p-6 sm:p-8 transition-all duration-1200 delay-400 ease-out ${
-            sectionVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-10'
+          className={`rounded-b-[24px] p-6 sm:p-8 transition-[opacity,transform] duration-500 delay-100 ease-out ${
+            sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
           }`}
           style={{
             background: '#ffffff',
@@ -452,24 +496,24 @@ export function KulinerPage() {
         >
           <div 
             key={displayCategory} 
-            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 transition-all duration-400 ease-out ${
+            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 transition-[opacity,transform] duration-300 ease-out ${
               isAnimating 
-                ? 'opacity-0 scale-95 translate-y-2' 
-                : 'opacity-100 scale-100 translate-y-0'
+                ? 'opacity-0 translate-y-1' 
+                : 'opacity-100 translate-y-0'
             }`}
           >
             {KULINER_DATA[displayCategory].map((item, index) => (
               <div
                 key={item.id}
-                className={`bg-white rounded-[20px] p-4 flex flex-col justify-between transition-all duration-500 hover:-translate-y-1 ${
+                className={`bg-white rounded-[20px] p-4 flex flex-col justify-between transition-[opacity,transform] duration-400 hover:-translate-y-1 ${
                   sectionVisible && !isAnimating
-                    ? 'opacity-100 scale-100 translate-x-0 translate-y-0 rotate-0' 
-                    : `opacity-0 scale-80 ${index % 2 === 0 ? '-translate-x-6' : 'translate-x-6'} translate-y-8 ${index % 3 === 0 ? '-rotate-2' : index % 3 === 1 ? 'rotate-2' : 'rotate-1'}`
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-4'
                 }`}
                 style={{
-                  boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.07), 0 6px 20px rgba(0,0,0,0.04)',
-                  transitionDelay: `${sectionVisible && !isAnimating ? index * 120 + 100 : 0}ms`,
-                  transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  boxShadow: 'inset 0 2px 10px rgba(74,35,29,0.08), inset 0 0 0 1px rgba(110,31,31,0.10), 0 6px 20px rgba(0,0,0,0.04)',
+                  transitionDelay: `${sectionVisible && !isAnimating ? index * 60 : 0}ms`,
+                  transitionTimingFunction: 'ease-out',
                 }}
               >
                 {/* Image Frame with drop shadow + inner shadow */}
@@ -519,56 +563,63 @@ export function KulinerPage() {
         {/* ── end card panel ── */}
 
         {/* ── Decorative Section with Two Images ── */}
-        <div className={`w-full py-16 px-4 sm:px-8 md:px-16 transition-all duration-1000 delay-600 ease-out ${
-          sectionVisible 
+        <section ref={decorationRef} className={`w-full pt-5 sm:pt-7 pb-14 sm:pb-20 px-5 sm:px-10 lg:px-20 transition-[opacity,transform] duration-700 ease-out ${
+          decorationVisible 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-12'
         }`}>
           {/* Desktop & Tablet - Horizontal Layout */}
-          <div className="hidden md:flex items-center justify-between relative">
-            {/* Left Image - Group 6 (Higher up) */}
-            <div className="relative flex-1 flex justify-start -mt-12">
+          <div className="hidden md:flex max-w-[1440px] mx-auto items-center justify-between gap-2 lg:gap-4">
+            {/* Left Image */}
+            <div className={`flex w-[50%] justify-start transition-[opacity,transform] duration-700 delay-75 ease-out will-change-transform ${
+              decorationVisible ? 'translate-x-0 opacity-100' : '-translate-x-6 opacity-0'
+            }`}>
               <img 
                 src={group6} 
-                alt="Decorative Left" 
-                className="h-auto max-w-[540px] w-full object-contain transition-all duration-1000 ease-out" 
-                style={{ aspectRatio: '864 / 415' }} 
+                alt=""
+                className="h-auto w-full max-w-[680px] origin-left scale-[1.12] -translate-y-8 lg:-translate-y-12 object-contain"
               />
             </div>
             
-            {/* Whitespace in Middle */}
-            <div className="w-12 md:w-24 lg:w-32"></div>
-            
             {/* Right Image - Piring */}
-            <div className="relative flex-1 flex justify-end pr-4 sm:pr-8">
+            <div className={`flex w-[47%] justify-end pr-2 lg:pr-5 transition-[opacity,transform] duration-700 delay-150 ease-out will-change-transform ${
+              decorationVisible ? 'translate-x-0 opacity-100' : 'translate-x-6 opacity-0'
+            }`}>
               <img 
-                src={makanPlate} 
-                alt="Decorative Right" 
-                className="h-auto max-w-[400px] w-full object-contain transition-all duration-1000 delay-100 ease-out" 
+                src={piringImg}
+                alt=""
+                className="h-auto w-full max-w-[560px] object-contain"
               />
             </div>
           </div>
           
           {/* Mobile - Vertical Layout */}
-          <div className="md:hidden flex flex-col items-center gap-8">
-            <img 
-              src={group6} 
-              alt="Decorative Top" 
-              className="w-[90%] max-w-[430px] h-auto object-contain transition-all duration-1000 ease-out" 
-              style={{ aspectRatio: '864 / 415' }} 
-            />
-            <img 
-              src={makanPlate} 
-              alt="Decorative Bottom" 
-              className="w-[90%] max-w-[380px] h-auto object-contain transition-all duration-1000 delay-150 ease-out" 
-            />
+          <div className="md:hidden flex flex-col items-center gap-9">
+            <div className={`flex justify-center transition-[opacity,transform] duration-700 ease-out will-change-transform ${
+              decorationVisible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
+            }`}>
+              <img 
+                src={group6} 
+                alt=""
+                className="w-[90%] max-w-[620px] h-auto -translate-y-5 scale-105 object-contain"
+              />
+            </div>
+            <div className={`flex justify-center transition-[opacity,transform] duration-700 delay-150 ease-out will-change-transform ${
+              decorationVisible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
+            }`}>
+              <img 
+                src={piringImg}
+                alt=""
+                className="w-[86%] max-w-[430px] h-auto object-contain"
+              />
+            </div>
           </div>
-        </div>
+        </section>
 
       </div>
 
       {/* ── Group 7 Image (Full Width) ── */}
-      <div className={`w-full transition-all duration-1000 delay-700 ease-out ${
+      <div className={`w-full -mt-12 sm:-mt-16 lg:-mt-20 transition-all duration-1000 delay-700 ease-out ${
           sectionVisible 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-12'

@@ -29,7 +29,9 @@ export function Navigation() {
   }, []);
 
   useEffect(() => {
-    const HIDE_THRESHOLD = 80;
+    const HIDE_THRESHOLD = 120;
+    const HIDE_DELTA = 10;
+    const SHOW_DELTA = 7;
 
     const onScroll = () => {
       if (ticking.current) return;
@@ -39,14 +41,20 @@ export function Navigation() {
         const currentY = window.scrollY;
         const delta = currentY - lastScrollY.current;
 
-        setIsScrolled(currentY > 20);
+        // Hysteresis prevents the header from repeatedly switching between
+        // full-width and compact states around a single scroll position.
+        setIsScrolled((wasScrolled) => {
+          if (currentY > 32) return true;
+          if (currentY < 12) return false;
+          return wasScrolled;
+        });
 
         if (currentY <= HIDE_THRESHOLD) {
           setNavVisible(true);
-        } else if (delta > 4) {
+        } else if (delta > HIDE_DELTA) {
           setNavVisible(false);
           setIsJelajahiOpen(false); // Auto close dropdown on scroll
-        } else if (delta < -4) {
+        } else if (delta < -SHOW_DELTA) {
           setNavVisible(true);
         }
 
@@ -56,8 +64,15 @@ export function Navigation() {
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Keep navigation available whenever the user opens an interactive menu or changes page.
+  useEffect(() => {
+    setNavVisible(true);
+    lastScrollY.current = window.scrollY;
+  }, [isMenuOpen, location.pathname]);
 
   const handleNavClick = (path: string, sectionId?: string) => {
     setIsJelajahiOpen(false);
@@ -121,7 +136,8 @@ export function Navigation() {
     'border-color 0.65s cubic-bezier(0.4,0,0.2,1)',
     'box-shadow 0.65s cubic-bezier(0.4,0,0.2,1)',
     'color 0.65s cubic-bezier(0.4,0,0.2,1)',
-    'transform 0.4s cubic-bezier(0.2,0.8,0.2,1)',
+    'transform 0.45s cubic-bezier(0.16,1,0.3,1)',
+    'opacity 0.25s ease',
     'top 0.3s ease',
     'width 0.3s ease',
     'height 0.3s ease',
@@ -144,8 +160,11 @@ export function Navigation() {
         style={{
           ...headerStyle,
           transform: navVisible
-            ? navMounted ? 'translateY(0)' : 'translateY(-100%)'
-            : 'translateY(-150%)',
+            ? navMounted ? 'translate3d(0, 0, 0)' : 'translate3d(0, -100%, 0)'
+            : 'translate3d(0, -150%, 0)',
+          opacity: navVisible && navMounted ? 1 : 0,
+          pointerEvents: navVisible ? 'auto' : 'none',
+          willChange: 'transform, opacity',
         }}
       >
         {/* Left Side: Logo with hover spring */}
