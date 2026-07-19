@@ -228,24 +228,19 @@ export function KulinerPage() {
 
   return (
     /*
-      [LAYER 0 - PALING BELAKANG] bg putih
-      [LAYER 1] cover.png di atas bg putih
+      cover.png: background dari atas sampai akhir Group 7.png (full page via bg-cover)
+      White: hanya di bawah Group 7.png (handled di dalam game section)
     */
-    <div className="kuliner-page relative min-h-[250vh] overflow-x-hidden select-none">
-
-      {/* ── [LAYER 0] White background — paling belakang ── */}
-      <div className="pointer-events-none absolute inset-0 z-[-2] bg-white" />
-
-      {/* ── [LAYER 1] cover.png — di depan bg putih, di belakang konten ── */}
-      <div
-        className="pointer-events-none absolute inset-0 z-[-1]"
-        style={{
-          backgroundImage: `url(${coverBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center top',
-          backgroundRepeat: 'no-repeat',
-        }}
-      />
+    <div
+      className="kuliner-page relative min-h-[250vh] overflow-x-hidden select-none"
+      style={{
+        backgroundImage: `url(${coverBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center top',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'local',
+      }}
+    >
 
       {/* ═══════════════════════════════════════════
           HERO SECTION
@@ -630,9 +625,10 @@ export function KulinerPage() {
         ref={gameRef}
         className="relative w-full flex flex-col items-center justify-center pt-20 pb-28 sm:pt-28 sm:pb-36 px-4 overflow-hidden min-h-[680px] sm:min-h-[800px]"
       >
-        {/* White Background Layer at the bottom (proportional to container height) */}
+        {/* White Background — HANYA di bawah Group 7.png (satu-satunya white di halaman ini) */}
         <div
-          className="absolute bottom-0 left-0 right-0 bg-white pointer-events-none z-0 top-[82%] sm:top-[75%]"
+          className="absolute bottom-0 left-0 right-0 bg-white pointer-events-none top-[82%] sm:top-[75%]"
+          style={{ zIndex: 0 }}
         />
 
         {/* Background Image: Group 7 (Wavy Pink Area) — matches the white top threshold */}
