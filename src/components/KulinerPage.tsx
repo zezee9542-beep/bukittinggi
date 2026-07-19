@@ -621,20 +621,18 @@ export function KulinerPage() {
       {/* ── Bottom Game Card Section ── */}
       <section
         ref={gameRef}
-        className="relative w-full flex flex-col items-center justify-center pt-28 pb-36 px-4 overflow-hidden"
-        style={{ minHeight: '800px' }}
+        className="relative w-full flex flex-col items-center justify-center pt-20 pb-28 sm:pt-28 sm:pb-36 px-4 overflow-hidden min-h-[680px] sm:min-h-[800px]"
       >
-        {/* White Background Layer at the bottom (pushed lower down) */}
+        {/* White Background Layer at the bottom (proportional to container height) */}
         <div
-          className="absolute bottom-0 left-0 right-0 bg-white pointer-events-none"
-          style={{ top: '65%', zIndex: 0 }}
+          className="absolute bottom-0 left-0 right-0 bg-white pointer-events-none z-0 top-[82%] sm:top-[75%]"
         />
 
-        {/* Background Image: Group 7 (Wavy Pink Area) — sits on top of white but behind text */}
+        {/* Background Image: Group 7 (Wavy Pink Area) — matches the white top threshold */}
         <img
           src={group7}
           alt="Group 7"
-          className="absolute top-0 left-0 w-full h-auto object-cover pointer-events-none"
+          className="absolute top-0 left-0 w-full h-[82%] sm:h-auto object-cover pointer-events-none"
           style={{ zIndex: 1 }}
         />
 
@@ -645,7 +643,7 @@ export function KulinerPage() {
 
           {/* Selesaikan Game Badge */}
           <div
-            className="flex items-center justify-center rounded-full mb-6"
+            className="flex items-center justify-center rounded-full mb-4 sm:mb-6"
             style={{
               width: '261px',
               height: '44px',
@@ -660,20 +658,18 @@ export function KulinerPage() {
             </span>
           </div>
 
-          {/* Main Game Card */}
+          {/* Main Game Card — shorter and more compact on mobile */}
           <div
-            className="w-full bg-white rounded-[32px] p-6 sm:p-8 flex flex-col"
+            className="w-full bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-8 flex flex-col min-h-[480px] sm:min-h-[668px]"
             style={{
               maxWidth: '616px',
-              minHeight: '668px',
               boxShadow: '0 15px 35px rgba(0,0,0,0.06)',
             }}
           >
-            {/* Card Image Frame — enlarged */}
+            {/* Card Image Frame — smaller on mobile */}
             <div
-              className="relative rounded-[24px] overflow-hidden mb-6 flex-shrink-0 mx-auto h-[260px] sm:h-[330px]"
+              className="relative rounded-[20px] sm:rounded-[24px] overflow-hidden mb-4 sm:mb-6 flex-shrink-0 mx-auto h-[180px] sm:h-[330px] w-full"
               style={{
-                width: '100%',
                 maxWidth: '538px',
                 boxShadow: 'inset 0 4px 12px rgba(68, 70, 81, 0.4), 0 8px 24px rgba(68, 70, 81, 0.15)',
               }}
@@ -686,30 +682,30 @@ export function KulinerPage() {
               />
               {/* Inner shadow overlay */}
               <div
-                className="absolute inset-0 rounded-[24px] pointer-events-none"
+                className="absolute inset-0 rounded-[20px] sm:rounded-[24px] pointer-events-none"
                 style={{
                   boxShadow: 'inset 0 8px 20px rgba(68, 70, 81, 0.4)',
                 }}
               />
             </div>
 
-            {/* Title */}
-            <h2 className="font-poppins font-medium text-[#000000] text-[24px] sm:text-[28px] mb-3 leading-snug tracking-tight">
+            {/* Title — smaller on mobile */}
+            <h2 className="font-poppins font-medium text-[#000000] text-[20px] sm:text-[28px] mb-2 sm:mb-3 leading-snug tracking-tight">
               Memori Kuliner Minang
             </h2>
 
-            {/* Description */}
-            <p className="font-poppins font-normal text-[#444651] text-[13px] sm:text-[14.5px] leading-relaxed mb-6">
+            {/* Description — smaller on mobile */}
+            <p className="font-poppins font-normal text-[#444651] text-[12px] sm:text-[14.5px] leading-relaxed mb-4 sm:mb-6">
               Uji daya ingatmu dengan mencocokkan kartu nama dan gambar kuliner khas Bukittinggi. Temukan seluruh pasangan yang sesuai untuk mempelajari berbagai hidangan tradisional dengan cara yang lebih menyenangkan.
             </p>
 
-            {/* Button */}
+            {/* Button — smaller on mobile */}
             <button
-              className="self-end text-white font-poppins font-medium text-[15px] px-8 py-3 rounded-[12px] flex items-center gap-2 transition-all hover:bg-[#521717] active:scale-95 cursor-pointer mt-auto"
+              className="self-end text-white font-poppins font-medium text-[13px] sm:text-[15px] px-6 sm:px-8 py-2 sm:py-3 rounded-[10px] sm:rounded-[12px] flex items-center gap-1.5 sm:gap-2 transition-all hover:bg-[#521717] active:scale-95 cursor-pointer mt-auto"
               style={{ backgroundColor: '#6E1F1F' }}
             >
               Mulai Main
-              <span className="text-[16px]">→</span>
+              <span className="text-[14px] sm:text-[16px]">→</span>
             </button>
           </div>
 
@@ -719,11 +715,10 @@ export function KulinerPage() {
         <img
           src={daunSvg}
           alt=""
-          className="absolute pointer-events-none opacity-90 z-20"
+          className="absolute pointer-events-none opacity-90 z-20 w-[90px] sm:w-[130px]"
           style={{
             left: '10%',
-            top: '40px',
-            width: '130px',
+            top: '30px',
             transform: 'rotate(-25deg)',
             filter: 'blur(1.5px)',
             animation: 'float 6s ease-in-out infinite',
@@ -734,9 +729,9 @@ export function KulinerPage() {
         <img
           src={pringImg}
           alt=""
-          className="absolute bottom-[-50px] sm:bottom-[-80px] left-0 pointer-events-none z-10"
+          className="absolute bottom-[-20px] sm:bottom-[-60px] left-0 pointer-events-none z-10"
           style={{
-            width: 'clamp(180px, 28vw, 340px)',
+            width: 'clamp(140px, 25vw, 340px)',
             height: 'auto',
             objectFit: 'contain',
             objectPosition: 'bottom left',
