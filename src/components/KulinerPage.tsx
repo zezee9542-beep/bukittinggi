@@ -39,10 +39,10 @@ import img894 from '../assets/894.png';
 import img895 from '../assets/895.png';
 import img896 from '../assets/896.png';
 
-import tehTaluaImg from '../assets/teh_talua.png';
-import esTebakImg from '../assets/es_tebak.png';
-import kopiAiaNdakImg from '../assets/kopi_aia_ndak.png';
-import jusPinangImg from '../assets/jus_pinang.png';
+import img123 from '../assets/123.png';
+import img124 from '../assets/124.png';
+import img125 from '../assets/125.png';
+import img126 from '../assets/126.png';
 
 interface KulinerItem {
   id: string;
@@ -160,32 +160,36 @@ const KULINER_DATA: Record<'makanan' | 'manisan' | 'minuman', KulinerItem[]> = {
     image: img896,
   },
 ],
-  minuman: [
-    {
-      id: 'drk-1',
-      title: 'Teh Talua',
-      description: 'Minuman teh legendaris khas Minang dengan campuran kuning telur bebek dan susu manis.',
-      image: tehTaluaImg,
-    },
-    {
-      id: 'drk-2',
-      title: 'Es Tebak',
-      description: 'Es campur khas Bukittinggi dengan tebak tepung beras, cincau, tape, dan sirup merah.',
-      image: esTebakImg,
-    },
-    {
-      id: 'drk-3',
-      title: 'Kopi Aia Ndak',
-      description: 'Kopi daun legendaris (kawa daun) khas pegunungan Minang yang diseduh hangat tradisional.',
-      image: kopiAiaNdakImg,
-    },
-    {
-      id: 'drk-4',
-      title: 'Jus Pinang',
-      description: 'Minuman tradisional penambah stamina khas Minang dari perasan buah pinang muda pilihan.',
-      image: jusPinangImg,
-    },
-  ],
+ minuman: [
+  {
+    id: 'drk-1',
+    title: 'Teh Talua',
+    description:
+      'Perpaduan teh panas, kuning telur, dan gula dalam satu sajian.',
+    image: img123,
+  },
+  {
+    id: 'drk-2',
+    title: 'Kopi Kawa Daun',
+    description:
+      'Minuman tradisional dari daun kopi sangrai yang diseduh seperti teh.',
+    image: img124,
+  },
+  {
+    id: 'drk-3',
+    title: 'Bandrek Minang',
+    description:
+      'Minuman tradisional berbahan jahe, gula aren, dan rempah pilihan khas.',
+    image: img125,
+  },
+  {
+    id: 'drk-4',
+    title: 'Jus Markisa',
+    description:
+      'Olahan buah markisa dengan cita rasa tropis yang menyegarkan alami.',
+    image: img126,
+  },
+],
 };
 
 export function KulinerPage() {
