@@ -249,12 +249,12 @@ export function KulinerPage() {
         <img 
           src={sonBg} 
           alt="" 
-          className="w-full h-auto block relative z-[1]" 
+          className="w-full h-auto block relative z-[1] -mt-[4%]" 
         />
 
         {/* ── [LAYER 2] 14.PNG (Overlay Gradient Merah) ── */}
         <div
-          className="absolute inset-0 z-[2]"
+          className="absolute inset-0 z-[2] -mt-[4%]"
           style={{
             backgroundImage: `url(${gradientBg})`,
             backgroundSize: '100% 100%',
@@ -267,14 +267,14 @@ export function KulinerPage() {
 
         {/* Judul: "Cita Rasa Bukittinggi" */}
         <div
-          className={`absolute left-1/2 top-[35%] sm:top-[42%] -translate-x-1/2 -translate-y-1/2 z-10 text-center w-full px-4 transition-all duration-1000 delay-150 ease-out ${
+          className={`absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 z-10 text-center w-full px-4 transition-all duration-1000 delay-150 ease-out ${
             heroVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-8 scale-90'
           }`}
         >
           <h1
             className="font-poppins font-medium text-white tracking-wide"
             style={{
-              fontSize: 'clamp(1.3rem, 6vw, 3.5rem)',
+              fontSize: 'clamp(1.6rem, 4.2vw, 3.5rem)',
               textShadow: '0 4px 14px rgba(0,0,0,0.5)',
             }}
           >
@@ -284,7 +284,7 @@ export function KulinerPage() {
 
         {/* Top Right Floating Badge */}
         <div
-          className={`absolute top-[60px] sm:top-[108px] md:top-[118px] right-[3%] sm:right-[5%] md:right-[6%] z-10 flex items-center gap-3 rounded-[14px] px-3 sm:px-5 py-2 sm:py-3 shadow-md transition-[opacity,transform] duration-500 ease-out ${
+          className={`absolute top-[108px] sm:top-[118px] right-[5%] sm:right-[6%] z-10 flex items-center gap-3 rounded-[14px] px-5 py-3 shadow-md transition-[opacity,transform] duration-500 ease-out ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'
           }`}
           style={{
@@ -295,21 +295,21 @@ export function KulinerPage() {
           }}
         >
           <div
-            className="w-7 h-7 sm:w-9 sm:h-9 rounded-[10px] flex items-center justify-center flex-shrink-0"
+            className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0"
             style={{ background: 'rgba(255,255,255,0.12)' }}
           >
             <img
               src={foodIcon}
               alt=""
-              className="w-4 h-4 sm:w-5 sm:h-5 object-contain"
+              className="w-5 h-5 object-contain"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-poppins font-medium text-white text-[10px] sm:text-[11px] md:text-[12px] mb-0.5">
+            <span className="font-poppins font-medium text-white text-[11px] sm:text-[12px] mb-0.5">
               Meal Planning
             </span>
-            <span className="font-poppins text-white/75 text-[9px] sm:text-[10px] md:text-[11px]">
+            <span className="font-poppins text-white/75 text-[10px] sm:text-[11px]">
               Assistance
             </span>
           </div>
