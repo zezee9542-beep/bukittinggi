@@ -134,13 +134,8 @@ function App() {
   }, [location, displayLocation]);
 
   return (
-<<<<<<< HEAD
-    <div className="relative min-h-[100dvh] overflow-x-clip bg-white">
-      <Navigation />
-=======
     <div className="relative min-h-[100dvh] overflow-x-hidden bg-white">
       {location.pathname !== '/profil-bukittinggi' && <Navigation />}
->>>>>>> 00d1baf47c23a4f3192d973557bf4ad70e29eb28
       <main
         className={`overflow-x-clip w-full ${
           transitioning ? 'page-exit' : 'page-enter'
@@ -153,24 +148,20 @@ function App() {
           <Route path="/budaya" element={<BudayaPage />} />
           <Route path="/kuliner" element={<KulinerPage />} />
           <Route path="/travel-planner" element={<TravelPlannerPage />} />
-<<<<<<< HEAD
+          <Route path="/profil-bukittinggi" element={<ProfilBukittinggiPage />} />
+          <Route path="/peta" element={<PetaPage />} />
+          {/* [Refactor]: Merged /game route from HEAD safely */}
           <Route path="/game" element={<GameFlipPage />} />
         </Routes>
       </main>
-      {showRancakBot && (
+      {/* [Refactor]: Merged MascotLauncher and RancakBotWidget display logic from both branches */}
+      {showRancakBot && location.pathname !== '/profil-bukittinggi' && location.pathname !== '/peta' && (
         <>
           <RancakBotWidget />
           <MascotLauncher hidden={isRancakBotPanelOpen} onClick={openRancakBot} />
         </>
       )}
-=======
-          <Route path="/profil-bukittinggi" element={<ProfilBukittinggiPage />} />
-          <Route path="/peta" element={<PetaPage />} />
-        </Routes>
-      </main>
-      {location.pathname !== '/travel-planner' && location.pathname !== '/profil-bukittinggi' && location.pathname !== '/peta' && <RancakBotWidget />}
 
->>>>>>> 00d1baf47c23a4f3192d973557bf4ad70e29eb28
     </div>
   );
 }

@@ -60,14 +60,9 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
     { path: '/budaya', label: t('nav_culture'), sub: t('nav_culture_sub') },
     { path: '/kuliner', label: t('nav_culinary'), sub: 'Jelajahi Kuliner Khas' },
     { path: '/travel-planner', label: 'AI Planner', sub: 'Rencanakan Perjalananmu' },
-<<<<<<< HEAD
-    { path: '/', label: 'Peta', sub: 'Peta Warisan Budaya', sectionId: 'heritage-heading' },
-    { path: '/game', label: 'Game', sub: 'Mainkan Sekarang' },
-=======
+    /* [Refactor]: Merged map route and game route logic */
     { path: '/peta', label: 'Peta', sub: 'Peta Warisan Budaya' },
-    { path: null, label: 'Game', sub: 'Segera Hadir' },
-
->>>>>>> 00d1baf47c23a4f3192d973557bf4ad70e29eb28
+    { path: '/game', label: 'Game', sub: 'Mainkan Sekarang' },
   ];
 
   return (

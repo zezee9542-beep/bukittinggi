@@ -266,12 +266,7 @@ export function Navigation() {
             )}
           </button>
 
-<<<<<<< HEAD
-          {/* Game — memory-match culinary game */}
-=======
-
-          {/* Game shows a beautiful coming soon notification */}
->>>>>>> 00d1baf47c23a4f3192d973557bf4ad70e29eb28
+          {/* [Refactor]: Game — memory-match culinary game / coming soon notification */}
           <button
             onClick={() => handleNavClick('/game')}
             className={`relative font-poppins text-[15px] tracking-wide font-medium py-1.5 transition-all duration-300 cursor-pointer active:scale-95 ${
