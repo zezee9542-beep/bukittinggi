@@ -674,3 +674,5 @@ function RecipeReward({
     </main>
   );
 }
+
+export default GameFlipPage;

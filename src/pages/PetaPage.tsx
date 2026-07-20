@@ -329,3 +329,5 @@ export function PetaPage() {
     </main>
   );
 }
+
+export default PetaPage;
