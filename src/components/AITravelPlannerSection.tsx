@@ -1,12 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import rectangleBg from '../assets/Rectangle.jpg';
-import ssImage from '../assets/ss.png';
-import calendarSvg from '../assets/Calendar.png';
-import contentRightSvg from '../assets/Content Right.svg';
-import pdfPng from '../assets/pdf.png';
-import starPng from '../assets/star.png';
+import bukittinggiSvg from '../assets/Bukittinggi.svg';
+import menaraWebp from '../assets/menara.webp';
+import earthPng from '../assets/earth.webp';
+import ppPng from '../assets/pp.webp';
 
 export const AITravelPlannerSection: React.FC = () => {
   const navigate = useNavigate();
@@ -15,154 +13,96 @@ export const AITravelPlannerSection: React.FC = () => {
   return (
     <section
       ref={ref}
-      className="py-14 px-4 md:px-8 lg:px-16"
+      className="relative z-20 bg-white pt-36 sm:pt-48 md:pt-60 w-full overflow-hidden flex flex-col items-center border-none outline-none"
     >
-      <div className="max-w-[1150px] mx-auto">
-
-        {/* ── Section Title ── */}
+      {/* ════ Floating Premium Card (Sized to fit larger typography & earth.png) ════ */}
+      <div className="w-full max-w-[1000px] px-4 sm:px-6 relative z-30 -mb-[180px] sm:-mb-[220px] md:-mb-[250px]">
         <div
-          className={`flex items-center justify-center gap-3 mb-10 transition-all duration-700 ease-out ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          className={`relative w-full min-h-[440px] sm:min-h-[490px] lg:h-[520px] rounded-[28px] sm:rounded-[38px] shadow-[0_22px_55px_rgba(0,0,0,0.35)] overflow-visible transition-all duration-1000 ease-out ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
           }`}
+          style={{ backgroundColor: '#5C1616' }}
         >
-          <h2
-            className="font-poppins font-semibold text-[#3D0000] text-[1.5rem] sm:text-[2rem] md:text-[2.4rem] tracking-tight"
-          >
-            AI Travel Planner
-          </h2>
+          {/* Decorative Earth Image in bottom-right corner — Significantly Larger */}
           <img
-            src={starPng}
+            src={earthPng}
             alt=""
-            className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain flex-shrink-0"
+            className="absolute bottom-0 right-0 w-[110%] sm:w-[95%] lg:w-[88%] h-auto object-contain pointer-events-none opacity-65 z-0 rounded-br-[28px] sm:rounded-br-[38px] select-none scale-105 origin-bottom-right"
             draggable={false}
           />
-        </div>
 
-        {/* ── Card Wrapper ── */}
-        <div
-          className={`relative transition-all duration-700 delay-150 ease-out ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          {/* ── Card (Overflow-visible to let mockup hang outside) ── */}
-          <div className="relative rounded-[28px] shadow-2xl">
-
-            {/* Dark-red background (wrapped in absolute rounded container to keep it bounded) */}
-            <div className="absolute inset-0 rounded-[28px] overflow-hidden pointer-events-none">
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `url(${rectangleBg})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              />
-              {/* Subtle dark overlay for depth */}
-              <div className="absolute inset-0 bg-black/10" />
-            </div>
-
-            {/* ── Card Content: 2-column grid ── */}
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 min-h-[380px]">
-
-              {/* ════ LEFT COLUMN: Mock UI screenshots ════ */}
-              <div className="relative flex items-end justify-center overflow-visible px-6 pt-8 pb-0 sm:px-10 lg:px-0 lg:pt-10 lg:pb-0">
-
-                {/* ss.png — itinerary table, shrunk slightly and positioned to hang outside the card bottom */}
-                <div
-                  className="relative z-10 w-[84%] sm:w-[74%] lg:w-[72%]"
-                  style={{
-                    marginBottom: '-50px', // hangs outside card bottom
-                    marginLeft: 'clamp(0px, 2%, 16px)',
-                    marginTop: '8px',
-                  }}
-                >
-                  <img
-                    src={ssImage}
-                    alt="Travel Planner Table"
-                    className="h-auto w-full rounded-[14px] object-cover shadow-2xl"
-                  />
-                </div>
-
-                {/* Calendar.svg — overlapping, shifted further right and lowered slightly */}
-                <div
-                  className="absolute z-20 hidden lg:block"
-                  style={{
-                    width: '45%',
-                    left: '83%',
-                    top: '59%', // Lowered from 52%
-                    transform: 'translate(-50%, -50%)',
-                  }}
-                >
-                  <img
-                    src={calendarSvg}
-                    alt="Calendar"
-                    className="w-full h-auto object-contain drop-shadow-2xl"
-                    draggable={false}
-                  />
-                </div>
-
-              </div>
-
-
-              {/* ════ RIGHT COLUMN: Content Right SVG (stepper) ════ */}
-              <div className="relative flex items-center justify-center p-4 sm:p-5 lg:p-6">
-                {/* Content Right.svg — restored to a larger size to match the photo */}
-                <img
-                  src={contentRightSvg}
-                  alt="AI Travel Planner Steps"
-                  className="w-full h-auto max-h-[350px] object-contain"
-                  draggable={false}
-                />
-              </div>
-
-            </div>
-
-            {/* ── pdf.png — placed on the border of the bg card (scaled up to match the photo) ── */}
-            <div
-              className="absolute z-30 animate-pdf-float right-[-30px] sm:right-[-50px] md:right-[-70px] lg:right-[-95px]"
+          {/* ── Left Image: Jam Gadang Tower (menara.webp) ── */}
+          <div className="absolute left-[-42px] sm:left-[-32px] lg:left-[-42px] bottom-0 z-30 pointer-events-none flex items-end">
+            <img
+              src={menaraWebp}
+              alt="Jam Gadang Bukittinggi"
+              className="w-[250px] sm:w-[335px] md:w-[390px] lg:w-[430px] h-auto object-contain select-none drop-shadow-[0_16px_35px_rgba(0,0,0,0.38)]"
+              draggable={false}
               style={{
-                top: '25%',
-                transform: 'translateY(-50%)',
+                marginBottom: '-4px',
               }}
-            >
+            />
+          </div>
+
+          {/* ── Right Content Area — Larger Typography ── */}
+          <div className="relative z-20 flex flex-col justify-center items-start h-full min-h-[inherit] pt-8 pb-7 sm:pt-10 sm:pb-9 px-6 sm:px-10 md:pl-[250px] lg:pl-[290px] md:pr-10 lg:pr-12 text-left">
+            
+            {/* Title: Bukittinggi.svg — Larger */}
+            <div className="mb-2 sm:mb-2.5">
               <img
-                src={pdfPng}
-                alt="Gratis Unduh Rundown PDF"
-                className="w-[150px] sm:w-[180px] md:w-[210px] lg:w-[230px] h-auto object-contain drop-shadow-2xl"
+                src={bukittinggiSvg}
+                alt="Bukittinggi"
+                className="h-[54px] sm:h-[74px] lg:h-[90px] w-auto object-contain object-left select-none"
                 draggable={false}
               />
             </div>
 
+            {/* Subtitle: Poppins Medium — Larger */}
+            <h2 className="font-poppins font-medium text-white text-[23px] sm:text-[32px] lg:text-[40px] tracking-tight leading-tight mb-3 sm:mb-3.5">
+              The Heart Of Minangkabau
+            </h2>
+
+            {/* Description: Poppins Regular — Significantly Larger */}
+            <p className="font-poppins font-normal text-white text-[13.5px] sm:text-[15.5px] lg:text-[17px] leading-[1.8] max-w-[600px] mb-5 sm:mb-6 text-white/95">
+              Bukittinggi adalah permata di dataran tinggi Sumatera Barat, dikenal dengan udara sejuk, panorama alam yang memikat, dan budaya Minangkabau yang memikat. Sebagai salah satu kota bersejarah dan destinasi wisata unggulan di Indonesia, Di pusat kota berdiri Jam Gadang, ikon kebanggaan yang menjadi simbol sejarah dan warisan masyarakatnya.
+            </p>
+
+            {/* Call-to-Action Button */}
+            <div className="w-full flex justify-end mt-1">
+              <button
+                onClick={() => navigate('/profil-bukittinggi')}
+                className="group inline-flex items-center gap-2.5 px-7 py-3 sm:px-8 sm:py-3.5 rounded-[14px] font-poppins font-medium text-[14.5px] sm:text-[16px] text-[#5C1616] bg-white hover:bg-neutral-100 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-xl cursor-pointer border border-white/20 select-none"
+              >
+                <span>Profil Bukittinggi</span>
+                <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+              </button>
+            </div>
 
           </div>
-
-          {/* ── Mulai button — placed below the bg card with the same color as the card ── */}
-          <div className="flex justify-end mt-16 pr-4 sm:pr-8">
-            <button
-              onClick={() => navigate('/travel-planner')}
-              className="flex items-center gap-2.5 px-8 py-3 rounded-xl font-poppins font-medium text-[16px] text-white bg-[#5F1712] hover:bg-[#4E130E] transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] shadow-md cursor-pointer"
-              style={{
-                boxShadow: '0 4px 14px rgba(95,23,18,0.2)',
-              }}
-            >
-              <span>Mulai</span>
-              <span className="text-[16px]">→</span>
-            </button>
-          </div>
-
         </div>
       </div>
 
-      {/* Floating animation keyframes */}
-      <style>{`
-        @keyframes pdfFloat {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-        }
-        .animate-pdf-float {
-          animation: pdfFloat 2.8s ease-in-out infinite;
-        }
-      `}</style>
+      {/* ── Full Width Image pp.png ── */}
+      <div
+        className={`w-full border-none outline-none transition-all duration-800 ease-out relative z-10 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
+        <img
+          src={ppPng}
+          alt="AI Travel Planner Feature"
+          className="w-full h-auto block border-none outline-none select-none pointer-events-none"
+          draggable={false}
+        />
+      </div>
+
+      {/* ── Clean Bottom Section with background #6E1F1F ── */}
+      <div 
+        className="w-full py-16 sm:py-24 md:py-32 border-none outline-none"
+        style={{ backgroundColor: '#6E1F1F' }}
+      />
     </section>
   );
 };
+
+export default AITravelPlannerSection;

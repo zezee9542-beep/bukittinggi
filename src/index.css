@@ -462,4 +462,52 @@ model-viewer::part(canvas) {
   box-shadow: none !important;
 }
 
+/* ── Hero Infinite Marquee & Ombak Wave Motion ── */
+@keyframes heroMarqueeTrack {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes waveMotionOdd {
+  0%, 100% {
+    transform: translateY(18px);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes waveMotionEven {
+  0%, 100% {
+    transform: translateY(-18px);
+  }
+  50% {
+    transform: translateY(18px);
+  }
+}
+
+.animate-hero-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: heroMarqueeTrack 34s linear infinite;
+}
+
+.animate-hero-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-wave-odd {
+  animation: waveMotionOdd 3.8s ease-in-out infinite;
+}
+
+.animate-wave-even {
+  animation: waveMotionEven 3.8s ease-in-out infinite;
+}
+
+
 
