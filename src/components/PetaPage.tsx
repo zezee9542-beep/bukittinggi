@@ -20,11 +20,31 @@ const MAP_BOUNDS: L.LatLngBoundsExpression = [
 ];
 const DESTINATION_BOUNDS = L.latLngBounds(HERITAGE_DESTINATIONS.map((site) => site.position));
 
-// Bundled asset URLs keep Leaflet's default marker working after a production build.
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
-  iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
-  shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
+// High-fidelity custom Leaflet pin icon for reliable rendering on mobile & production builds
+const customMarkerIcon = L.divIcon({
+  className: 'custom-leaflet-marker',
+  html: `<div style="
+    width: 34px;
+    height: 34px;
+    background: #6E1F1F;
+    border: 2px solid #FFFFFF;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  ">
+    <div style="
+      width: 10px;
+      height: 10px;
+      background: #D4A853;
+      border-radius: 50%;
+    "></div>
+  </div>`,
+  iconSize: [34, 34],
+  iconAnchor: [17, 34],
+  popupAnchor: [0, -34],
 });
 
 interface MapControllerProps {
@@ -37,8 +57,10 @@ function MapController({ site, marker }: MapControllerProps) {
 
   useEffect(() => {
     map.invalidateSize();
+    const timer = setTimeout(() => map.invalidateSize(), 300);
     map.flyTo(site.position, 16, { duration: 1.5, animate: true });
     marker?.openPopup();
+    return () => clearTimeout(timer);
   }, [map, marker, site]);
 
   return null;
@@ -48,11 +70,11 @@ function MapToolbar() {
   const map = useMap();
 
   return (
-    <div className="absolute right-6 top-6 z-[400] flex flex-col gap-2">
+    <div className="absolute right-4 top-4 z-[400] flex flex-col gap-2 sm:right-6 sm:top-6">
       <button
         type="button"
         onClick={() => map.zoomIn()}
-        className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#ebe3e1] bg-white text-xl font-bold text-[#6e1f1f] shadow-md transition hover:bg-[#faf4f2] focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+        className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#ebe3e1] bg-white text-lg font-bold text-[#6e1f1f] shadow-md transition hover:bg-[#faf4f2] focus:outline-none focus:ring-2 focus:ring-[#d4a853] sm:h-10 sm:w-10 sm:text-xl"
         aria-label="Perbesar peta"
       >
         +
@@ -60,7 +82,7 @@ function MapToolbar() {
       <button
         type="button"
         onClick={() => map.zoomOut()}
-        className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#ebe3e1] bg-white text-xl font-bold text-[#6e1f1f] shadow-md transition hover:bg-[#faf4f2] focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+        className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#ebe3e1] bg-white text-lg font-bold text-[#6e1f1f] shadow-md transition hover:bg-[#faf4f2] focus:outline-none focus:ring-2 focus:ring-[#d4a853] sm:h-10 sm:w-10 sm:text-xl"
         aria-label="Perkecil peta"
       >
         −
@@ -68,7 +90,7 @@ function MapToolbar() {
       <button
         type="button"
         onClick={() => map.fitBounds(DESTINATION_BOUNDS, { padding: [45, 45], animate: true })}
-        className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#ebe3e1] bg-white text-[10px] font-semibold text-[#6e1f1f] shadow-md transition hover:bg-[#faf4f2] focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+        className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#ebe3e1] bg-white text-[9px] font-semibold text-[#6e1f1f] shadow-md transition hover:bg-[#faf4f2] focus:outline-none focus:ring-2 focus:ring-[#d4a853] sm:h-10 sm:w-10 sm:text-[10px]"
         aria-label="Tampilkan seluruh destinasi"
       >
         RESET
@@ -98,13 +120,20 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
 
   const isValidCoordinate = typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
 
+  const heading = site.streetViewHeading ?? 0;
+  const pitch = site.streetViewPitch ?? 0;
+
   // 2. Konstruksi URL Street View yang valid
   // Menggunakan www.google.com mencegah masalah redirect iframe yang me-reset parameter ke peta dunia 2D (0,0).
-  // Parameter cbll (koordinat panorama) dan output=svembed diperlukan untuk mode Street View.
   // Jika koordinat tidak valid, fallback ke mode peta (output=embed) di pusat kota dengan zoom yang sesuai.
-  const streetViewUrl = isValidCoordinate
-    ? `https://www.google.com/maps?q=${lat},${lng}&layer=c&cbll=${lat},${lng}&cbp=12,0,0,0,0&output=svembed`
+  const embedUrl = isValidCoordinate
+    ? `https://www.google.com/maps?q=${lat},${lng}&layer=c&cbll=${lat},${lng}&cbp=12,${heading},0,${pitch},0&output=svembed`
     : `https://www.google.com/maps?q=-0.305041,100.369463&z=15&output=embed`;
+
+  // Direct web/app link to open full Google Maps interactive 360 in external tab/app
+  const googleMapsAppUrl = site.mapsUrl || (site.streetViewPanoId
+    ? `https://www.google.com/maps/@${lat},${lng},3a,90y,${heading}h,${90 + pitch}t/data=!3m6!1e1!3m4!1s${site.streetViewPanoId}!2e10!7i10240!8i5120`
+    : `https://www.google.com/maps?q=${lat},${lng}`);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -130,27 +159,25 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
           <p className="font-manrope text-[10px] font-semibold uppercase tracking-[0.18em] text-[#d4a853]">Street View 360°</p>
           <h2 className="truncate font-poppins text-sm font-medium md:text-base">{site.title}</h2>
         </div>
-        <div className="flex shrink-0 gap-2">
-          {/* Tautan rujukan eksternal ke Google Maps berdasarkan URL presisi dari dataset */}
-          {site.mapsUrl && (
-            <a
-              href={site.mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 font-poppins text-xs font-medium transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853] sm:block"
-              aria-label={`Buka ${site.title} di Google Maps`}
-            >
-              Buka di Maps ↗
-            </a>
-          )}
+        <div className="flex shrink-0 items-center gap-2">
+          <a
+            href={googleMapsAppUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#d4a853]/40 bg-[#6e1f1f] px-3.5 py-1.5 font-poppins text-xs font-medium text-white shadow-md transition hover:bg-[#581717] focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+            aria-label={`Buka ${site.title} di Google Maps`}
+          >
+            <span>Google Maps</span>
+            <span aria-hidden="true">↗</span>
+          </a>
           <button
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="rounded-full border border-white/20 bg-[#6e1f1f] px-4 py-2 font-poppins text-xs font-medium text-white transition hover:bg-[#511717] focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+            className="rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 font-poppins text-xs font-medium transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
             aria-label="Tutup Street View"
           >
-            Tutup <span aria-hidden="true" className="ml-1">×</span>
+            Tutup <span aria-hidden="true">×</span>
           </button>
         </div>
       </header>
@@ -170,8 +197,10 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
           </div>
         )}
         <iframe
-          src={streetViewUrl}
+          key={site.id}
+          src={embedUrl}
           className="relative z-[1] h-full w-full border-0"
+          allow="fullscreen"
           allowFullScreen
           loading="eager"
           referrerPolicy="no-referrer-when-downgrade"
@@ -190,13 +219,25 @@ function DestinationImage({ site, className = '' }: { site: HeritageDestination;
     <img
       src={site.image}
       alt=""
-      className={`h-16 w-20 shrink-0 rounded-lg object-cover ${className}`}
+      className={`object-cover shrink-0 ${className}`}
       onError={(event) => {
         event.currentTarget.style.display = 'none';
       }}
     />
   );
 }
+
+const BUBBLE_CATEGORIES = [
+  'SEJARAH',
+  'BUDAYA',
+  'SEJARAH',
+  'BUDAYA',
+  'SEJARAH',
+  'ALAM',
+  'SEJARAH',
+  'ALAM',
+  'RELIGI'
+];
 
 export function PetaPage() {
   const [activeSite, setActiveSite] = useState(HERITAGE_DESTINATIONS[0]);
@@ -210,38 +251,39 @@ export function PetaPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col overflow-hidden bg-[#faf8f7] pt-[76px] lg:flex-row">
-      <aside className="z-10 flex w-full shrink-0 flex-col overflow-hidden border-b border-[#d6b8b3]/30 bg-white shadow-lg lg:h-[calc(100vh-76px)] lg:w-[360px] lg:border-r lg:border-b-0 xl:w-[380px]">
+    <main className="flex min-h-screen flex-col bg-[#faf8f7] pt-[76px] lg:flex-row lg:h-screen lg:overflow-hidden">
+      <aside className="z-10 flex w-full shrink-0 flex-col border-b border-[#d6b8b3]/30 bg-white shadow-lg lg:h-[calc(100vh-76px)] lg:w-[330px] lg:border-r lg:border-b-0 xl:w-[350px]">
         <div className="border-b border-[#faf4f2] p-5 pb-4">
-          <h1 className="font-poppins text-[22px] font-semibold leading-tight tracking-tight text-black sm:text-[25px]">Peta & Pariwisata</h1>
-          <p className="mt-1.5 font-poppins text-[13px] leading-relaxed text-[#444651]">Temukan berbagai destinasi wisata Bukittinggi melalui peta interaktif.</p>
+          <h1 className="font-poppins font-medium text-[#000000] text-[22px] leading-tight tracking-tight sm:text-[25px]">Peta & Pariwisata</h1>
+          <p className="mt-1.5 font-poppins font-normal text-[#444651] text-[13px] leading-relaxed">Temukan berbagai destinasi wisata Bukittinggi melalui peta interaktif.</p>
         </div>
-        <div className="flex gap-3 overflow-x-auto px-5 py-4 lg:block lg:flex-1 lg:space-y-4 lg:overflow-y-auto">
-              {HERITAGE_DESTINATIONS.map((site) => {
-                const isActive = activeSite.id === site.id;
-                return (
-                  <button
-                    key={site.id}
-                    type="button"
-                    onClick={() => selectSite(site)}
-                    className={`flex min-w-[278px] gap-3.5 rounded-[16px] border bg-white p-3 text-left transition duration-300 focus:outline-none focus:ring-2 focus:ring-[#d4a853] lg:w-full lg:min-w-0 lg:p-3.5 ${isActive ? 'border-[#6e1f1f] shadow-[0_8px_24px_rgba(110,31,31,0.08)]' : 'border-[#eae2e0] shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#d2c3c0] hover:shadow-[0_6px_18px_rgba(0,0,0,0.07)]'}`}
-                    aria-pressed={isActive}
-                  >
-                    <DestinationImage site={site} className="h-[85px] w-[85px] rounded-[14px] border border-neutral-100 sm:h-[92px] sm:w-[92px]" />
-                    <span className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
-                      <span>
-                        <span className="block truncate font-poppins text-[14.5px] font-medium leading-snug tracking-tight text-black sm:text-[15px]">{site.title}</span>
-                        <span className="mt-1 block line-clamp-2 font-poppins text-[11.5px] leading-relaxed text-[#444651]">{site.description}</span>
-                      </span>
-                      <span className="mt-2 inline-flex w-fit rounded-full bg-[#f7e0e0] px-2.5 py-0.5 font-manrope text-[9.5px] tracking-wider text-[#6e1f1f]">DESTINASI</span>
-                    </span>
-                  </button>
-                );
-              })}
+        <div className="flex gap-3 overflow-x-auto px-5 py-4 lg:block lg:flex-1 lg:space-y-3.5 lg:overflow-y-auto custom-peta-scrollbar">
+          {HERITAGE_DESTINATIONS.map((site, index) => {
+            const isActive = activeSite.id === site.id;
+            const category = BUBBLE_CATEGORIES[index] || 'DESTINASI';
+            return (
+              <button
+                key={site.id}
+                type="button"
+                onClick={() => selectSite(site)}
+                className={`flex min-w-[278px] gap-3 rounded-[16px] border bg-white p-1 pr-3 text-left transition duration-300 focus:outline-none focus:ring-2 focus:ring-[#d4a853] lg:w-full lg:min-w-0 lg:p-1.5 lg:pr-3.5 ${isActive ? 'border-[#6e1f1f] shadow-[0_8px_24px_rgba(110,31,31,0.08)]' : 'border-[#eae2e0] shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#d2c3c0] hover:shadow-[0_6px_18px_rgba(0,0,0,0.07)]'}`}
+                aria-pressed={isActive}
+              >
+                <DestinationImage site={site} className="mt-0.5 h-[84px] w-[78px] rounded-[12px] border border-neutral-100 sm:h-[92px] sm:w-[84px]" />
+                <span className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+                  <span>
+                    <span className="block truncate font-poppins font-medium text-[#000000] text-[13px] leading-snug tracking-tight sm:text-[13.5px]">{site.title}</span>
+                    <span className="mt-0.5 block line-clamp-2 font-poppins font-normal text-[#444651] text-[9.5px] leading-relaxed sm:text-[10px]">{site.description}</span>
+                  </span>
+                  <span className="mt-1.5 inline-flex w-fit rounded-[50px] bg-[#F7E0E0] px-2 py-0.5 font-manrope font-normal text-[8px] tracking-wider text-[#6E1F1F] sm:text-[8.5px]">{category}</span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </aside>
 
-      <section className="relative h-[520px] flex-1 overflow-hidden bg-[#faf8f5] lg:h-[calc(100vh-76px)]" aria-label="Peta destinasi budaya">
+      <section className="relative h-[480px] w-full shrink-0 overflow-hidden bg-[#faf8f5] sm:h-[540px] lg:h-[calc(100vh-76px)] lg:flex-1" aria-label="Peta destinasi budaya">
         <MapContainer
           center={activeSite.position}
           zoom={11}
@@ -255,7 +297,7 @@ export function PetaPage() {
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
           {HERITAGE_DESTINATIONS.map((site) => (
-            <Marker key={site.id} position={site.position} ref={(marker) => { markersRef.current[site.id] = marker; }} eventHandlers={{ click: () => selectSite(site) }}>
+            <Marker key={site.id} position={site.position} icon={customMarkerIcon} ref={(marker) => { markersRef.current[site.id] = marker; }} eventHandlers={{ click: () => selectSite(site) }}>
               <Popup>
                 <div className="min-w-[190px] font-poppins">
                   <strong className="block text-sm text-[#6e1f1f]">{site.title}</strong>
@@ -271,12 +313,12 @@ export function PetaPage() {
         <button
           type="button"
           onClick={() => setStreetViewTarget(activeSite)}
-          className="group absolute bottom-6 right-6 z-[400] w-[215px] overflow-hidden rounded-[18px] border border-white/10 bg-[#6e1f1f] text-left shadow-2xl transition hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+          className="group absolute bottom-4 right-4 z-[400] w-[190px] overflow-hidden rounded-[16px] border border-white/10 bg-[#6e1f1f] text-left shadow-2xl transition hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-[#d4a853] sm:bottom-6 sm:right-6 sm:w-[215px] sm:rounded-[18px]"
           aria-label={`Lihat Street View ${activeSite.title}`}
         >
-          <DestinationImage site={activeSite} className="h-[88px] w-full rounded-none transition duration-700 group-hover:scale-110" />
-          <span className="flex h-[42px] items-center justify-center gap-2 px-3 font-poppins text-[12.5px] font-medium text-white">
-            <span aria-hidden="true">◎</span> Lihat Street View
+          <DestinationImage site={activeSite} className="h-[75px] w-full rounded-none transition duration-700 group-hover:scale-110 sm:h-[88px]" />
+          <span className="flex h-[38px] items-center justify-center gap-2 px-3 font-poppins text-[11.5px] font-medium text-white sm:h-[42px] sm:text-[12.5px]">
+            <span aria-hidden="true">◎</span> Lihat Street View 360°
           </span>
         </button>
       </section>
