@@ -9,6 +9,7 @@ import { BudayaPage } from './components/BudayaPage';
 import { KulinerPage } from './components/KulinerPage';
 import { TravelPlannerPage } from './components/TravelPlannerPage';
 import { GameFlipPage } from './components/GameFlipPage';
+import { GameMenuPage } from './components/GameMenuPage';
 import { ParijsSection } from './components/ParijsSection';
 import { HeritageSection } from './components/HeritageSection';
 import { RancakBotWidget } from './components/RancakBotWidget';
@@ -17,6 +18,7 @@ import { useMode } from './context/ModeContext';
 import { AITravelPlannerSection } from './components/AITravelPlannerSection';
 import { ProfilBukittinggiPage } from './components/ProfilBukittinggiPage';
 import { PetaPage } from './components/PetaPage';
+import { LandingTestPage } from './components/LandingTestPage';
 
 // Import assets to prefetch for butter-smooth page switching (using compressed WebP)
 import bggImage from './assets/bgg.webp';
@@ -73,7 +75,10 @@ function HomePage() {
 
 function App() {
   const location = useLocation();
-  const showRancakBot = location.pathname !== '/travel-planner' && location.pathname !== '/game';
+  // Sembunyikan bot pada halaman yang memerlukan fokus penuh (game dan travel planner)
+  const showRancakBot = location.pathname !== '/travel-planner'
+    && location.pathname !== '/game'
+    && location.pathname !== '/game/flip';
   const [isRancakBotPanelOpen, setIsRancakBotPanelOpen] = useState(false);
 
   const openRancakBot = () => window.dispatchEvent(new Event('open-rancak-bot'));
@@ -154,8 +159,14 @@ function App() {
           <Route path="/travel-planner" element={<TravelPlannerPage />} />
           <Route path="/profil-bukittinggi" element={<ProfilBukittinggiPage />} />
           <Route path="/peta" element={<PetaPage />} />
-          {/* [Refactor]: Merged /game route from HEAD safely */}
-          <Route path="/game" element={<GameFlipPage />} />
+          {/* ── Rute Permainan ──────────────────────────────────────────── */}
+          {/* /game       → Hub menu permainan (GameMenuPage)               */}
+          {/* /game/flip  → Permainan kartu flip kuliner (GameFlipPage)      */}
+          <Route path="/game" element={<GameMenuPage />} />
+          <Route path="/game/flip" element={<GameFlipPage />} />
+          
+          {/* ── Rute Eksperimen Landing Page ───────────────────────────── */}
+          <Route path="/landing" element={<LandingTestPage />} />
         </Routes>
       </main>
       {/* [Refactor]: Merged MascotLauncher and RancakBotWidget display logic from both branches */}

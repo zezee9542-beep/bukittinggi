@@ -214,7 +214,7 @@ export function GameFlipPage() {
   // RENDER: REWARD (recipe page)
   // ══════════════════════════════════════════════════════════════
   if (phase === 'reward' && reward) {
-    return <RecipeReward recipe={reward} onReplay={resetGame} onExit={() => navigate('/kuliner')} />;
+    return <RecipeReward recipe={reward} onReplay={resetGame} onExit={() => navigate('/game')} />;
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -363,10 +363,10 @@ export function GameFlipPage() {
           </button>
 
           <button
-            onClick={() => navigate('/kuliner')}
+            onClick={() => navigate('/game')}
             className="mt-4 font-poppins text-white/60 hover:text-white text-[13px] transition-colors cursor-pointer"
           >
-            Kembali ke Kuliner
+            Kembali ke Menu Game
           </button>
         </div>
       </main>
@@ -396,7 +396,7 @@ export function GameFlipPage() {
             </p>
           </div>
           <button
-            onClick={() => navigate('/kuliner')}
+            onClick={() => navigate('/game')}
             className="flex-shrink-0 flex items-center gap-1.5 rounded-full px-4 py-2 font-poppins font-medium text-[13px] text-white transition-all hover:bg-white/10 active:scale-95 cursor-pointer"
             style={{ border: '1px solid rgba(255,255,255,0.25)' }}
           >
