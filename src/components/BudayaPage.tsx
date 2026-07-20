@@ -376,10 +376,10 @@ export function BudayaPage() {
         className="relative w-full bg-[#3A0D0D]"
         style={{ height: `calc(100dvh + ${(slides.length - 1) * 100}dvh)` }}
       >
-        <div className="sticky top-0 h-[100dvh] overflow-hidden flex flex-col justify-center">
+        <div className="sticky top-24 h-[calc(100dvh-6rem)] overflow-hidden flex flex-col items-center justify-center">
           <div
             ref={featureRef}
-            className={`w-full max-w-[1160px] mx-auto px-6 pt-10 md:pt-14 pb-8 overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`w-full max-w-[1160px] mx-auto px-6 overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
             }`}
           >

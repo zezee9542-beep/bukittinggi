@@ -25,6 +25,14 @@ import img555 from '../assets/555.png';
 import img666 from '../assets/666.png';
 import logoSvg from '../assets/logo.svg';
 
+// Aset gambar pariwisata untuk preview Word Search
+import gadangImage from '../assets/gadang.svg';
+import gunungImage from '../assets/gunung.webp';
+import rumahImage from '../assets/rumah.webp';
+import sawahImage from '../assets/sawah.webp';
+import menaraImage from '../assets/menara.webp';
+import bggImage from '../assets/bgg.webp';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // TOKEN WARNA — hasil inspeksi Figma node #536-19 (read-only)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -67,16 +75,16 @@ const DAFTAR_GAME: GameEntry[] = [
     status: 'tersedia',
     kategori: 'Memori',
   },
-  // ── Untuk menambahkan game baru, duplikasi blok ini dan isi datanya: ──────
-  // {
-  //   id: 'kuis-budaya',
-  //   nama: 'Kuis Budaya Minangkabau',
-  //   deskripsi: 'Jawab pertanyaan seputar adat, sejarah, dan budaya Minangkabau.',
-  //   rute: '/game/kuis',
-  //   previewGambar: [],
-  //   status: 'segera',
-  //   kategori: 'Kuis',
-  // },
+  {
+    id: 'word-search-wisata',
+    nama: 'Cari Kata Wisata',
+    deskripsi:
+      'Temukan nama-nama destinasi wisata ikonis di Bukittinggi yang tersembunyi di dalam grid huruf. Tantang ketelitianmu!',
+    rute: '/game/word-search',
+    previewGambar: [gadangImage, gunungImage, rumahImage, sawahImage, menaraImage, bggImage],
+    status: 'tersedia',
+    kategori: 'Puzzle',
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -88,7 +96,7 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
 
   return (
     <article
-      className="relative w-full max-w-[616px] mx-auto"
+      className="relative w-full h-full max-w-[616px] mx-auto flex flex-col"
       aria-labelledby={`game-title-${game.id}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -96,7 +104,7 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
       {/* Kartu luar — latar putih, bayangan inset, radius 36px */}
       {/* Referensi Figma: #1153:1514 (RECTANGLE 616×668, bg putih, border abu, radius 36px) */}
       <div
-        className="relative bg-white overflow-hidden transition-all duration-500"
+        className="relative bg-white overflow-hidden transition-all duration-500 flex flex-col flex-1 h-full"
         style={{
           borderRadius: 36,
           boxShadow: hovered
@@ -149,11 +157,11 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
               }}
             >
               <img
-                src={logoSvg}
+                src={game.previewGambar[0] || logoSvg}
                 alt=""
-                className="absolute inset-0 m-auto opacity-50"
-                style={{ width: '50%', height: '50%', objectFit: 'contain' }}
+                className="w-full h-full object-cover opacity-90"
               />
+              <div className="absolute inset-0 bg-black/10" />
             </div>
 
             {/* Kartu tengah — menghadap ke depan, gambar kuliner terlihat */}
@@ -192,17 +200,17 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
               }}
             >
               <img
-                src={logoSvg}
+                src={game.previewGambar[1] || logoSvg}
                 alt=""
-                className="absolute inset-0 m-auto opacity-50"
-                style={{ width: '50%', height: '50%', objectFit: 'contain' }}
+                className="w-full h-full object-cover opacity-90"
               />
+              <div className="absolute inset-0 bg-black/10" />
             </div>
           </div>
         </div>
 
         {/* ── Area Teks dan Tombol ───────────────────────────────────────────── */}
-        <div className="px-6 pt-5 pb-8">
+        <div className="px-6 pt-5 pb-8 flex flex-col flex-1">
           {/* Badge kategori */}
           <span
             className="font-poppins text-xs font-medium rounded-full px-3 py-1 inline-block mb-3"
@@ -232,22 +240,23 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
           </p>
 
           {/* ── Tombol CTA (Figma: #1153:1512, bg MAROON, radius 16px, px-24 py-16) ── */}
-          {game.status === 'tersedia' ? (
-            <button
-              id={`btn-play-${game.id}`}
-              type="button"
-              onClick={onPlay}
-              className="group flex items-center justify-center gap-3 font-poppins font-medium text-white transition-all duration-300 active:scale-[0.97]"
-              style={{
-                backgroundColor: MAROON,
-                borderRadius: 16,
-                padding: '16px 24px',
-                fontSize: 'clamp(16px, 2vw, 24px)',
-                boxShadow: `0 8px 24px ${MAROON}44`,
-                transform: hovered ? 'scale(1.03)' : 'scale(1)',
-              }}
-              aria-label={`Mulai bermain ${game.nama}`}
-            >
+          <div className="mt-auto">
+            {game.status === 'tersedia' ? (
+              <button
+                id={`btn-play-${game.id}`}
+                type="button"
+                onClick={onPlay}
+                className="group w-full flex items-center justify-center gap-3 font-poppins font-medium text-white transition-all duration-300 active:scale-[0.97]"
+                style={{
+                  backgroundColor: MAROON,
+                  borderRadius: 16,
+                  padding: '16px 24px',
+                  fontSize: 'clamp(16px, 2vw, 24px)',
+                  boxShadow: `0 8px 24px ${MAROON}44`,
+                  transform: hovered ? 'scale(1.03)' : 'scale(1)',
+                }}
+                aria-label={`Mulai bermain ${game.nama}`}
+              >
               Mulai Main
               {/* Ikon panah atas (Figma: lucide:arrow-up #1153:1535, 24×24) */}
               <svg
@@ -279,7 +288,8 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
             >
               Segera Hadir
             </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </article>
@@ -417,7 +427,7 @@ export function GameMenuPage() {
          * Setiap item di DAFTAR_GAME dirender sebagai satu GameCard.
          * Untuk menambahkan game baru, cukup tambahkan objek baru ke DAFTAR_GAME.
          */}
-        <main className="pb-20 flex flex-col gap-10 items-center" id="daftar-game">
+        <main className="pb-20 w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch" id="daftar-game">
           {DAFTAR_GAME.map((game, idx) => (
             <div
               key={game.id}

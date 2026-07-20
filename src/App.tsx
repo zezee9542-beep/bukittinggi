@@ -10,6 +10,7 @@ import { KulinerPage } from './components/KulinerPage';
 import { TravelPlannerPage } from './components/TravelPlannerPage';
 import { GameFlipPage } from './components/GameFlipPage';
 import { GameMenuPage } from './components/GameMenuPage';
+import { WordSearchGamePage } from './components/WordSearchGamePage';
 import { ParijsSection } from './components/ParijsSection';
 import { HeritageSection } from './components/HeritageSection';
 import { RancakBotWidget } from './components/RancakBotWidget';
@@ -75,10 +76,9 @@ function HomePage() {
 
 function App() {
   const location = useLocation();
-  // Sembunyikan bot pada halaman yang memerlukan fokus penuh (game dan travel planner)
-  const showRancakBot = location.pathname !== '/travel-planner'
-    && location.pathname !== '/game'
-    && location.pathname !== '/game/flip';
+  const isGameplayRoute = location.pathname.startsWith('/game/');
+  // Sembunyikan bot pada halaman yang memerlukan fokus penuh (active gameplay dan travel planner)
+  const showRancakBot = location.pathname !== '/travel-planner' && !isGameplayRoute;
   const [isRancakBotPanelOpen, setIsRancakBotPanelOpen] = useState(false);
 
   const openRancakBot = () => window.dispatchEvent(new Event('open-rancak-bot'));
@@ -142,9 +142,10 @@ function App() {
     }
   }, [location, displayLocation]);
 
+  
   return (
     <div className="relative min-h-[100dvh] overflow-x-clip bg-white">
-      {location.pathname !== '/profil-bukittinggi' && <Navigation />}
+      {location.pathname !== '/profil-bukittinggi' && !isGameplayRoute && <Navigation />}
       <main
         className={`overflow-x-clip w-full ${
           transitioning ? 'page-exit' : 'page-enter'
@@ -162,8 +163,10 @@ function App() {
           {/* ── Rute Permainan ──────────────────────────────────────────── */}
           {/* /game       → Hub menu permainan (GameMenuPage)               */}
           {/* /game/flip  → Permainan kartu flip kuliner (GameFlipPage)      */}
+          {/* /game/word-search → Permainan Cari Kata Wisata                 */}
           <Route path="/game" element={<GameMenuPage />} />
           <Route path="/game/flip" element={<GameFlipPage />} />
+          <Route path="/game/word-search" element={<WordSearchGamePage />} />
           
           {/* ── Rute Eksperimen Landing Page ───────────────────────────── */}
           <Route path="/landing" element={<LandingTestPage />} />
