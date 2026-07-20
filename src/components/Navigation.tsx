@@ -222,11 +222,11 @@ export function Navigation() {
               }`}
             >
               {jelajahiLinks.map((subLink) => {
-                const isSubActive = location.pathname === subLink.path && !subLink.targetId;
+                const isSubActive = location.pathname === subLink.path;
                 return (
                   <button
                     key={subLink.label}
-                    onClick={() => handleNavClick(subLink.path, subLink.targetId)}
+                    onClick={() => handleNavClick(subLink.path)}
                     className={`px-5 py-2.5 text-left font-poppins text-[14px] font-medium transition-all duration-300 hover:bg-[#F7E0E0]/30 active:scale-95 cursor-pointer ${
                       isSubActive ? 'text-[#6E1F1F] bg-[#F7E0E0]/20 font-bold' : 'text-[#6E1F1F]/70 hover:text-[#6E1F1F]'
                     }`}
