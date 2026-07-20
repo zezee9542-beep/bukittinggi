@@ -85,11 +85,26 @@ interface StreetViewPortalProps {
 function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const [lat, lng] = site.streetViewPosition || site.position;
-  const streetViewUrl =
-    `https://maps.google.com/maps?q=${lat},${lng}` +
-    `&layer=c&cbll=${lat},${lng}` +
-    '&cbp=12,0,0,0,0&output=svembed';
+  // 1. Validasi koordinat secara ketat untuk mencegah nilai undefined atau NaN
+  let lat = 0;
+  let lng = 0;
+  if (site.streetViewPosition && site.streetViewPosition.length === 2) {
+    lat = site.streetViewPosition[0];
+    lng = site.streetViewPosition[1];
+  } else if (site.position && site.position.length === 2) {
+    lat = site.position[0];
+    lng = site.position[1];
+  }
+
+  const isValidCoordinate = typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
+
+  // 2. Konstruksi URL Street View yang valid
+  // Menggunakan www.google.com mencegah masalah redirect iframe yang me-reset parameter ke peta dunia 2D (0,0).
+  // Parameter cbll (koordinat panorama) dan output=svembed diperlukan untuk mode Street View.
+  // Jika koordinat tidak valid, fallback ke mode peta (output=embed) di pusat kota dengan zoom yang sesuai.
+  const streetViewUrl = isValidCoordinate
+    ? `https://www.google.com/maps?q=${lat},${lng}&layer=c&cbll=${lat},${lng}&cbp=12,0,0,0,0&output=svembed`
+    : `https://www.google.com/maps?q=-0.305041,100.369463&z=15&output=embed`;
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -111,19 +126,33 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
       aria-label={`Street View 360 derajat ${site.title}`}
     >
       <header className="relative z-20 flex items-center justify-between gap-3 border-b border-white/10 bg-[#1d1010]/95 px-4 py-3 text-white backdrop-blur md:px-6">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="font-manrope text-[10px] font-semibold uppercase tracking-[0.18em] text-[#d4a853]">Street View 360°</p>
           <h2 className="truncate font-poppins text-sm font-medium md:text-base">{site.title}</h2>
         </div>
-        <button
-          ref={closeButtonRef}
-          type="button"
-          onClick={onClose}
-          className="rounded-full border border-white/20 bg-white/10 px-4 py-2 font-poppins text-xs font-medium transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
-          aria-label="Tutup Street View"
-        >
-          Tutup <span aria-hidden="true">×</span>
-        </button>
+        <div className="flex shrink-0 gap-2">
+          {/* Tautan rujukan eksternal ke Google Maps berdasarkan URL presisi dari dataset */}
+          {site.mapsUrl && (
+            <a
+              href={site.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 font-poppins text-xs font-medium transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853] sm:block"
+              aria-label={`Buka ${site.title} di Google Maps`}
+            >
+              Buka di Maps ↗
+            </a>
+          )}
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={onClose}
+            className="rounded-full border border-white/20 bg-[#6e1f1f] px-4 py-2 font-poppins text-xs font-medium text-white transition hover:bg-[#511717] focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+            aria-label="Tutup Street View"
+          >
+            Tutup <span aria-hidden="true" className="ml-1">×</span>
+          </button>
+        </div>
       </header>
 
       <div className="relative min-h-0 flex-1 overflow-hidden">
@@ -145,6 +174,8 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
           className="relative z-[1] h-full w-full border-0"
           allowFullScreen
           loading="eager"
+          referrerPolicy="no-referrer-when-downgrade"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
           title={`Street View ${site.title}`}
           onLoad={() => setIsLoaded(true)}
         />
