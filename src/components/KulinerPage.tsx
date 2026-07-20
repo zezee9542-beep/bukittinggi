@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
@@ -53,6 +54,219 @@ interface KulinerItem {
   title: string;
   description: string;
   image: string;
+}
+
+interface KulinerDetailModalProps {
+  item: KulinerItem;
+  category: 'makanan' | 'manisan' | 'minuman';
+  onClose: () => void;
+}
+
+function KulinerDetailModal({ item, category, onClose }: KulinerDetailModalProps) {
+  const [mounted, setMounted] = useState(false);
+  const [closing, setClosing] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 20);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const handleClose = () => {
+    setClosing(true);
+    setMounted(false);
+    setTimeout(() => {
+      onClose();
+    }, 350);
+  };
+
+  const categoryLabel =
+    category === 'makanan'
+      ? 'MAKANAN KHAS MINANG'
+      : category === 'manisan'
+      ? 'MANISAN & KUDAPAN TRADISIONAL'
+      : 'MINUMAN KHAS BUKITTINGGI';
+
+  const mainIngredient =
+    category === 'makanan'
+      ? 'Daging / Rempah'
+      : category === 'manisan'
+      ? 'Ketan / Pisang'
+      : 'Teh / Kawa / Rempah';
+
+  return createPortal(
+    <div
+      className={`fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 transition-all duration-300 ${
+        mounted && !closing ? 'bg-black/60 backdrop-blur-md opacity-100' : 'bg-black/0 backdrop-blur-none opacity-0'
+      }`}
+      onClick={handleClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="relative w-full max-w-5xl overflow-hidden rounded-[28px] bg-[#FDFBF7] p-5 sm:p-8 shadow-2xl border border-[#EBE8E2] text-[#1E1E1E]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close Button X (Top Right as in reference image) */}
+        <button
+          type="button"
+          onClick={handleClose}
+          className="absolute right-4 top-4 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#333333] shadow-md border border-[#E5E5E5] transition hover:bg-gray-100 cursor-pointer font-bold"
+          aria-label="Tutup Detail"
+        >
+          ✕
+        </button>
+
+        {/* Split Container (Membelah Dua) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
+          
+          {/* ── LEFT COLUMN (Membuat membelah ke kiri) ── */}
+          <div
+            className={`flex flex-col justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              mounted && !closing
+                ? 'opacity-100 translate-x-0'
+                : 'opacity-0 -translate-x-14'
+            }`}
+          >
+            <div>
+              {/* Category Pill Tag */}
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-[#F0EEEA] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#5C584F] font-poppins mb-3 border border-[#EBE8E2]">
+                <span>🌿</span> {categoryLabel}
+              </div>
+
+              {/* Title */}
+              <h2 className="font-poppins font-semibold text-2xl sm:text-[34px] text-[#1E1E1E] leading-tight mb-1.5 tracking-tight">
+                {item.title}
+              </h2>
+
+              {/* Location */}
+              <p className="font-poppins text-xs sm:text-sm text-[#706C62] flex items-center gap-1 mb-4">
+                <span>📍 Bukittinggi, Sumatera Barat</span>
+              </p>
+
+              <div className="h-[1px] w-full bg-[#EBE8E2] mb-4" />
+
+              {/* KARAKTERISTIK Section */}
+              <div className="mb-4">
+                <h4 className="font-poppins text-[11px] font-bold uppercase tracking-wider text-[#827E73] mb-2.5">
+                  KARAKTERISTIK
+                </h4>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                    <span>🍃</span> Kaya Rempah
+                  </div>
+                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                    <span>🔥</span> Otentik Tradisional
+                  </div>
+                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                    <span>⭐</span> Kuliner Wajib Bukittinggi
+                  </div>
+                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                    <span>💖</span> Manis & Gurih
+                  </div>
+                </div>
+              </div>
+
+              {/* BAHAN & BUMBU UTAMA Section */}
+              <div className="mb-5">
+                <h4 className="font-poppins text-[11px] font-bold uppercase tracking-wider text-[#827E73] mb-2.5">
+                  BAHAN & BUMBU UTAMA
+                </h4>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2.5 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                    <span>🌶️</span> Rempah Minang Asli
+                  </div>
+                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2.5 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                    <span>🥥</span> Santan Kelapa Murni
+                  </div>
+                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2.5 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                    <span>🌶️</span> Cabai Keriting Pilihan
+                  </div>
+                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2.5 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                    <span>🍃</span> Resep Warisan Leluhur
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Metadata Stats */}
+            <div className="grid grid-cols-4 gap-2 pt-4 border-t border-[#EBE8E2] text-center font-poppins">
+              <div className="border-r border-[#EBE8E2] pr-1">
+                <span className="block text-base mb-0.5">⏱️</span>
+                <span className="block text-[10px] text-[#706C62]">Dibuat</span>
+                <span className="block text-xs font-semibold text-[#1E1E1E]">30 Menit</span>
+              </div>
+              <div className="border-r border-[#EBE8E2] pr-1">
+                <span className="block text-base mb-0.5">🍌</span>
+                <span className="block text-[10px] text-[#706C62]">Bahan Utama</span>
+                <span className="block text-xs font-semibold text-[#1E1E1E] truncate">{mainIngredient}</span>
+              </div>
+              <div className="border-r border-[#EBE8E2] pr-1">
+                <span className="block text-base mb-0.5">📍</span>
+                <span className="block text-[10px] text-[#706C62]">Asal</span>
+                <span className="block text-xs font-semibold text-[#1E1E1E]">Bukittinggi</span>
+              </div>
+              <div>
+                <span className="block text-base mb-0.5">⭐</span>
+                <span className="block text-[10px] text-[#706C62]">Rating Kuliner</span>
+                <span className="block text-xs font-semibold text-[#1E1E1E]">4.9 / 5</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── RIGHT COLUMN (Membuat membelah ke kanan) ── */}
+          <div
+            className={`flex flex-col justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              mounted && !closing
+                ? 'opacity-100 translate-x-0'
+                : 'opacity-0 translate-x-14'
+            }`}
+          >
+            <div>
+              {/* Image Frame */}
+              <div className="relative w-full aspect-[4/3] rounded-[20px] overflow-hidden shadow-sm mb-4 border border-[#EBE8E2] group">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <span className="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-medium text-[#333333] shadow-sm flex items-center gap-1.5 font-poppins">
+                  <span>🥣</span> Sajian Khas Bukittinggi
+                </span>
+              </div>
+
+              {/* DESKRIPSI Box */}
+              <div className="bg-[#F5F3EF] rounded-[16px] p-4 border border-[#EBE8E2] mb-5">
+                <h4 className="font-poppins text-[11px] font-bold uppercase tracking-wider text-[#706C62] mb-2">
+                  DESKRIPSI
+                </h4>
+                <p className="font-poppins text-xs sm:text-sm text-[#3D3A34] leading-relaxed">
+                  {item.description} Hidangan ini merupakan salah satu kekayaan kuliner kebanggaan masyarakat Minangkabau yang menyajikan keseimbangan cita rasa gurih, aroma rempah yang pekat, dan keaslian bumbu khas Bukittinggi.
+                </p>
+              </div>
+            </div>
+
+            {/* Tutup Detail Action Button */}
+            <button
+              type="button"
+              onClick={handleClose}
+              className="w-full bg-[#63685F] hover:bg-[#52564F] text-white font-poppins font-medium py-3.5 rounded-[16px] text-sm transition shadow-sm cursor-pointer text-center"
+            >
+              Tutup Detail
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
 }
 
 const KULINER_DATA: Record<'makanan' | 'manisan' | 'minuman', KulinerItem[]> = {
@@ -205,6 +419,7 @@ export function KulinerPage() {
   const [activeCategory, setActiveCategory] = useState<'makanan' | 'manisan' | 'minuman'>('makanan');
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayCategory, setDisplayCategory] = useState(activeCategory);
+  const [selectedItem, setSelectedItem] = useState<{ item: KulinerItem; category: 'makanan' | 'manisan' | 'minuman' } | null>(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -254,12 +469,12 @@ export function KulinerPage() {
         <img
           src={sonBg}
           alt=""
-          className="relative z-[1] block h-full w-full -translate-y-44 sm:-translate-y-2 scale-[1.14] sm:scale-[1.03] object-cover object-[center_42%] md:-mt-[4%] md:h-auto md:translate-y-0 md:scale-100 md:object-contain"
+          className="relative z-[1] block h-full w-full -translate-y-52 sm:-translate-y-8 scale-[1.14] sm:scale-[1.03] object-cover object-[center_42%] md:-mt-[8%] md:h-auto md:-translate-y-10 md:scale-100 md:object-contain"
         />
 
-        {/* ── [LAYER 2] 14.PNG (Overlay Gradient Merah) — raised up on mobile ── */}
+        {/* ── [LAYER 2] 14.PNG (Overlay Gradient Merah) ── */}
         <div
-          className="absolute inset-0 z-[2] -translate-y-44 sm:-translate-y-8 scale-[1.14] sm:scale-[1.03] md:-mt-[4%] md:translate-y-0 md:scale-100"
+          className="absolute inset-0 z-[2] -translate-y-52 sm:-translate-y-8 scale-[1.14] sm:scale-[1.03] md:-mt-[8%] md:-translate-y-10 md:scale-100"
           style={{
             backgroundImage: `url(${gradientBg})`,
             backgroundSize: '100% 100%',
@@ -272,15 +487,15 @@ export function KulinerPage() {
 
         {/* Judul: "Cita Rasa Bukittinggi" */}
         <div
-          className={`absolute left-1/2 top-[19%] z-10 w-full -translate-x-1/2 -translate-y-1/2 px-4 text-center transition-all duration-1000 delay-150 ease-out md:top-[42%] ${
+          className={`absolute left-1/2 top-[16%] z-25 w-full -translate-x-1/2 -translate-y-1/2 px-4 text-center transition-all duration-1000 delay-150 ease-out md:top-[28%] ${
             heroVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-8 scale-90'
           }`}
         >
           <h1
             className="font-poppins font-medium text-white tracking-wide"
             style={{
-              fontSize: 'clamp(1.45rem, 4.2vw, 3.5rem)',
-              textShadow: '0 4px 14px rgba(0,0,0,0.5)',
+              fontSize: 'clamp(1.5rem, 4.4vw, 3.6rem)',
+              textShadow: '0 4px 18px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.9)',
             }}
           >
             Cita Rasa Bukittinggi
@@ -289,7 +504,7 @@ export function KulinerPage() {
 
         {/* Top Right Floating Badge */}
         <div
-          className={`absolute right-4 top-4 z-10 flex items-center gap-2 rounded-[12px] px-3 py-2 shadow-md transition-[opacity,transform] duration-500 ease-out sm:right-5 sm:top-5 sm:gap-2.5 sm:px-4 sm:py-2.5 md:right-[6%] md:top-[118px] md:gap-3 md:rounded-[14px] md:px-5 md:py-3 ${
+          className={`absolute right-4 top-3 z-20 flex items-center gap-2 rounded-[12px] px-3 py-2 shadow-md transition-[opacity,transform] duration-500 ease-out sm:right-5 sm:top-4 sm:gap-2.5 sm:px-4 sm:py-2.5 md:right-[6%] md:top-[75px] md:gap-3 md:rounded-[14px] md:px-5 md:py-3 ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'
           }`}
           style={{
@@ -324,7 +539,7 @@ export function KulinerPage() {
 
         {/* Left Large Leaf (leaf.png) */}
         <div
-          className={`absolute left-[-8%] top-[28%] z-20 w-[86px] pointer-events-none transition-all duration-[1400ms] delay-0 ease-out sm:w-[110px] md:left-[-2%] md:top-[25%] md:w-[clamp(120px,18vw,240px)] ${
+          className={`absolute left-[-8%] top-[18%] z-20 w-[86px] pointer-events-none transition-all duration-[1400ms] delay-0 ease-out sm:w-[110px] md:left-[-2%] md:top-[16%] md:w-[clamp(120px,18vw,240px)] ${
             heroVisible ? 'opacity-100 rotate-0 translate-x-0' : 'opacity-0 -rotate-45 -translate-x-8'
           }`}
         >
@@ -337,7 +552,7 @@ export function KulinerPage() {
 
         {/* Leaf (1).png - Right of title */}
         <div
-          className={`absolute right-[4%] top-[33%] z-20 w-[48px] pointer-events-none transition-all duration-[1500ms] delay-200 ease-out sm:w-[60px] md:right-[15%] md:top-[48%] md:w-[clamp(60px,10vw,120px)] ${
+          className={`absolute right-[4%] top-[20%] z-20 w-[48px] pointer-events-none transition-all duration-[1500ms] delay-200 ease-out sm:w-[60px] md:right-[15%] md:top-[32%] md:w-[clamp(60px,10vw,120px)] ${
             heroVisible ? 'opacity-100 rotate-15 scale-100' : 'opacity-0 rotate-90 scale-75'
           }`}
         >
@@ -349,9 +564,9 @@ export function KulinerPage() {
           />
         </div>
 
-        {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) — naik lebih ke atas di mobile ── */}
+        {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) — diturunkan ── */}
         <div
-          className="pointer-events-none absolute bottom-[22%] left-1/2 z-30 flex w-[88%] max-w-[430px] -translate-x-1/2 flex-col items-center md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
+          className="pointer-events-none absolute bottom-[15%] left-1/2 z-30 flex w-[88%] max-w-[430px] -translate-x-1/2 flex-col items-center md:bottom-[-16%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
         >
           {/* Container Piring */}
           <div className={`relative w-full transition-all duration-[1200ms] delay-400 ease-out ${
@@ -383,9 +598,9 @@ export function KulinerPage() {
           </div>
         </div>
 
-        {/* ── TEKS MELENGKUNG (Group.png) — naik lebih ke atas di mobile ── */}
+        {/* ── TEKS MELENGKUNG (Group.png) — diturunkan ── */}
         <div
-          className={`pointer-events-none absolute bottom-[14%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-20%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
+          className={`pointer-events-none absolute bottom-[8%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-16%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
             heroVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-12'
           }`}
         >
@@ -398,7 +613,7 @@ export function KulinerPage() {
 
         {/* Bottom Left Leaf (leaf (3).png) */}
         <div
-          className={`absolute bottom-[12%] left-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1600ms] delay-450 ease-out sm:w-[90px] md:bottom-[-12%] md:left-[-1%] md:w-[clamp(85px,12vw,160px)] ${
+          className={`absolute bottom-[10%] left-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1600ms] delay-450 ease-out sm:w-[90px] md:bottom-[-10%] md:left-[-1%] md:w-[clamp(85px,12vw,160px)] ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
           }`}
         >
@@ -407,7 +622,7 @@ export function KulinerPage() {
 
         {/* Bottom Right Leaf (leaf (1).png) */}
         <div
-          className={`absolute bottom-[12%] right-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1550ms] delay-500 ease-out sm:w-[90px] md:bottom-[-12%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)] ${
+          className={`absolute bottom-[10%] right-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1550ms] delay-500 ease-out sm:w-[90px] md:bottom-[-10%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)] ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -417,7 +632,7 @@ export function KulinerPage() {
       </section>
 
       {/* ── AREA SECTION BAWAH ── */}
-      <div ref={sectionRef} className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-40 pb-0 sm:px-6 sm:pt-52 md:px-12 md:pt-64 lg:px-16">
+      <div ref={sectionRef} className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-32 pb-0 sm:px-6 sm:pt-44 md:px-12 md:pt-52 lg:px-16">
 
         {/* ── Tab Navigation with white background ── */}
         <div
@@ -498,7 +713,8 @@ export function KulinerPage() {
             {KULINER_DATA[displayCategory].map((item, index) => (
               <div
                 key={item.id}
-                className={`bg-white rounded-[20px] p-4 flex flex-col justify-between transition-[opacity,transform] duration-[400ms] hover:-translate-y-1 ${
+                onClick={() => setSelectedItem({ item, category: displayCategory })}
+                className={`bg-white rounded-[20px] p-4 flex flex-col justify-between cursor-pointer transition-[opacity,transform] duration-[400ms] hover:-translate-y-1 ${
                   sectionVisible && !isAnimating
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-4'
@@ -542,6 +758,8 @@ export function KulinerPage() {
                 {/* Lihat Detail Button */}
                 <div className="flex justify-end w-full mt-auto">
                   <button
+                    type="button"
+                    onClick={() => setSelectedItem({ item, category: displayCategory })}
                     className="bg-[#FFDAD5] text-[#6E1F1F] font-poppins font-normal text-[11px] sm:text-[12px] px-4 py-1.5 rounded-full flex items-center gap-1.5 transition-all duration-300 hover:bg-[#f5c8c2] active:scale-95 cursor-pointer group"
                     style={{ boxShadow: '0 2px 6px rgba(110,31,31,0.10)' }}
                   >
@@ -745,7 +963,14 @@ export function KulinerPage() {
         />
       </section>
 
-
+      {/* Render Membelah Dua Modal Detail */}
+      {selectedItem && (
+        <KulinerDetailModal
+          item={selectedItem.item}
+          category={selectedItem.category}
+          onClose={() => setSelectedItem(null)}
+        />
+      )}
     </div>
   );
 }
