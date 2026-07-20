@@ -135,9 +135,7 @@ export function FeatureSection() {
               <div
                 key={feature.id}
                 onClick={feature.action}
-                className={`group flex min-h-[260px] sm:min-h-[280px] w-full max-w-[310px] flex-col items-center justify-start rounded-[24px] sm:rounded-[28px] border border-neutral-100/90 bg-white/95 backdrop-blur-sm px-6 py-8 text-center shadow-[0_10px_35px_rgba(110,31,31,0.04)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_22px_45px_rgba(110,31,31,0.09)] hover:border-amber-200 select-none ${
-                  feature.action ? 'cursor-pointer' : 'cursor-default'
-                } ${
+                className={`group flex min-h-[260px] sm:min-h-[280px] w-full max-w-[310px] flex-col items-center justify-start rounded-[24px] sm:rounded-[28px] border border-neutral-100/90 bg-white/95 backdrop-blur-sm px-6 py-8 text-center shadow-[0_10px_35px_rgba(110,31,31,0.04)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_22px_45px_rgba(110,31,31,0.09)] hover:border-amber-200 select-none cursor-pointer ${
                   isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                 }`}
                 style={{

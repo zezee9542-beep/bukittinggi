@@ -13,31 +13,31 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-    // Enable aggressive browser caching in dev mode
-    headers: {
-      'Cache-Control': 'public, max-age=31536000, immutable',
-    },
   },
   build: {
     // Split vendor chunks for better browser caching
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'map-vendor': ['leaflet', 'react-leaflet'],
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
+        // manualChunks as a function (required by Vite/Rollup TypeScript types)
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router-dom')) {
+            return 'react-vendor';
+          }
+          if (id.includes('node_modules/leaflet') || id.includes('node_modules/react-leaflet')) {
+            return 'map-vendor';
+          }
+          if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+            return 'three-vendor';
+          }
         },
-        // Content-hash filenames so browser caches correctly
         assetFileNames: 'assets/[name]-[hash][extname]',
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
       },
     },
-    // Compress assets
-    assetsInlineLimit: 4096, // inline assets < 4KB as base64
+    assetsInlineLimit: 4096,
     chunkSizeWarningLimit: 1000,
   },
-  // Optimize deps pre-bundling for faster cold starts
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'leaflet', 'react-leaflet'],
   },
