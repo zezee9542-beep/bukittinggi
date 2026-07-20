@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useMode } from '../context/ModeContext';
-import bggImage from '../assets/bgg.png';
+import bggImage from '../assets/bgg.webp';
 import gadangImage from '../assets/gadang.svg';
 
 // Import Stat Icons
@@ -11,8 +11,8 @@ import iconGunung from '../assets/Icon (3).png';
 
 // Import Geografis Assets
 import iconGroup2 from '../assets/Group (2).svg';
-import jekImage from '../assets/jek.png';
-import okeImage from '../assets/oke.png';
+import jekImage from '../assets/jek.webp';
+import okeImage from '../assets/oke.webp';
 
 export function ProfilBukittinggiPage() {
   const navigate = useNavigate();
