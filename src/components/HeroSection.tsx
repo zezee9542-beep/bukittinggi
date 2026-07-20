@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import bg4Png from '../assets/bg4.webp';
+import bgMobilePng from '../assets/image copy 2.png';
 
 // Card images ordered from a.webp to g.webp (WebP for performance)
 import imgA from '../assets/a.webp';
@@ -35,14 +36,21 @@ export function HeroSection() {
 
   return (
     <section className="relative w-full bg-white pt-[82px] sm:pt-[86px] md:pt-[90px] px-1.5 sm:px-2.5 md:px-3.5 pb-16 sm:pb-20 flex justify-center overflow-visible">
-      {/* Outer Hero Card Container - Enlarged bg4.png with slim gaps from navbar & sides */}
+      {/* Outer Hero Card Container - Enlarged background with slim gaps from navbar & sides */}
       <div className="relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-visible shadow-2xl">
         
-        {/* Background Image bg4.png inside rounded container */}
+        {/* Mobile Background Image (image copy 2.png - block sm:hidden) */}
+        <img
+          src={bgMobilePng}
+          alt="Bukittinggi Background Mobile"
+          className="block sm:hidden absolute inset-0 w-full h-full object-cover object-center rounded-[32px] select-none pointer-events-none"
+        />
+
+        {/* Desktop Background Image (bg4.webp - hidden sm:block) */}
         <img
           src={bg4Png}
           alt="Bukittinggi Ngarai Sianok Background"
-          className="absolute inset-0 w-full h-full object-cover object-center rounded-[32px] sm:rounded-[40px] md:rounded-[48px] select-none pointer-events-none"
+          className="hidden sm:block absolute inset-0 w-full h-full object-cover object-center rounded-[32px] sm:rounded-[40px] md:rounded-[48px] select-none pointer-events-none"
         />
 
         {/* Floating Cards Gallery Row - Shifted higher up & overlapping side white margins */}
@@ -70,15 +78,7 @@ export function HeroSection() {
                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-110 select-none"
                   />
 
-                  {/* Clean Bottom Text Overlay */}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3 sm:p-4 flex flex-col justify-end text-white text-left pointer-events-none">
-                    <span className="text-amber-400 font-extrabold text-[9px] sm:text-[11px] tracking-wider uppercase mb-0.5 drop-shadow-md">
-                      {card.category}
-                    </span>
-                    <h3 className="text-white font-extrabold text-[11px] sm:text-xs md:text-sm leading-snug drop-shadow-md line-clamp-2">
-                      {card.title}
-                    </h3>
-                  </div>
+
                 </div>
               );
             })}
