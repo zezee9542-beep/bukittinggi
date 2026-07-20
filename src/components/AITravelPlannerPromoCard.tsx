@@ -87,18 +87,14 @@ export const AITravelPlannerPromoCard: React.FC = () => {
             ))}
           </div>
 
-          {/* Floating Badge (Shifted Up & Right, tilted right, float animation) */}
-          <div className="absolute right-[-25px] sm:right-[-40px] lg:right-[-60px] top-[22%] sm:top-[20%] bg-white rounded-[22px] shadow-[0_20px_45px_rgba(0,0,0,0.22)] p-3.5 sm:p-4.5 flex items-center gap-3.5 z-30 border border-neutral-100 select-none animate-float-vertical" style={{ transform: 'rotate(6deg)', animationDuration: '3.2s' }}>
-            <img src={pdfPng} alt="PDF" className="w-10 h-10 sm:w-11 sm:h-11 object-contain flex-shrink-0" />
-            <div className="flex flex-col text-left pr-2">
-              <span className="font-poppins font-bold text-[13px] sm:text-[14px] leading-tight" style={{ color: '#531717' }}>
-                Gratis Unduh
-              </span>
-              <span className="font-poppins font-bold text-[13px] sm:text-[14px] leading-tight" style={{ color: '#531717' }}>
-                Rundown PDF
-              </span>
-            </div>
-          </div>
+          {/* Floating pdf.png badge — tilted right + float up-down animation */}
+          <img
+            src={pdfPng}
+            alt="PDF"
+            className="absolute right-[-35px] sm:right-[-50px] lg:right-[-70px] top-[14%] sm:top-[12%] w-[110px] sm:w-[130px] lg:w-[155px] h-auto object-contain z-30 select-none pointer-events-none animate-float-vertical drop-shadow-[0_8px_20px_rgba(0,0,0,0.3)]"
+            draggable={false}
+            style={{ transform: 'rotate(6deg)', animationDuration: '3.2s' }}
+          />
         </div>
 
         {/* ── Bottom Right CTA Button: Mulai → ── */}
