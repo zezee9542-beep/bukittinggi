@@ -1436,3 +1436,5 @@ export function TravelPlannerPage() {
     </main>
   );
 }
+
+export default TravelPlannerPage;

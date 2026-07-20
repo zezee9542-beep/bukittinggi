@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { culturalStories, siteContent } from '../data/stories';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import { CinematicImage } from './CinematicImage';
+import { CinematicImage } from '../components/CinematicImage';
 import minNGSrc from '../assets/minNG.svg';
 
 export function HistoryPage() {

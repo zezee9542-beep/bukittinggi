@@ -1,288 +1,93 @@
-import { useState, useEffect } from 'react';
-import { useScrollReveal } from '../hooks/useScrollReveal';
-import { useParallax } from '../hooks/useParallax';
-import { FloatingParticles } from './FloatingParticles';
-import imggWebp from '../assets/imgg.webp';
-import gunungWebp from '../assets/gunung.webp';
-import imagePng from '../assets/image.png';
-import imageCopyPng from '../assets/image copy.png';
-import rumahPng from '../assets/rumah.png';
-import { useMode } from '../context/ModeContext';
+import { useState } from 'react';
+import bg4Png from '../assets/bg4.webp';
+
+// Card images ordered from a.webp to g.webp (WebP for performance)
+import imgA from '../assets/a.webp';
+import imgB from '../assets/b.webp';
+import imgC from '../assets/c.webp';
+import imgD from '../assets/d.webp';
+import imgE from '../assets/e.webp';
+import imgF from '../assets/f.webp';
+import imgG from '../assets/g.webp';
+
+interface HeroCardItem {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+}
+
+const BASE_CARDS: HeroCardItem[] = [
+  { id: 'a', title: 'Air Terjun Lembah Anai', category: 'WISATA ALAM', image: imgA },
+  { id: 'b', title: 'Ampiang Dadiah', category: 'KULINER MINANG', image: imgB },
+  { id: 'c', title: 'Rumah Gadang', category: 'ARSITEKTUR', image: imgC },
+  { id: 'd', title: 'Pakaian Adat Minang', category: 'BUDAYA & TRADISI', image: imgD },
+  { id: 'e', title: 'Jam Gadang', category: 'IKON KOTA', image: imgE },
+  { id: 'f', title: 'Tari Pasambahan', category: 'SENI PERTUNJUKAN', image: imgF },
+  { id: 'g', title: 'Istano Pagaruyung', category: 'CAGAR BUDAYA', image: imgG },
+];
+
+// Duplicate items 4x for seamless infinite marquee loop
+const MARQUEE_ITEMS = [...BASE_CARDS, ...BASE_CARDS, ...BASE_CARDS, ...BASE_CARDS];
 
 export function HeroSection() {
-  const { ref, isVisible } = useScrollReveal<HTMLElement>();
-  const parallaxY = useParallax(0.25);
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth < 768 : false
-  );
-  const { mode } = useMode();
-
-  const isExplorer = mode === 'explorer';
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Shared slow, elegant crossfade transition
-  const FADE = '1.35s cubic-bezier(0.25, 1, 0.25, 1)';
-
-  // ── Explorer colors ──────────────────────────────────────────────
-  const explorerTextColor  = '#F0A040';
-  const explorerGlow = [
-    '0 0 120px rgba(255,170,60,0.9)',
-    '0 0 50px rgba(249,140,30,0.7)',
-    '0 0 20px rgba(249,120,20,0.5)',
-    '0 4px 24px rgba(0,0,0,0.5)',
-  ].join(', ');
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section
-      ref={ref}
-      className="relative w-full overflow-hidden"
-      style={{ backgroundColor: '#ffffff' }}
-      aria-label={isExplorer ? 'Explorer Bukittinggi Heritage' : 'Hero Bukittinggi Heritage'}
-    >
-      {/* ════════════════════════════════════════════════════════
-          SHARED CARD STRUCTURE — same layout for both modes,
-          only the images and colors differ.
-      ════════════════════════════════════════════════════════ */}
-      <div className="relative pt-32 sm:pt-36 md:pt-44 pb-12 md:pb-16 flex justify-center items-center px-3 sm:px-4 md:px-5">
+    <section className="relative w-full bg-white pt-[82px] sm:pt-[86px] md:pt-[90px] px-1.5 sm:px-2.5 md:px-3.5 pb-16 sm:pb-20 flex justify-center overflow-visible">
+      {/* Outer Hero Card Container - Enlarged bg4.png with slim gaps from navbar & sides */}
+      <div className="relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-visible shadow-2xl">
+        
+        {/* Background Image bg4.png inside rounded container */}
+        <img
+          src={bg4Png}
+          alt="Bukittinggi Ngarai Sianok Background"
+          className="absolute inset-0 w-full h-full object-cover object-center rounded-[32px] sm:rounded-[40px] md:rounded-[48px] select-none pointer-events-none"
+        />
 
-        {/* ── Card Container ── */}
-        <div className="relative w-full max-w-[1440px] h-[480px] sm:h-[580px] md:h-[680px] lg:h-[80vh] min-h-[460px] overflow-visible">
+        {/* Floating Cards Gallery Row - Shifted higher up & overlapping side white margins */}
+        <div className="absolute -left-2 -right-2 sm:-left-4 sm:-right-4 md:-left-6 md:-right-6 bottom-6 sm:bottom-10 md:bottom-14 z-30 overflow-hidden py-8 pointer-events-auto">
+          <div className="animate-hero-marquee group flex items-center gap-3.5 sm:gap-4.5 md:gap-6 px-2">
+            {MARQUEE_ITEMS.map((card, idx) => {
+              const isEven = idx % 2 === 0;
+              const isHovered = hoveredIndex === idx;
 
-          {/* ── 1. BUKITTINGGI outside text (under card, always) ── */}
-          <div
-            className="absolute inset-x-0 top-0 z-0 flex justify-center pointer-events-none px-4"
-            style={{
-              transform: isVisible ? 'translateY(-50%)' : 'translateY(calc(-50% + 15px))',
-              opacity: isVisible ? 0.75 : 0,
-              transition: 'transform 1200ms ease 200ms, opacity 1200ms ease 200ms',
-            }}
-          >
-            <h1
-              className="font-cormorant font-semibold tracking-[0.08em] select-none text-center uppercase"
-              style={{
-                fontSize: 'clamp(44px, 11vw, 156px)',
-                lineHeight: '1.0',
-                color: isExplorer ? explorerTextColor : '#829fb9',
-                textShadow: isExplorer
-                  ? explorerGlow
-                  : '0 2px 10px rgba(130, 159, 185, 0.15)',
-                transition: `color ${FADE}, text-shadow ${FADE}`,
-              }}
-            >
-              {'BUKITTINGGI'.split('').map((char, i) => (
-                <span key={i} className="char-animate inline-block" style={{ animationDelay: `${i * 55 + 300}ms` }}>
-                  {char}
-                </span>
-              ))}
-            </h1>
-          </div>
-
-          {/* ── 2. Background Image Card ── */}
-          <div className="absolute inset-0 rounded-[32px] overflow-hidden z-10 shadow-[0_-8px_30px_rgba(0,0,0,0.03),_0_12px_30px_rgba(0,0,0,0.03)] border border-neutral-100 border-b-0">
-
-            {/* Background image — crossfades between explorer (image.png / image copy.png) and heritage (imgg.webp) */}
-            <div
-              className="absolute inset-x-0 -top-12 -bottom-12 h-[calc(100%+96px)] bg-[#FAF8F5]"
-              style={{ transform: `translateY(${parallaxY * 0.35}px)` }}
-            >
-              {/* Heritage background */}
-              <img
-                src={imggWebp}
-                alt="Bukittinggi Heritage Landscape"
-                className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none animate-ken-burns"
-                fetchPriority="high"
-                decoding="sync"
-                draggable={false}
-                style={{
-                  opacity: isExplorer ? 0 : 1,
-                  transform: isExplorer ? 'scale(1.05)' : 'scale(1)',
-                  transition: `opacity ${FADE}, transform ${FADE}`,
-                }}
-              />
-              {/* Explorer background (Mobile) */}
-              {isMobile && (
-                <img
-                  src={imageCopyPng}
-                  alt="Bukittinggi Explorer Sunset Sky Mobile"
-                  className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none"
-                  fetchPriority="high"
-                  decoding="async"
-                  draggable={false}
-                  style={{
-                    opacity: isExplorer ? 1 : 0,
-                    transform: isExplorer ? 'scale(1)' : 'scale(1.05)',
-                    transition: `opacity ${FADE}, transform ${FADE}`,
-                  }}
-                />
-              )}
-              {/* Explorer background (Desktop) */}
-              {!isMobile && (
-                <img
-                  src={imagePng}
-                  alt="Bukittinggi Explorer Sunset Sky Desktop"
-                  className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none"
-                  fetchPriority="high"
-                  decoding="async"
-                  draggable={false}
-                  style={{
-                    opacity: isExplorer ? 1 : 0,
-                    transform: isExplorer ? 'scale(1)' : 'scale(1.05)',
-                    transition: `opacity ${FADE}, transform ${FADE}`,
-                  }}
-                />
-              )}
-            </div>
-
-
-            {/* Radial vignette */}
-            <div
-              className="absolute inset-0 z-[1] pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.18) 100%)' }}
-            />
-
-            {/* Floating particles — desktop only, heritage only */}
-            {!isMobile && !isExplorer && (
-              <FloatingParticles count={22} colors={['#6E1F1F', '#D4A853', '#F9CE65', '#8C1D24', '#c8955a']} className="z-[5] rounded-[32px]" />
-            )}
-
-            {/* BUKITTINGGI inside card — crossfades color */}
-            <div
-              className="absolute inset-x-0 top-0 z-10 flex justify-center pointer-events-none px-4"
-              style={{
-                transform: isVisible ? 'translateY(-50%)' : 'translateY(calc(-50% + 15px))',
-                opacity: isVisible ? 0.75 : 0,
-                transition: 'transform 1200ms ease 200ms, opacity 1200ms ease 200ms',
-              }}
-            >
-              <h1
-                className={`font-cormorant font-semibold tracking-[0.08em] select-none text-center uppercase ${isVisible ? 'animate-text-glow' : ''}`}
-                style={{
-                  fontSize: 'clamp(44px, 11vw, 156px)',
-                  lineHeight: '1.0',
-                  color: isExplorer ? explorerTextColor : '#ffffff',
-                  textShadow: isExplorer
-                    ? explorerGlow
-                    : '0 0 35px rgba(255,255,255,0.45), 0 0 10px rgba(255,255,255,0.25), 0 4px 20px rgba(0,0,0,0.1)',
-                  transition: `color ${FADE}, text-shadow ${FADE}`,
-                }}
-              >
-                {'BUKITTINGGI'.split('').map((char, i) => (
-                  <span key={i} className="char-animate inline-block" style={{ animationDelay: `${i * 55 + 300}ms` }}>
-                    {char}
-                  </span>
-                ))}
-              </h1>
-            </div>
-
-            {/* Bottom white fade — same for both modes */}
-            <div
-              className="absolute inset-x-0 bottom-0 z-30 h-[25%] sm:h-[30%] pointer-events-none"
-              style={{
-                background: 'linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.94) 22%, rgba(255,255,255,0.4) 65%, transparent 100%)',
-                borderRadius: '0 0 32px 32px',
-              }}
-            />
-          </div>
-
-          {/* ── 3. Foreground Image — Heritage Mode (gunung.webp) ── */}
-          <div
-            className="absolute left-1/2 z-20 pointer-events-none"
-            style={{
-              bottom: isMobile ? '12%' : '8%',
-              transform: isVisible
-                ? 'translateX(-50%) translateY(0) scale(1)'
-                : 'translateX(-50%) translateY(32px) scale(0.96)',
-              opacity: isVisible && !isExplorer ? 1 : 0,
-              pointerEvents: !isExplorer ? 'auto' : 'none',
-              transition: `transform 1400ms cubic-bezier(0.16,1,0.3,1), opacity ${FADE}, bottom 0.5s ease`,
-              width: isMobile ? 'clamp(320px, 94vw, 440px)' : 'clamp(280px, 82vw, 880px)',
-            }}
-          >
-            <img
-              src={gunungWebp}
-              alt="Gunung Foreground"
-              className={`w-full h-auto object-contain select-none filter drop-shadow-[0_16px_48px_rgba(0,0,0,0.2)] ${isVisible ? 'animate-float-slow' : ''}`}
-              draggable={false}
-              style={{
-                transform: !isExplorer ? 'scale(1)' : 'scale(0.95)',
-                transition: `transform ${FADE}`,
-              }}
-            />
-          </div>
-
-          {/* ── 3b. Foreground Image — Explorer Mode (rumah.png) ── */}
-          <div
-            className="absolute left-1/2 z-20 pointer-events-none"
-            style={{
-              bottom: isMobile ? '20%' : '-2%',
-              transform: isVisible
-                ? 'translateX(-50%) translateY(0) scale(1)'
-                : 'translateX(-50%) translateY(32px) scale(0.96)',
-              opacity: isVisible && isExplorer ? 1 : 0,
-              pointerEvents: isExplorer ? 'auto' : 'none',
-              transition: `transform 1400ms cubic-bezier(0.16,1,0.3,1), opacity ${FADE}, bottom 0.5s ease`,
-              width: isMobile ? 'clamp(320px, 94vw, 440px)' : 'clamp(480px, 60vw, 720px)',
-            }}
-          >
-            <img
-              src={rumahPng}
-              alt="Rumah Gadang Floating Island"
-              className="w-full h-auto object-contain select-none filter drop-shadow-[0_20px_60px_rgba(249,120,20,0.35)] animate-float-slow"
-              draggable={false}
-              style={{
-                transform: isExplorer ? 'scale(1)' : 'scale(0.95)',
-                transition: `transform ${FADE}`,
-              }}
-            />
-          </div>
-
-          {/* ── Scroll Down Indicator ── */}
-          {isVisible && (
-            <div
-              className="absolute bottom-6 left-1/2 z-40 flex flex-col items-center gap-2 pointer-events-none animate-fade-in"
-              style={{ transform: 'translateX(-50%)', animationDelay: '1.5s' }}
-            >
-              <span
-                className="font-poppins text-[10px] tracking-[0.22em] uppercase select-none"
-                style={{
-                  color: isExplorer ? 'rgba(249,206,101,0.7)' : 'rgba(110,31,31,0.6)',
-                  transition: `color ${FADE}`,
-                }}
-              >
-                Scroll
-              </span>
-              <div className="flex flex-col items-center gap-[3px] animate-scroll-bounce">
+              return (
                 <div
-                  className="w-[1.5px] h-5 rounded-full"
-                  style={{
-                    background: isExplorer ? 'rgba(249,206,101,0.5)' : 'rgba(110,31,31,0.4)',
-                    transition: `background ${FADE}`,
-                  }}
-                />
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"
-                  style={{ color: isExplorer ? 'rgba(249,206,101,0.5)' : 'rgba(110,31,31,0.4)', transition: `color ${FADE}` }}
+                  key={`${card.id}-${idx}`}
+                  onMouseEnter={() => setHoveredIndex(idx)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  className={`relative flex-shrink-0 rounded-[18px] sm:rounded-[22px] md:rounded-[26px] overflow-hidden shadow-[0_12px_32px_rgba(0,0,0,0.38)] border-2 border-white/90 transition-all duration-300 transform cursor-pointer w-[115px] sm:w-[140px] md:w-[165px] lg:w-[185px] h-[160px] sm:h-[195px] md:h-[225px] lg:h-[250px] ${
+                    isEven ? 'animate-wave-odd' : 'animate-wave-even'
+                  } ${
+                    isHovered ? 'scale-110 -translate-y-3 border-white z-40 shadow-[0_20px_45px_rgba(0,0,0,0.55)]' : 'hover:scale-105'
+                  }`}
                 >
-                  <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-            </div>
-          )}
+                  {/* Card Image */}
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110 select-none"
+                  />
+
+                  {/* Clean Bottom Text Overlay */}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-3 sm:p-4 flex flex-col justify-end text-white text-left pointer-events-none">
+                    <span className="text-amber-400 font-extrabold text-[9px] sm:text-[11px] tracking-wider uppercase mb-0.5 drop-shadow-md">
+                      {card.category}
+                    </span>
+                    <h3 className="text-white font-extrabold text-[11px] sm:text-xs md:text-sm leading-snug drop-shadow-md line-clamp-2">
+                      {card.title}
+                    </h3>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
+
       </div>
-
-      {/* ── 4. Outer Bottom Fade (Full Width) ── */}
-      <div
-        className="absolute inset-x-0 bottom-0 z-30 h-[120px] w-full pointer-events-none"
-        style={{
-          background: 'linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.98) 45%, rgba(255,255,255,0.7) 70%, transparent 100%)',
-        }}
-      />
     </section>
-
   );
 }
+
+export default HeroSection;

@@ -586,7 +586,7 @@ export function BudayaPage() {
           <div className="mt-4 flex items-center justify-center">
             <img
               src={tigaSvg}
-              alt="Ornamen"
+              alt="Ornaments"
               className="opacity-85"
               style={{ width: 164, height: 22 }}
             />

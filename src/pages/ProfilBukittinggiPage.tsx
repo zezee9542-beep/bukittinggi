@@ -275,3 +275,5 @@ export function ProfilBukittinggiPage() {
     </div>
   );
 }
+
+export default ProfilBukittinggiPage;

@@ -974,3 +974,5 @@ export function KulinerPage() {
     </div>
   );
 }
+
+export default KulinerPage;
