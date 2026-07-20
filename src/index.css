@@ -36,6 +36,26 @@ body {
   overflow-x: clip;
 }
 
+/* ── Custom Sleek Scrollbar ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #fafafa;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d4 #fafafa;
+}
+
 #root {
   width: 100%;
   margin: 0;

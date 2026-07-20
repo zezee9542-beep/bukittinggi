@@ -258,7 +258,7 @@ export function WordSearchGamePage() {
   return (
     <div
       className="min-h-screen w-full flex flex-col font-poppins relative selection:bg-transparent"
-      style={{ backgroundColor: '#faf8f7' }}
+      style={{ backgroundColor: MAROON }}
       onPointerUp={handlePointerUp}
       onMouseUp={handlePointerUp}
       onMouseLeave={handlePointerUp}
@@ -292,7 +292,7 @@ export function WordSearchGamePage() {
       <main className="flex-grow flex flex-col lg:flex-row items-center justify-center p-4 gap-8">
         
         {/* ── Game Grid ───────────────────────────────────────────── */}
-        <div className="relative bg-white p-4 sm:p-6 rounded-3xl shadow-xl border-4 select-none" style={{ borderColor: `${DARK}20` }}>
+        <div className="relative bg-white p-4 sm:p-6 rounded-3xl shadow-xl border-4 select-none" style={{ borderColor: GOLD }}>
           <div
             ref={gridRef}
             className="grid gap-1 sm:gap-1.5 touch-none select-none"
@@ -348,7 +348,7 @@ export function WordSearchGamePage() {
         </div>
 
         {/* ── Wordlist Panel ───────────────────────────────────────────── */}
-        <div className="w-full max-w-sm bg-white rounded-3xl shadow-lg p-6 border-2" style={{ borderColor: CREAM }}>
+        <div className="w-full max-w-sm bg-white rounded-3xl shadow-lg p-6 border-2" style={{ borderColor: GOLD }}>
           <h2 className="text-xl font-bold mb-4" style={{ color: MAROON }}>Daftar Destinasi</h2>
           <div className="flex flex-wrap gap-2 lg:flex-col lg:gap-3">
             {TARGET_WORDS.map((word) => {
@@ -423,5 +423,4 @@ export function WordSearchGamePage() {
   );
 }
 
-// Ensure DARK token exists if used from GameMenuPage, otherwise define it.
-const DARK = '#444651';
+
