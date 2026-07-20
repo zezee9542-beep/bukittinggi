@@ -65,20 +65,19 @@ export function HeroSection() {
                   key={`${card.id}-${idx}`}
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className={`relative flex-shrink-0 rounded-[18px] sm:rounded-[22px] md:rounded-[26px] overflow-hidden shadow-[0_12px_32px_rgba(0,0,0,0.38)] border-2 border-white/90 transition-all duration-300 transform cursor-pointer w-[115px] sm:w-[140px] md:w-[165px] lg:w-[185px] h-[160px] sm:h-[195px] md:h-[225px] lg:h-[250px] ${
+                  className={`relative flex-shrink-0 rounded-[18px] sm:rounded-[22px] md:rounded-[26px] overflow-hidden shadow-[0_14px_36px_rgba(0,0,0,0.4)] border-2 border-white/95 transition-all duration-300 transform cursor-pointer w-[125px] sm:w-[155px] md:w-[185px] lg:w-[205px] aspect-[3/4] ${
                     isEven ? 'animate-wave-odd' : 'animate-wave-even'
                   } ${
-                    isHovered ? 'scale-110 -translate-y-3 border-white z-40 shadow-[0_20px_45px_rgba(0,0,0,0.55)]' : 'hover:scale-105'
+                    isHovered ? 'scale-110 -translate-y-3 border-white z-40 shadow-[0_22px_50px_rgba(0,0,0,0.6)]' : 'hover:scale-105'
                   }`}
                 >
-                  {/* Card Image */}
+                  {/* Card Image — Fitted 100% perfectly */}
                   <img
                     src={card.image}
                     alt={card.title}
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110 select-none"
+                    className="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105 select-none"
+                    draggable={false}
                   />
-
-
                 </div>
               );
             })}

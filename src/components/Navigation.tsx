@@ -107,7 +107,6 @@ export function Navigation() {
     { label: t('nav_history'), path: '/sejarah' },
     { label: t('nav_culture'), path: '/budaya' },
     { label: t('nav_culinary'), path: '/kuliner' },
-    { label: t('nav_tourism'), path: '/', targetId: 'heritage-heading' },
   ];
 
   // Shared structural classes — background/color handled via inline style for smooth CSS transition
@@ -280,25 +279,34 @@ export function Navigation() {
           </button>
         </nav>
 
-        {/* Right Side: Toggle Switch + Mobile Menu Trigger */}
+        {/* Right Side: Toggle Switch (Music Audio Toggle) + Mobile Menu Trigger */}
         <div className="flex items-center gap-6">
-          {/* Simple Clean Toggle Switch — shown on all pages */}
-          <div className="relative flex items-center">
+          {/* Audio Music Toggle Switch with Hover Tooltip */}
+          <div className="relative flex items-center gap-3 group">
+            <span className="font-poppins text-[15px] font-medium text-neutral-500">Sounds</span>
             <button
               onClick={() => setMusicPlaying(!musicPlaying)}
-              className="relative w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 focus:outline-none"
+              className="relative w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 focus:outline-none shadow-inner"
               style={{
                 backgroundColor: musicPlaying ? '#5E1D1D' : '#D6B8B3',
               }}
-              title={musicPlaying ? 'Turn Music & Explorer Off' : 'Turn Music & Explorer On'}
-              aria-label="Toggle Mode & Music"
+              title={musicPlaying ? 'Musik Daerah Minang: Nyala (Klik untuk Matikan)' : 'Musik Daerah Minang: Mati (Klik untuk Putar)'}
+              aria-label="Musik Daerah Minang"
             >
               <div
-                className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform duration-300 ${
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
                   musicPlaying ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
             </button>
+
+            {/* Hover Tooltip showing Musik status */}
+            <div className="absolute right-0 top-full mt-2 hidden group-hover:flex flex-col items-end z-50 pointer-events-none transition-all duration-300 animate-fade-in">
+              <div className="bg-[#5E1D1D] text-white text-[11.5px] font-poppins font-medium px-3.5 py-1.5 rounded-xl shadow-xl whitespace-nowrap border border-white/20 flex items-center gap-1.5">
+                <span>🎵</span>
+                <span>{musicPlaying ? 'Musik Minang: Putar' : 'Musik Minang: Matikan'}</span>
+              </div>
+            </div>
           </div>
 
           {/* Mobile Hamburger menu trigger */}

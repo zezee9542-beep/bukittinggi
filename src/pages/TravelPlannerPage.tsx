@@ -133,14 +133,20 @@ export function TravelPlannerPage() {
   const [requestedDays, setRequestedDays] = useState<number>(3);
 
   const isInitialMount = useRef(true);
+  const chatMessagesContainerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom of chat when new message is added (skip on initial mount)
+  // Scroll inner chat container when chatLog changes (no page jumping)
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
     }
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatMessagesContainerRef.current) {
+      chatMessagesContainerRef.current.scrollTo({
+        top: chatMessagesContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   }, [chatLog, isGenerating]);
 
   // ── Custom Predefined Fallback & Parsers ──
@@ -873,7 +879,7 @@ export function TravelPlannerPage() {
         <div className="flex-1 flex flex-col min-h-0">
           
           {/* Conversation Area (Scrollable messages) */}
-          <div className="flex-1 overflow-y-auto mb-4 pr-2 space-y-4 min-h-0">
+          <div ref={chatMessagesContainerRef} className="flex-1 overflow-y-auto mb-4 pr-2 space-y-4 min-h-0">
             {chatLog.map((msg, idx) => (
               <div
                 key={idx}

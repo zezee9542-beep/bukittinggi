@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import ssPng from '../assets/ss.png';
 import calendarPng from '../assets/Calendar.png';
-import pdfSvg from '../assets/pdf.svg';
+import pdfPng from '../assets/pdf.png';
 
 export const AITravelPlannerPromoCard: React.FC = () => {
   const navigate = useNavigate();
@@ -47,8 +47,8 @@ export const AITravelPlannerPromoCard: React.FC = () => {
         >
           {/* ── Left Side: Stacked Document (ss.png) & Calendar (Calendar.png) ── */}
           <div className="relative w-full lg:w-[490px] h-[320px] sm:h-[370px] lg:h-[400px] flex items-center justify-center flex-shrink-0 mb-8 lg:mb-0">
-            {/* 1. Paper Document Screenshot (ss.png) */}
-            <div className="absolute left-0 top-0 sm:top-2 w-[85%] sm:w-[88%] lg:w-[90%] h-auto z-10 transform -rotate-1 origin-bottom-left">
+            {/* 1. Paper Document Screenshot (ss.png) — Straight */}
+            <div className="absolute left-0 top-0 sm:top-2 w-[85%] sm:w-[88%] lg:w-[90%] h-auto z-10">
               <img
                 src={ssPng}
                 alt="Itinerary Document Mockup"
@@ -57,12 +57,12 @@ export const AITravelPlannerPromoCard: React.FC = () => {
               />
             </div>
 
-            {/* 2. Overlapping Calendar Image (Calendar.png) */}
-            <div className="absolute right-0 sm:right-2 bottom-0 sm:bottom-2 w-[52%] sm:w-[50%] lg:w-[52%] h-auto z-20 transform rotate-1 origin-bottom-right">
+            {/* 2. Calendar Image (Calendar.png) — Straight, no wrapper box, shifted right */}
+            <div className="absolute right-[-20px] sm:right-[-35px] lg:right-[-50px] bottom-0 sm:bottom-2 w-[54%] sm:w-[52%] lg:w-[54%] h-auto z-20">
               <img
                 src={calendarPng}
                 alt="Interactive Calendar Popover"
-                className="w-full h-auto object-contain rounded-[18px] sm:rounded-[22px] shadow-[0_22px_50px_rgba(0,0,0,0.45)] select-none pointer-events-none"
+                className="w-full h-auto object-contain select-none pointer-events-none"
                 draggable={false}
               />
             </div>
@@ -87,11 +87,9 @@ export const AITravelPlannerPromoCard: React.FC = () => {
             ))}
           </div>
 
-          {/* Floating Badge (Overlapping Right Side of Card) */}
-          <div className="absolute right-[-15px] sm:right-[-25px] lg:right-[-45px] top-[40%] sm:top-[38%] bg-white rounded-[22px] shadow-[0_20px_45px_rgba(0,0,0,0.22)] p-3.5 sm:p-4.5 flex items-center gap-3.5 z-30 border border-neutral-100 transform rotate-[7deg] select-none hover:rotate-0 transition-transform duration-300">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 border border-red-100">
-              <img src={pdfSvg} alt="PDF" className="w-6 h-6 object-contain" />
-            </div>
+          {/* Floating Badge (Shifted Up & Right, tilted right, float animation) */}
+          <div className="absolute right-[-25px] sm:right-[-40px] lg:right-[-60px] top-[22%] sm:top-[20%] bg-white rounded-[22px] shadow-[0_20px_45px_rgba(0,0,0,0.22)] p-3.5 sm:p-4.5 flex items-center gap-3.5 z-30 border border-neutral-100 select-none animate-float-vertical" style={{ transform: 'rotate(6deg)', animationDuration: '3.2s' }}>
+            <img src={pdfPng} alt="PDF" className="w-10 h-10 sm:w-11 sm:h-11 object-contain flex-shrink-0" />
             <div className="flex flex-col text-left pr-2">
               <span className="font-poppins font-bold text-[13px] sm:text-[14px] leading-tight" style={{ color: '#531717' }}>
                 Gratis Unduh

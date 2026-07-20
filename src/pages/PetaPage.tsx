@@ -149,35 +149,52 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[1000] flex flex-col bg-[#120b0a]"
+      className="fixed inset-0 z-[100000] flex flex-col bg-[#120b0a]"
       role="dialog"
       aria-modal="true"
       aria-label={`Street View 360 derajat ${site.title}`}
     >
-      <header className="relative z-20 flex items-center justify-between gap-3 border-b border-white/10 bg-[#1d1010]/95 px-4 py-3 text-white backdrop-blur md:px-6">
-        <div className="min-w-0 flex-1">
+      {/* Top Header Bar (z-[100001]) */}
+      <header className="relative z-[100001] flex items-center justify-between gap-3 border-b border-white/10 bg-[#1d1010] px-4 py-3.5 text-white shadow-2xl md:px-6">
+        {/* Prominent Back Button on Top Left */}
+        <button
+          ref={closeButtonRef}
+          type="button"
+          onClick={onClose}
+          className="flex items-center gap-2 rounded-full border border-[#d4a853] bg-[#6e1f1f] hover:bg-[#581717] hover:scale-105 active:scale-95 px-4 py-2 font-poppins text-xs sm:text-sm font-semibold text-white shadow-xl transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+          aria-label="Kembali ke Peta"
+        >
+          <svg className="w-4.5 h-4.5 text-[#d4a853]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+          <span>Kembali ke Peta</span>
+        </button>
+
+        {/* Title & Subtitle */}
+        <div className="min-w-0 flex-1 text-center md:text-left px-2">
           <p className="font-manrope text-[10px] font-semibold uppercase tracking-[0.18em] text-[#d4a853]">Street View 360°</p>
           <h2 className="truncate font-poppins text-sm font-medium md:text-base">{site.title}</h2>
         </div>
+
+        {/* Action Buttons */}
         <div className="flex shrink-0 items-center gap-2">
           <a
             href={googleMapsAppUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#d4a853]/40 bg-[#6e1f1f] px-3.5 py-1.5 font-poppins text-xs font-medium text-white shadow-md transition hover:bg-[#581717] focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 font-poppins text-xs font-medium text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
             aria-label={`Buka ${site.title} di Google Maps`}
           >
             <span>Google Maps</span>
             <span aria-hidden="true">↗</span>
           </a>
           <button
-            ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 font-poppins text-xs font-medium transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-white font-bold transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
             aria-label="Tutup Street View"
           >
-            Tutup <span aria-hidden="true">×</span>
+            ✕
           </button>
         </div>
       </header>

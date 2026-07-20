@@ -11,7 +11,6 @@ import hpPng from '../assets/hp.png';
 import ysPng from '../assets/ys.png';
 import ctPng from '../assets/ct.png';
 import jamPng from '../assets/jam.png';
-import bubblePng from '../assets/bubble.png';
 
 export const AITravelPlannerSection: React.FC = () => {
   const navigate = useNavigate();
@@ -104,15 +103,7 @@ export const AITravelPlannerSection: React.FC = () => {
         className="w-full relative z-30 pt-12 sm:pt-16 md:pt-20 pb-24 sm:pb-32 lg:pb-40 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center border-none outline-none overflow-hidden -mt-1"
         style={{ backgroundColor: '#6E1F1F' }}
       >
-        {/* ── Single Glowing Orb Particle (bubble.png) with up-and-down floating animation ── */}
-        <img
-          src={bubblePng}
-          alt=""
-          className="absolute right-[4%] sm:right-[7%] top-[10%] sm:top-[14%] w-18 h-18 sm:w-24 sm:h-24 lg:w-28 lg:h-28 pointer-events-none select-none animate-float-vertical opacity-90 z-50 drop-shadow-[0_0_20px_rgba(249,206,101,0.7)]"
-          draggable={false}
-        />
-
-        {/* ── Card Slightly Reduced (max-w-[1020px] h-[425px]) ── */}
+        {/* ── Card Container ── */}
         <div
           className={`relative w-full max-w-[1020px] min-h-[420px] lg:h-[425px] rounded-[28px] sm:rounded-[34px] bg-white shadow-[0_30px_70px_rgba(0,0,0,0.45)] overflow-visible z-40 flex flex-col md:flex-row items-center transition-all duration-1000 ease-out ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
@@ -144,12 +135,12 @@ export const AITravelPlannerSection: React.FC = () => {
             
             {/* Top Group: Bubble & Headline & Description */}
             <div className="w-full">
-              {/* 1. AI Technology Bubble: W234 H40, bg #F9CE65, Poppins Medium 16 text #C7A551 */}
+              {/* 1. AI Technology Badge: bg #F9CE65, Poppins Medium text #531717 */}
               <div
                 className="w-[234px] h-[40px] rounded-full flex items-center justify-center gap-2 mb-4 shadow-sm select-none"
                 style={{ backgroundColor: '#F9CE65' }}
               >
-                <span className="font-poppins font-medium text-[15px] sm:text-[16px] tracking-tight" style={{ color: '#C7A551' }}>
+                <span className="font-poppins font-semibold text-[14.5px] sm:text-[15.5px] tracking-tight" style={{ color: '#531717' }}>
                   ✨ Didukung Teknologi AI
                 </span>
               </div>

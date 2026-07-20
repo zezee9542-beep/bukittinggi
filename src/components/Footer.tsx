@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import framePng from '../assets/frame (1).png';
 import hamaSvg from '../assets/hama.svg';
 import haiPng from '../assets/hai.png';
 
@@ -17,14 +16,6 @@ export const Footer: React.FC = () => {
       className="w-full relative z-30 pt-16 pb-10 px-6 sm:px-10 md:px-14 lg:px-20 text-white overflow-hidden border-none outline-none"
       style={{ backgroundColor: '#5F1712' }}
     >
-      {/* Background image frame (1).png */}
-      <img
-        src={framePng}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none z-0 opacity-90"
-        draggable={false}
-      />
-
       <div className="relative z-20 max-w-[1400px] mx-auto flex flex-col lg:flex-row items-start justify-between gap-12 lg:gap-16">
         
         {/* ── Left Column: Logo (hama.svg), Tagline, Socials, Copyright ── */}
@@ -132,10 +123,10 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Right Column: Card Image jm.png with Inner Shadow & Legal Links ── */}
+        {/* ── Right Column: Card Image hai.png with Inner Shadow & Legal Links ── */}
         <div className="flex-1 flex flex-col items-end max-w-[420px] w-full">
-          {/* Card Container with hai.png and Inner Shadow Effect */}
-          <div className="relative w-full h-[190px] sm:h-[210px] rounded-[24px] overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.35)] border border-white/10 mb-4 group select-none">
+          {/* Card Container fitted 100% perfectly with image aspect ratio */}
+          <div className="relative w-full aspect-[16/9.5] sm:aspect-[16/9] rounded-[24px] overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.35)] border border-white/10 mb-4 group select-none bg-[#3D1212]">
             {/* Image hai.png */}
             <img
               src={haiPng}
@@ -147,7 +138,7 @@ export const Footer: React.FC = () => {
             <div
               className="absolute inset-0 pointer-events-none rounded-[24px]"
               style={{
-                boxShadow: 'inset 0px 0px 28px 6px rgba(0, 0, 0, 0.55)',
+                boxShadow: 'inset 0px 0px 25px 5px rgba(0, 0, 0, 0.5)',
               }}
             />
           </div>

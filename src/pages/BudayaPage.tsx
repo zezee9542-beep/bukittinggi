@@ -103,37 +103,37 @@ const slides: SlideData[] = [
   {
     id: 6,
     label: 'ANAM ( 6 )',
-    title: 'Pakaian Tradisional',
+    title: 'Silek Minang',
     img: rect6,
-    lead: 'Pakaian adat Minangkabau yang anggun dan sarat makna filosofis, mencerminkan kepribadian dan kehormatan pemakainya.',
+    lead: 'Seni bela diri tradisional Minangkabau yang mengajarkan ketangkasan, kedisiplinan, dan penghormatan terhadap adat. Silek menjadi bagian penting dalam pembentukan karakter masyarakat Minang.',
     bullets: [
-      'Dilengkapi hiasan kepala Suntiang yang megah bagi pengantin wanita Minangkabau.',
-      'Menggunakan kain songket hasil tenunan tangan dengan benang emas berkualitas tinggi.',
-      'Setiap detail jahitan pakaian melambangkan tanggung jawab, kehormatan, dan kesopanan.',
+      'Berawal sebagai bekal untuk menjaga diri dan melindungi nagari, sekaligus menjadi sarana pembentukan budi pekerti dan kepribadian.',
+      'Gerakannya terinspirasi dari alam dan kehidupan sekitar, mengutamakan kelincahan, keseimbangan, serta kemampuan membaca situasi.',
+      'Menjadi dasar berbagai kesenian Minangkabau, termasuk gerakan yang ditampilkan dalam pertunjukan Randai.',
     ],
   },
   {
     id: 7,
     label: 'TUJUAH ( 7 )',
-    title: 'Bela Diri Silek',
+    title: 'Merantau',
     img: rect7,
-    lead: 'Seni bela diri tradisional Minangkabau yang melatih ketangkasan fisik serta kekuatan spiritual dan nilai-nilai moral luhur.',
+    lead: 'Tradisi yang mengajarkan keberanian untuk meninggalkan kampung halaman demi mencari ilmu, pengalaman, dan kehidupan yang lebih baik. Bagi masyarakat Minangkabau, merantau merupakan bagian dari proses pendewasaan diri.',
     bullets: [
-      'Gerakan silat yang luwes dan dinamis, terinspirasi dari gerakan alam sekitar.',
-      'Mengutamakan pertahanan diri serta perdamaian daripada penyerangan aktif.',
-      'Diwariskan di sasaran (gelanggang) sebagai wadah pembentukan karakter pemuda.',
+      'Menumbuhkan kemandirian, kemampuan beradaptasi, serta semangat untuk terus belajar dari lingkungan yang baru.',
+      'Berlandaskan falsafah "Alam Takambang Jadi Guru", bahwa setiap perjalanan dan pengalaman adalah sumber pembelajaran hidup',
+      'Meski menempuh perjalanan jauh, para perantau tetap membawa nilai, adat, dan identitas Minangkabau ke mana pun mereka pergi.',
     ],
   },
   {
     id: 8,
     label: 'LAPAN ( 8 )',
-    title: 'Songket Tenun',
+    title: 'Baralek Adat',
     img: rect8,
-    lead: 'Karya seni tenun khas Minangkabau yang memiliki keindahan motif geometris rumit serta bernilai sejarah seni tinggi.',
+    lead: 'Perayaan pernikahan adat Minangkabau yang menjadi simbol persatuan dua keluarga besar, sekaligus wujud penghormatan terhadap adat dan tradisi yang diwariskan turun-temurun.',
     bullets: [
-      'Ditenun secara tradisional menggunakan benang emas dan perak asli.',
-      'Setiap motif tenunan menyimpan sejarah, status sosial, dan falsafah hidup Minang.',
-      'Menjadi pakaian kehormatan dalam upacara adat penting dan perayaan resmi.',
+      'Bukan sekadar pesta, tetapi sebuah peristiwa adat yang melibatkan keluarga, kaum, dan masyarakat dalam semangat kebersamaan.',
+      'Dimeriahkan dengan busana adat yang megah, arak-arakan tradisional, serta berbagai prosesi yang sarat makna budaya.',
+      'Sebuah warisan budaya yang menghidupkan filosofi Minang: "Barek samo dipikul, ringan samo dijinjiang" — berat sama dipikul, ringan sama dijinjiang.',
     ],
   },
 ];
@@ -379,13 +379,13 @@ export function BudayaPage() {
         <div className="sticky top-24 h-[calc(100dvh-6rem)] overflow-hidden flex flex-col items-center justify-center">
           <div
             ref={featureRef}
-            className={`w-full max-w-[1160px] mx-auto px-6 overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`w-full max-w-[1240px] mx-auto px-4 md:px-6 overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
             }`}
           >
             {/* ── Slide Viewport — locked to scroll during the intro pass, cursor-driven afterwards ── */}
             <div
-              className="overflow-hidden"
+              className="overflow-hidden py-2"
               style={{ cursor: slideAreaCursor }}
               onMouseMove={handleSlideAreaMouseMove}
               onMouseLeave={handleSlideAreaMouseLeave}
@@ -402,19 +402,19 @@ export function BudayaPage() {
               {slides.map((slide, idx) => (
                 <article
                   key={slide.id}
-                  className="w-full flex-shrink-0 flex flex-col md:flex-row gap-8 md:gap-14 items-start justify-start pr-12 md:pr-0"
+                  className="w-full flex-shrink-0 flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 items-start justify-start px-4 md:px-12"
                   style={{ width: '100%' }}
                 >
                   {/* ── LEFT Image ── */}
                   <img
                     src={slide.img}
                     alt={slide.title}
-                    className="w-full md:w-[695px] h-auto md:h-[521px] object-cover rounded-[24px] shadow-[0_16px_56px_rgba(0,0,0,0.45)] flex-shrink-0"
+                    className="w-full md:w-[480px] lg:w-[540px] h-auto md:h-[420px] lg:h-[460px] object-cover rounded-[24px] shadow-[0_16px_56px_rgba(0,0,0,0.45)] flex-shrink-0"
                     loading={idx === 0 ? 'eager' : 'lazy'}
                   />
 
                   {/* ── RIGHT Content ── */}
-                  <div className="flex-1 flex flex-col justify-start min-w-0 pt-2 gap-6">
+                  <div className="flex-1 flex flex-col justify-start min-w-0 pt-1 md:pt-2 gap-4 md:gap-5">
                     <p
                       className="font-poppins uppercase tracking-[0.28em]"
                       style={{ color: '#F9CE65', fontSize: 11, fontWeight: 500 }}
@@ -430,29 +430,29 @@ export function BudayaPage() {
                       {slide.title}
                     </h2>
 
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 my-1">
                       <div className="flex-shrink-0 w-[2px] rounded-full" style={{ background: '#F9CE65' }} />
                       <p
-                        className="font-poppins italic text-white leading-relaxed"
+                        className="font-poppins italic text-white/95 leading-relaxed"
                         style={{ fontSize: 'clamp(13px, 1.2vw, 15px)' }}
                       >
                         {slide.lead}
                       </p>
                     </div>
 
-                    <ul className="space-y-3.5">
+                    <ul className="space-y-3 mt-1">
                       {slide.bullets.map((detail, i) => (
-                        <li key={i} className="flex items-start gap-4">
+                        <li key={i} className="flex items-start gap-3.5">
                           <img
                             src={segitigaSvg}
                             alt=""
                             aria-hidden="true"
-                            className="flex-shrink-0 mt-[4px]"
-                            style={{ width: 14, height: 16 }}
+                            className="flex-shrink-0 mt-[5px]"
+                            style={{ width: 13, height: 15 }}
                           />
                           <span
-                            className="font-poppins italic text-white leading-relaxed"
-                            style={{ fontSize: 'clamp(11px, 1vw, 13px)' }}
+                            className="font-poppins italic text-white/90 leading-relaxed"
+                            style={{ fontSize: 'clamp(11.5px, 1vw, 13.5px)' }}
                           >
                             {detail}
                           </span>
