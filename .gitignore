@@ -15,6 +15,7 @@ node_modules
 dist
 dist-ssr
 *.local
+graphify-out
 
 # Environment variables (contains API keys — never commit)
 .env
