@@ -59,7 +59,7 @@ function HomePage() {
   return (
     <>
       {/* Home wrapper — relative container for Hero + Editorial */}
-      <div className="relative overflow-x-hidden">
+      <div className="relative overflow-x-clip">
         <HeroSection />
         <FeatureSection />
         <EditorialIntro />
@@ -138,7 +138,7 @@ function App() {
   }, [location, displayLocation]);
 
   return (
-    <div className="relative min-h-[100dvh] overflow-x-hidden bg-white">
+    <div className="relative min-h-[100dvh] overflow-x-clip bg-white">
       {location.pathname !== '/profil-bukittinggi' && <Navigation />}
       <main
         className={`overflow-x-clip w-full ${
