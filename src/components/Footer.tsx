@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import hamaSvg from '../assets/hama.svg';
-import haiPng from '../assets/hai.png';
+import fotJpeg from '../assets/fot.jpeg';
 
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
@@ -129,7 +129,7 @@ export const Footer: React.FC = () => {
           <div className="relative w-full aspect-[16/9.5] sm:aspect-[16/9] rounded-[24px] overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.35)] border border-white/10 mb-4 group select-none bg-[#3D1212]">
             {/* Image hai.png */}
             <img
-              src={haiPng}
+              src={fotJpeg}
               alt="Jam Gadang Bukittinggi"
               className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 select-none"
               draggable={false}

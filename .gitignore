@@ -48,5 +48,6 @@ src/assets/*
 !src/assets/*.mp3
 !src/assets/*.mp4
 !src/assets/*.glb
+!src/assets/*.jpeg
 
 

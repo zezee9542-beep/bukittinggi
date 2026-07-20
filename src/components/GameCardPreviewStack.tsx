@@ -1,6 +1,6 @@
 import cardImg from '../assets/card.png';
 
-export function GameCardPreviewStack() {
+export function GameCardPreviewStack({ imageSrc }: { imageSrc?: string }) {
   return (
     <div
       className="relative rounded-[20px] sm:rounded-[24px] overflow-hidden mb-4 sm:mb-6 flex-shrink-0 mx-auto h-[180px] sm:h-[330px] w-full"
@@ -10,8 +10,8 @@ export function GameCardPreviewStack() {
       }}
     >
       <img
-        src={cardImg}
-        alt="Memori Kuliner Minang Card Preview"
+        src={imageSrc || cardImg}
+        alt="Game Card Preview"
         className="w-full h-full"
         style={{ objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.35)' }}
       />

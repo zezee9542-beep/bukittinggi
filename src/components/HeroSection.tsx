@@ -50,7 +50,7 @@ export function HeroSection() {
         <img
           src={bg4Png}
           alt="Bukittinggi Ngarai Sianok Background"
-          className="hidden sm:block absolute inset-0 w-full h-full object-cover object-center rounded-[32px] sm:rounded-[40px] md:rounded-[48px] select-none pointer-events-none"
+          className="hidden sm:block absolute inset-0 w-full h-full object-cover object-[center_30%] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] select-none pointer-events-none"
         />
 
         {/* Floating Cards Gallery Row - Shifted higher up & overlapping side white margins */}
