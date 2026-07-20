@@ -227,7 +227,7 @@ export function GameFlipPage() {
         style={{ backgroundColor: MAROON }}
       >
         <h2 className="font-poppins font-bold text-white text-[26px] sm:text-[34px] mb-2 text-center">
-          Mengocok Resep...
+          Gacha Resep...
         </h2>
         <p className="font-poppins text-white/70 text-[14px] mb-10 text-center">
           Hadiah resep rahasia sedang diundi untukmu
