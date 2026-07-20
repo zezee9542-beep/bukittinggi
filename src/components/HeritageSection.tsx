@@ -55,7 +55,8 @@ export function HeritageSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-20 bg-white py-16 md:py-28 overflow-hidden"
+      className="relative z-20 py-16 md:py-28 overflow-hidden border-none outline-none"
+      style={{ backgroundColor: '#6E1F1F' }}
       aria-labelledby="heritage-heading"
     >
       {/* ── Decorative background accent ── */}
@@ -63,7 +64,7 @@ export function HeritageSection() {
         className="absolute top-0 inset-x-0 h-[1px] pointer-events-none"
         style={{
           background:
-            'linear-gradient(to right, transparent, rgba(110,31,31,0.15) 30%, rgba(212,168,83,0.3) 50%, rgba(110,31,31,0.15) 70%, transparent)',
+            'linear-gradient(to right, transparent, rgba(249,206,101,0.3) 30%, rgba(249,206,101,0.6) 50%, rgba(249,206,101,0.3) 70%, transparent)',
         }}
         aria-hidden="true"
       />
@@ -80,14 +81,14 @@ export function HeritageSection() {
           }`}
           style={{ transitionDelay: '100ms' }}
         >
-          <div className="h-[1px] w-8 animate-line-grow" style={{ background: '#D4A853' }} aria-hidden="true" />
-          <span className="font-poppins text-[11px] tracking-[0.28em] text-[#6E1F1F]/60 uppercase">Temukan Lebih</span>
-          <div className="h-[1px] w-8 animate-line-grow" style={{ background: '#D4A853', animationDelay: '200ms' }} aria-hidden="true" />
+          <div className="h-[1px] w-8 animate-line-grow" style={{ background: '#F9CE65' }} aria-hidden="true" />
+          <span className="font-poppins text-[11px] tracking-[0.28em] text-[#F9CE65] uppercase font-medium">Temukan Lebih</span>
+          <div className="h-[1px] w-8 animate-line-grow" style={{ background: '#F9CE65', animationDelay: '200ms' }} aria-hidden="true" />
         </div>
 
         <h2
           id="heritage-heading"
-          className="font-cormorant text-[#6E1F1F] text-[28px] sm:text-[40px] md:text-[48px] font-bold tracking-[0.15em] uppercase mb-4"
+          className="font-cormorant text-white text-[28px] sm:text-[40px] md:text-[48px] font-bold tracking-[0.15em] uppercase mb-4"
         >
           JELAJAHI WARISAN BUKITTINGGI
         </h2>
@@ -96,11 +97,11 @@ export function HeritageSection() {
           className={`mx-auto h-[2px] shimmer-line mb-4 transition-all duration-[1000ms] ${
             isVisible ? 'w-24 opacity-100' : 'w-0 opacity-0'
           }`}
-          style={{ transitionDelay: '300ms' }}
+          style={{ transitionDelay: '300ms', backgroundColor: '#F9CE65' }}
           aria-hidden="true"
         />
 
-        <p className="font-poppins text-neutral-600 text-[14px] sm:text-[16px] max-w-2xl mx-auto leading-relaxed">
+        <p className="font-poppins text-white/85 text-[14px] sm:text-[16px] max-w-2xl mx-auto leading-relaxed">
           Dari jejak sejarah hingga keindahan alam, setiap sudut Bukittinggi menyimpan cerita yang menunggu untuk ditemukan.
         </p>
       </div>
@@ -143,8 +144,8 @@ export function HeritageSection() {
                 type="button"
                 className={`transition-all duration-300 rounded-full focus:outline-none cursor-pointer ${
                   isActive
-                    ? 'w-4 h-2 bg-[#6E1F1F] animate-pulse-glow'
-                    : 'w-2 h-2 bg-[#6E1F1F]/30 hover:bg-[#6E1F1F]/70'
+                    ? 'w-4 h-2 bg-[#F9CE65] animate-pulse-glow'
+                    : 'w-2 h-2 bg-white/40 hover:bg-white/70'
                 }`}
                 aria-label={`Slide ${idx + 1}`}
               />

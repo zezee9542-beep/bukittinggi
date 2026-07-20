@@ -2,6 +2,8 @@ import { HeroSection } from '../components/HeroSection';
 import { FeatureSection } from '../components/FeatureSection';
 import { ParijsSection } from '../components/ParijsSection';
 import { AITravelPlannerSection } from '../components/AITravelPlannerSection';
+import { BukittinggiMapSection } from '../components/BukittinggiMapSection';
+import { AITravelPlannerPromoCard } from '../components/AITravelPlannerPromoCard';
 import { HeritageSection } from '../components/HeritageSection';
 
 export function HomePage() {
@@ -14,6 +16,8 @@ export function HomePage() {
       </div>
       <ParijsSection />
       <AITravelPlannerSection />
+      <BukittinggiMapSection />
+      <AITravelPlannerPromoCard />
       <HeritageSection />
     </>
   );
