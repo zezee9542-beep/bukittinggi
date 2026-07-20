@@ -15,23 +15,8 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// Aset gambar kartu flip — digunakan sebagai thumbnail preview di kartu game
-import img111 from '../assets/111.png';
-import img222 from '../assets/222.png';
-import img333 from '../assets/333.png';
-import img444 from '../assets/444.png';
-import img555 from '../assets/555.png';
-import img666 from '../assets/666.png';
-import logoSvg from '../assets/logo.svg';
-
-// Aset gambar pariwisata untuk preview Word Search
-import gadangImage from '../assets/gadang.svg';
-import gunungImage from '../assets/gunung.webp';
-import rumahImage from '../assets/rumah.webp';
-import sawahImage from '../assets/sawah.webp';
-import menaraImage from '../assets/menara.webp';
-import bggImage from '../assets/bgg.webp';
+import { GameCardPreviewStack } from './GameCardPreviewStack';
+import cardImg from '../assets/card.png';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TOKEN WARNA — hasil inspeksi Figma node #536-19 (read-only)
@@ -71,7 +56,7 @@ const DAFTAR_GAME: GameEntry[] = [
     deskripsi:
       'Uji daya ingatmu dengan mencocokkan kartu kuliner khas Bukittinggi. Temukan seluruh pasangan yang sesuai untuk mempelajari berbagai hidangan tradisional dengan cara yang lebih menyenangkan.',
     rute: '/game/flip',
-    previewGambar: [img111, img222, img333, img444, img555, img666],
+    previewGambar: [cardImg, cardImg, cardImg],
     status: 'tersedia',
     kategori: 'Memori',
   },
@@ -81,11 +66,13 @@ const DAFTAR_GAME: GameEntry[] = [
     deskripsi:
       'Temukan nama-nama destinasi wisata ikonis di Bukittinggi yang tersembunyi di dalam grid huruf. Tantang ketelitianmu!',
     rute: '/game/word-search',
-    previewGambar: [gadangImage, gunungImage, rumahImage, sawahImage, menaraImage, bggImage],
+    previewGambar: [cardImg, cardImg, cardImg],
     status: 'tersedia',
     kategori: 'Puzzle',
   },
 ];
+
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SUB-KOMPONEN: GameCard — Kartu UI Satu Permainan
@@ -115,98 +102,8 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
         }}
       >
         {/* ── Area Preview Atas ──────────────────────────────────────────────── */}
-        {/* Referensi Figma: #1153:1522 (568×330, fill CREAM, inset shadow, radius 36px) */}
-        <div
-          className="relative mx-6 mt-[29px] flex items-center justify-center overflow-hidden"
-          style={{
-            backgroundColor: CREAM,
-            border: '3px solid rgba(68,70,81,0.2)',
-            borderRadius: 36,
-            minHeight: 280,
-            boxShadow: 'inset 0px 4px 12px rgba(0,0,0,0.25)',
-          }}
-        >
-          {/* Glow kuning elips di tengah (Figma: ELLIPSE #1153:1505, blur 150px, opacity 0.5) */}
-          <div
-            aria-hidden="true"
-            className="absolute pointer-events-none"
-            style={{
-              width: 227,
-              height: 295,
-              background: GOLD,
-              borderRadius: '50%',
-              filter: 'blur(150px)',
-              opacity: 0.5,
-            }}
-          />
-
-          {/* ── Tampilan 3 Kartu Flip Berjajar ───────────────────────────────── */}
-          {/* Referensi Figma: grup kartu #1153:1516 dan #1153:1517 dan #1150:1493 */}
-          <div className="relative flex items-center justify-center w-full px-6 py-8 gap-3 sm:gap-5">
-            {/* Kartu kiri — menghadap ke belakang, miring ke kiri */}
-            <div
-              aria-hidden="true"
-              className="relative flex-shrink-0 rounded-[21px] overflow-hidden shadow-lg"
-              style={{
-                width: 'clamp(100px, 14vw, 148px)',
-                height: 'clamp(140px, 19vw, 204px)',
-                backgroundColor: MAROON,
-                border: `3px solid ${GOLD}`,
-                transform: 'rotate(-8deg) translateY(14px)',
-                zIndex: 1,
-              }}
-            >
-              <img
-                src={game.previewGambar[0] || logoSvg}
-                alt=""
-                className="w-full h-full object-cover opacity-90"
-              />
-              <div className="absolute inset-0 bg-black/10" />
-            </div>
-
-            {/* Kartu tengah — menghadap ke depan, gambar kuliner terlihat */}
-            <div
-              className="relative flex-shrink-0 overflow-hidden"
-              style={{
-                width: 'clamp(120px, 16vw, 168px)',
-                height: 'clamp(160px, 21vw, 228px)',
-                backgroundColor: MAROON,
-                border: `4px solid ${GOLD}`,
-                borderRadius: 21,
-                zIndex: 10,
-                boxShadow: `0 20px 40px ${MAROON}55`,
-              }}
-            >
-              <img
-                src={game.previewGambar[2] || game.previewGambar[0]}
-                alt={game.nama}
-                className="w-full h-full object-cover"
-              />
-              {/* Overlay ringan agar kontras terjaga */}
-              <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.06)' }} />
-            </div>
-
-            {/* Kartu kanan — menghadap ke belakang, miring ke kanan */}
-            <div
-              aria-hidden="true"
-              className="relative flex-shrink-0 rounded-[21px] overflow-hidden shadow-lg"
-              style={{
-                width: 'clamp(100px, 14vw, 148px)',
-                height: 'clamp(140px, 19vw, 204px)',
-                backgroundColor: MAROON,
-                border: `3px solid ${GOLD}`,
-                transform: 'rotate(8deg) translateY(14px)',
-                zIndex: 1,
-              }}
-            >
-              <img
-                src={game.previewGambar[1] || logoSvg}
-                alt=""
-                className="w-full h-full object-cover opacity-90"
-              />
-              <div className="absolute inset-0 bg-black/10" />
-            </div>
-          </div>
+        <div className="px-6 mt-[29px] w-full">
+          <GameCardPreviewStack />
         </div>
 
         {/* ── Area Teks dan Tombol ───────────────────────────────────────────── */}

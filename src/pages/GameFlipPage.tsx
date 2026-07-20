@@ -23,7 +23,7 @@ import img555 from '../assets/555.png';
 import img666 from '../assets/666.png';
 import img777 from '../assets/777.png';
 import img888 from '../assets/888.png';
-import logoSvg from '../assets/logo.svg';
+import cardImg from '../assets/card.png';
 
 const MAROON = '#5F1712';
 const GOLD = '#E9C46A';
@@ -462,15 +462,14 @@ export function GameFlipPage() {
                 >
                   {/* Card back */}
                   <div
-                    className="absolute inset-0 rounded-[12px] sm:rounded-[16px] flex items-center justify-center"
+                    className="absolute inset-0 rounded-[12px] sm:rounded-[16px] overflow-hidden flex items-center justify-center"
                     style={{
                       backfaceVisibility: 'hidden',
-                      background: 'linear-gradient(145deg, #7A241C 0%, #4E130E 100%)',
                       border: `1.5px solid ${GOLD}`,
                       boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
                     }}
                   >
-                    <img src={logoSvg} alt="" className="w-1/2 opacity-40" style={{ filter: 'brightness(0) invert(1)' }} />
+                    <img src={cardImg} alt="" className="w-full h-full object-cover" />
                   </div>
 
                   {/* Card front (dish) */}

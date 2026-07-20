@@ -112,8 +112,8 @@ export function Navigation() {
 
   // Shared structural classes — background/color handled via inline style for smooth CSS transition
   const headerClass = isScrolled
-    ? 'fixed z-50 inset-x-0 mx-auto backdrop-blur-md top-4 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] max-w-[1200px] h-[58px] rounded-full px-8 border'
-    : 'fixed z-50 inset-x-0 mx-auto top-0 w-full h-[76px] px-6 md:px-12 border-b';
+    ? 'fixed z-[9999] inset-x-0 mx-auto backdrop-blur-md top-4 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] max-w-[1200px] h-[58px] rounded-full px-8 border'
+    : 'fixed z-[9999] inset-x-0 mx-auto top-0 w-full h-[76px] px-6 md:px-12 border-b';
 
   const smoothTransition = [
     'background-color 0.65s cubic-bezier(0.4,0,0.2,1)',
@@ -216,7 +216,7 @@ export function Navigation() {
 
             {/* Dropdown Card */}
             <div
-              className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-48 bg-white border border-neutral-200/60 rounded-2xl shadow-xl py-2.5 flex flex-col transition-all duration-300 origin-top z-50 ${
+              className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-48 bg-white border border-neutral-200/60 rounded-2xl shadow-xl py-2.5 flex flex-col transition-all duration-300 origin-top z-[9999] ${
                 isJelajahiOpen
                   ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
                   : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'

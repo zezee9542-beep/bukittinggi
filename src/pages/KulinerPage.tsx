@@ -19,7 +19,8 @@ import group6 from '../assets/Group 6.png';
 import group7 from '../assets/Group 7.png';
 import coverBg from '../assets/cover.png';
 import daunSvg from '../assets/daun.png';
-import cardImg from '../assets/card.png';
+
+import { GameCardPreviewStack } from '../components/GameCardPreviewStack';
 
 // ── Icons & Culinary Assets ────────────────────────────────────────
 import mknIcon from '../assets/mkn.png';
@@ -890,27 +891,7 @@ export function KulinerPage() {
             }}
           >
             {/* Card Image Frame — smaller on mobile */}
-            <div
-              className="relative rounded-[20px] sm:rounded-[24px] overflow-hidden mb-4 sm:mb-6 flex-shrink-0 mx-auto h-[180px] sm:h-[330px] w-full"
-              style={{
-                maxWidth: '538px',
-                boxShadow: 'inset 0 4px 12px rgba(68, 70, 81, 0.4), 0 8px 24px rgba(68, 70, 81, 0.15)',
-              }}
-            >
-              <img
-                src={cardImg}
-                alt="Memori Kuliner Minang Card"
-                className="w-full h-full"
-                style={{ objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.35)' }}
-              />
-              {/* Inner shadow overlay */}
-              <div
-                className="absolute inset-0 rounded-[20px] sm:rounded-[24px] pointer-events-none"
-                style={{
-                  boxShadow: 'inset 0 8px 20px rgba(68, 70, 81, 0.4)',
-                }}
-              />
-            </div>
+            <GameCardPreviewStack />
 
             {/* Title — smaller on mobile */}
             <h2 className="font-poppins font-medium text-[#000000] text-[20px] sm:text-[28px] mb-2 sm:mb-3 leading-snug tracking-tight">

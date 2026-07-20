@@ -374,7 +374,7 @@ export function BudayaPage() {
       <section
         ref={sectionRef}
         className="relative w-full bg-[#3A0D0D]"
-        style={{ height: `calc(100dvh + ${(slides.length - 1) * 100}dvh)` }}
+        style={{ height: `calc(100dvh + ${(slides.length - 1) * 35}dvh)` }}
       >
         <div className="sticky top-24 h-[calc(100dvh-6rem)] overflow-hidden flex flex-col items-center justify-center">
           <div
