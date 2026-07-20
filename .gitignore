@@ -37,144 +37,16 @@ graphify-out
 public/assets/*
 !public/assets/.gitkeep
 
-# Ignore all assets in src/assets
+# Ignore all assets in src/assets by default
 src/assets/*
 
-# Exceptions - Allow specific files in src/assets that are statically imported  
-!src/assets/01.webp
-!src/assets/02.webp
-!src/assets/03.webp
-!src/assets/04.webp
-!src/assets/05.webp
-!src/assets/06.webp
-!src/assets/11.webp
-!src/assets/12.webp
-!src/assets/13.webp
-!src/assets/14.webp
-!src/assets/15.webp
-!src/assets/bg.webp
-!src/assets/menara.webp
-!src/assets/menara.png
-!src/assets/cht.png
-!src/assets/enter.png
-!src/assets/imgg.webp
-!src/assets/gunung.webp
-!src/assets/frame.svg
-!src/assets/gadang.svg
-!src/assets/segitiga.svg
-!src/assets/maps.svg
-!src/assets/minNG.svg
-!src/assets/logo.svg
-!src/assets/1.svg
-!src/assets/2.svg
-!src/assets/3.svg
-!src/assets/4.svg
-!src/assets/5.svg
-!src/assets/6.svg
-!src/assets/7.svg
-!src/assets/tiga.svg
-!src/assets/Rectangle 1385 (2).svg
-!src/assets/Rectangle 1385 (3).svg
-!src/assets/Rectangle 1385 (4).svg
-!src/assets/Rectangle 1385 (5).svg
-!src/assets/Rectangle 1385 (6).svg
-!src/assets/Rectangle 1385 (7).svg
-!src/assets/Rectangle 1385 (8).svg
-!src/assets/Budaya 4k.mp4
-!src/assets/Bukittinggi 4K.mp4
-!src/assets/image.png
-!src/assets/rumah.png
-!src/assets/musik.mp3
-!src/assets/image copy.png
-!src/assets/c1.svg
-!src/assets/c2.svg
-!src/assets/link.svg
-!src/assets/kalend.svg
-!src/assets/voic.svg
+# Exceptions - Allow all media/image assets in src/assets
+!src/assets/*.webp
+!src/assets/*.png
+!src/assets/*.svg
+!src/assets/*.jpg
+!src/assets/*.mp3
+!src/assets/*.mp4
+!src/assets/*.glb
 
-!src/assets/lok.svg
-!src/assets/pesa.svg
-!src/assets/orng.svg
-!src/assets/kalendar.svg
-!src/assets/luv.svg
-
-!src/assets/ai.svg
-!src/assets/al.svg
-!src/assets/camp.svg
-!src/assets/pdf.svg
-!src/assets/sv.svg
-!src/assets/flag.png
-!src/assets/sawah.png
-!src/assets/son.png
-!src/assets/14.png
-!src/assets/cover.png
-!src/assets/makan.png
-!src/assets/Group.png
-!src/assets/food.png
-!src/assets/leaf.png
-!src/assets/leaf (1).png
-!src/assets/leaf (2).png
-!src/assets/leaf (3).png
-!src/assets/Rectangle.jpg
-!src/assets/ss.png
-!src/assets/Calendar.png
-!src/assets/Content Right.svg
-!src/assets/Group 6.png
-!src/assets/Group 7.png
-!src/assets/pirig.png
-!src/assets/piring.png
-!src/assets/mkn.png
-!src/assets/mns.png
-!src/assets/drnk.png
-!src/assets/111.png
-!src/assets/222.png
-!src/assets/333.png
-!src/assets/444.png
-!src/assets/555.png
-!src/assets/666.png
-!src/assets/777.png
-!src/assets/888.png
-!src/assets/889.png
-!src/assets/890.png
-!src/assets/891.png
-!src/assets/892.png
-!src/assets/893.png
-!src/assets/894.png
-!src/assets/895.png
-!src/assets/896.png
-!src/assets/teh_talua.png
-!src/assets/es_tebak.png
-!src/assets/kopi_aia_ndak.png
-!src/assets/jus_pinang.png
-!src/assets/123.png
-!src/assets/124.png
-!src/assets/125.png
-!src/assets/126.png
-!src/assets/game.png
-!src/assets/earth.png
-!src/assets/card.png
-!src/assets/daun.png
-!src/assets/pring.png
-!src/assets/gedeng.png
-!src/assets/bgg.png
-!src/assets/icon.png
-!src/assets/icon (1).png
-!src/assets/icon (2).png
-!src/assets/icon (3).png
-!src/assets/icon (4).png
-!src/assets/Group (2).svg
-!src/assets/oke.png
-!src/assets/jek.png
-!src/assets/Rectangle 1432.png
-!src/assets/Rectangle 1432 (1).png
-!src/assets/Rectangle 1432 (2).png
-!src/assets/Rectangle 1432 (3).png
-!src/assets/Rectangle 1432 (4).png
-!src/assets/Rectangle 1432 (5).png
-!src/assets/Rectangle 1432 (6).png
-!src/assets/Rectangle 1432 (7).png
-!src/assets/Rectangle 1432 (8).png
-!src/assets/star.png
-!src/assets/pdf.png
-!src/assets/wajik.png
 
