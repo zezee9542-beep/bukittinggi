@@ -19,7 +19,7 @@ import pdfSvg from '../assets/pdf.svg';
 
 // Custom PNG Asset Imports
 import flagPng from '../assets/flag.png';
-import sawahPng from '../assets/sawah.webp';
+import sawahPng from '../assets/sawah.png';
 
 interface Message {
   sender: 'bot' | 'user';

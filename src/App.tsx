@@ -19,22 +19,22 @@ import { ProfilBukittinggiPage } from './components/ProfilBukittinggiPage';
 import { PetaPage } from './components/PetaPage';
 
 // Import assets to prefetch for butter-smooth page switching (using compressed WebP)
-import bggImage from './assets/bgg.webp';
+import bggImage from './assets/bgg.png';
 import gadangImage from './assets/gadang.svg';
-import jekImage from './assets/jek.webp';
-import okeImage from './assets/oke.webp';
+import jekImage from './assets/jek.png';
+import okeImage from './assets/oke.png';
 import iconPopulasi from './assets/Icon.png';
 import iconKetinggian from './assets/Icon (1).png';
 import iconIklim from './assets/Icon (2).png';
 import iconGunung from './assets/Icon (3).png';
 import iconGroup2 from './assets/Group (2).svg';
-import sonBg from './assets/son.webp';
+import sonBg from './assets/son.png';
 import gradientBg from './assets/14.webp';
-import makanPlate from './assets/makan.webp';
-import coverBg from './assets/cover.webp';
+import makanPlate from './assets/makan.png';
+import coverBg from './assets/cover.png';
 import group7 from './assets/Group 7.png';
-import pringImg from './assets/pring.webp';
-import piringImg from './assets/piring.webp';
+import pringImg from './assets/pring.png';
+import piringImg from './assets/piring.png';
 import leafBig from './assets/leaf.png';
 import leaf1 from './assets/leaf (1).png';
 import leaf2 from './assets/leaf (2).png';
@@ -53,7 +53,7 @@ import rect6 from './assets/Rectangle 1385 (6).svg';
 import rect7 from './assets/Rectangle 1385 (7).svg';
 import rect8 from './assets/Rectangle 1385 (8).svg';
 import minNGSrc from './assets/minNG.svg';
-import sawahPng from './assets/sawah.webp';
+import sawahPng from './assets/sawah.png';
 
 function HomePage() {
   return (

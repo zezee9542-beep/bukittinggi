@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useMode } from '../context/ModeContext';
-import bggImage from '../assets/bgg.webp';
+import bggImage from '../assets/bg.webp';
 import gadangImage from '../assets/gadang.svg';
 
 // Import Stat Icons
@@ -11,8 +11,8 @@ import iconGunung from '../assets/Icon (3).png';
 
 // Import Geografis Assets
 import iconGroup2 from '../assets/Group (2).svg';
-import jekImage from '../assets/jek.webp';
-import okeImage from '../assets/oke.webp';
+import jekImage from '../assets/jek.png';
+import okeImage from '../assets/oke.png';
 
 export function ProfilBukittinggiPage() {
   const navigate = useNavigate();
@@ -41,9 +41,8 @@ export function ProfilBukittinggiPage() {
             aria-label="Toggle Sounds"
           >
             <div
-              className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform duration-300 ${
-                musicPlaying ? 'translate-x-5' : 'translate-x-0'
-              }`}
+              className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform duration-300 ${musicPlaying ? 'translate-x-5' : 'translate-x-0'
+                }`}
             />
           </button>
         </div>
@@ -139,10 +138,10 @@ export function ProfilBukittinggiPage() {
       {/* ── Tentang Section ── */}
       <section className="w-full bg-white py-16 md:py-24 px-6 md:px-16">
         <div className="max-w-[1280px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
-          
+
           {/* Left Side: 2x2 Grid of Red Stat Cards (631C1C) */}
           <div className="grid grid-cols-2 gap-2 w-full max-w-[390px] sm:max-w-[450px] flex-shrink-0">
-            
+
             {/* Card 1: Populasi */}
             <div className="bg-[#631C1C] rounded-[20px] p-4 flex flex-col items-start justify-center text-left w-full h-[135px] sm:h-[150px] shadow-md">
               <img src={iconPopulasi} alt="Populasi" className="h-5 w-auto object-contain mb-2" />
@@ -217,15 +216,15 @@ export function ProfilBukittinggiPage() {
       {/* ── Kondisi Geografis Section ── */}
       <section className="w-full bg-[#fcfcfc] pt-10 pb-16 md:pt-14 md:pb-24 px-6 md:px-16">
         <div className="max-w-[1280px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
-          
+
           {/* Left Side: Text Items */}
           <div className="flex-1 flex flex-col items-start text-left">
             <h2 className="font-cormorant font-bold text-[#6E1F1F] text-[32px] sm:text-[40px] md:text-[48px] leading-tight mb-8">
               Kondisi Geografis
             </h2>
-            
+
             <div className="flex flex-col gap-4 md:gap-5.5 max-w-[680px]">
-              
+
               {/* Item 1 */}
               <div className="flex items-start gap-4">
                 <img src={iconGroup2} alt="bullet" className="w-5 h-5 object-contain flex-shrink-0 mt-1" />
