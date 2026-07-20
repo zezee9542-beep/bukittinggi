@@ -17,6 +17,7 @@ import { GameMenuPage } from './components/GameMenuPage';
 import { ProfilBukittinggiPage } from './pages/ProfilBukittinggiPage';
 import { PetaPage } from './pages/PetaPage';
 import { LandingTestPage } from './components/LandingTestPage';
+import { Footer } from './components/Footer';
 
 function App() {
   const location = useLocation();
@@ -94,6 +95,7 @@ function App() {
           <Route path="/landing" element={<LandingTestPage />} />
         </Routes>
       </main>
+      <Footer />
       {showRancakBot && location.pathname !== '/profil-bukittinggi' && location.pathname !== '/peta' && (
         <>
           <RancakBotWidget />

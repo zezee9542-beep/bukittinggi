@@ -3,6 +3,7 @@ import { culturalStories, siteContent } from '../data/stories';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { CinematicImage } from '../components/CinematicImage';
 import minNGSrc from '../assets/minNG.svg';
+import jmPng from '../assets/jm.png';
 
 export function HistoryPage() {
   const { timeline } = siteContent;
@@ -184,6 +185,34 @@ export function HistoryPage() {
           ))}
         </div>
       </div>
+
+      {/* ── 100 Tahun Jam Gadang Centered Anniversary Section (Enlarged) ── */}
+      <section className="relative w-full bg-white py-20 sm:py-28 md:py-36 px-6 sm:px-10 flex flex-col items-center justify-center text-center border-t border-b border-neutral-100/80 overflow-hidden">
+        {/* Date Pill: 20 Juni 2026 */}
+        <div
+          className="inline-flex items-center justify-center px-7 py-2.5 sm:px-9 sm:py-3 rounded-full mb-8 sm:mb-10 shadow-md select-none transform hover:scale-105 transition-transform duration-300"
+          style={{ backgroundColor: '#F9CE65' }}
+        >
+          <span className="font-poppins font-bold text-[16px] sm:text-[18px] md:text-[20px] tracking-tight" style={{ color: '#531717' }}>
+            20 Juni 2026
+          </span>
+        </div>
+
+        {/* Quote Subtitle */}
+        <p className="font-poppins italic font-normal text-[18px] sm:text-[22px] md:text-[26px] text-neutral-800 max-w-4xl leading-[1.7] mb-10 sm:mb-14 px-4 sm:px-8">
+          “Genap 100 tahun Jam Gadang berdetak, menandai sebuah momen bersejarah dalam perjalanan Kota Bukittinggi dari masa ke masa.”
+        </p>
+
+        {/* Centered Image jm.png (Enlarged) */}
+        <div className="w-full flex justify-center items-center">
+          <img
+            src={jmPng}
+            alt="100 Tahun Jam Gadang 1926 - 2026"
+            className="w-[360px] sm:w-[480px] md:w-[620px] lg:w-[720px] h-auto object-contain select-none drop-shadow-lg transform hover:scale-[1.02] transition-transform duration-500"
+            draggable={false}
+          />
+        </div>
+      </section>
 
       {/* ── Ending Footer Quote Section ── */}
       <footer

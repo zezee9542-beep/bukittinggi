@@ -43,7 +43,7 @@ export function HeroSection() {
         <img
           src={bgMobilePng}
           alt="Bukittinggi Background Mobile"
-          className="block sm:hidden absolute inset-0 w-full h-full object-cover object-center rounded-[32px] select-none pointer-events-none"
+          className="block sm:hidden absolute inset-0 w-full h-full object-cover object-top rounded-[32px] select-none pointer-events-none"
         />
 
         {/* Desktop Background Image (bg4.webp - hidden sm:block) */}
