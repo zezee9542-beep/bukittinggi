@@ -86,10 +86,34 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [lat, lng] = site.streetViewPosition || site.position;
-  const streetViewUrl =
-    `https://maps.google.com/maps?q=${lat},${lng}` +
-    `&layer=c&cbll=${lat},${lng}` +
-    '&cbp=12,0,0,0,0&output=svembed';
+  const heading = site.streetViewHeading ?? 0;
+  const pitch = site.streetViewPitch ?? 0;
+
+  // Build the Google Maps Street View URL
+  // For locations with a panoId (Photo Sphere), use the direct Google Maps URL
+  // For regular Street View, use the classic embed format
+  const streetViewUrl = site.streetViewPanoId
+    ? `https://www.google.com/maps/@${lat},${lng},3a,90y,${heading}h,${90 + pitch}t/data=!3m6!1e1!3m4!1s${site.streetViewPanoId}!2e10!7i10240!8i5120`
+    : `https://maps.google.com/maps?q=&layer=c&cbll=${lat},${lng}&cbp=12,${heading},,${pitch},0&ie=UTF8&output=embed`;
+
+  // For Photo Sphere panos, we use srcDoc to bypass X-Frame-Options
+  const srcDoc = site.streetViewPanoId
+    ? `<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#120b0a}
+iframe{width:100%;height:100%;border:none}
+</style>
+</head><body>
+<iframe src="${streetViewUrl}" allow="fullscreen" allowfullscreen></iframe>
+<script>
+window.parent.postMessage({svLoaded:true},'*');
+<\/script>
+</body></html>`
+    : undefined;
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -103,6 +127,15 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
 
   useEffect(() => setIsLoaded(false), [site.id]);
 
+  // Listen for messages from srcDoc iframe
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.data?.svLoaded) setIsLoaded(true);
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
   return createPortal(
     <div
       className="fixed inset-0 z-[1000] flex flex-col bg-[#120b0a]"
@@ -115,15 +148,25 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
           <p className="font-manrope text-[10px] font-semibold uppercase tracking-[0.18em] text-[#d4a853]">Street View 360°</p>
           <h2 className="truncate font-poppins text-sm font-medium md:text-base">{site.title}</h2>
         </div>
-        <button
-          ref={closeButtonRef}
-          type="button"
-          onClick={onClose}
-          className="rounded-full border border-white/20 bg-white/10 px-4 py-2 font-poppins text-xs font-medium transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
-          aria-label="Tutup Street View"
-        >
-          Tutup <span aria-hidden="true">×</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <a
+            href={streetViewUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-2 font-poppins text-xs font-medium transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+          >
+            Buka di Google Maps ↗
+          </a>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={onClose}
+            className="rounded-full border border-white/20 bg-white/10 px-4 py-2 font-poppins text-xs font-medium transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#d4a853]"
+            aria-label="Tutup Street View"
+          >
+            Tutup <span aria-hidden="true">×</span>
+          </button>
+        </div>
       </header>
 
       <div className="relative min-h-0 flex-1 overflow-hidden">
@@ -140,14 +183,27 @@ function StreetViewPortal({ site, onClose }: StreetViewPortalProps) {
             <p className="mt-1 max-w-sm px-6 font-poppins text-xs text-white/60">Menyiapkan tampilan di sekitar {site.title}</p>
           </div>
         )}
-        <iframe
-          src={streetViewUrl}
-          className="relative z-[1] h-full w-full border-0"
-          allowFullScreen
-          loading="eager"
-          title={`Street View ${site.title}`}
-          onLoad={() => setIsLoaded(true)}
-        />
+        {srcDoc ? (
+          <iframe
+            key={site.id}
+            srcDoc={srcDoc}
+            className="relative z-[1] h-full w-full border-0"
+            allowFullScreen
+            loading="eager"
+            title={`Street View ${site.title}`}
+            onLoad={() => setTimeout(() => setIsLoaded(true), 1500)}
+          />
+        ) : (
+          <iframe
+            key={site.id}
+            src={streetViewUrl}
+            className="relative z-[1] h-full w-full border-0"
+            allowFullScreen
+            loading="eager"
+            title={`Street View ${site.title}`}
+            onLoad={() => setIsLoaded(true)}
+          />
+        )}
       </div>
     </div>,
     document.body,
@@ -159,13 +215,25 @@ function DestinationImage({ site, className = '' }: { site: HeritageDestination;
     <img
       src={site.image}
       alt=""
-      className={`h-16 w-20 shrink-0 rounded-lg object-cover ${className}`}
+      className={`object-cover shrink-0 ${className}`}
       onError={(event) => {
         event.currentTarget.style.display = 'none';
       }}
     />
   );
 }
+
+const BUBBLE_CATEGORIES = [
+  'SEJARAH',
+  'BUDAYA',
+  'SEJARAH',
+  'BUDAYA',
+  'SEJARAH',
+  'ALAM',
+  'SEJARAH',
+  'ALAM',
+  'RELIGI'
+];
 
 export function PetaPage() {
   const [activeSite, setActiveSite] = useState(HERITAGE_DESTINATIONS[0]);
@@ -180,33 +248,34 @@ export function PetaPage() {
 
   return (
     <main className="flex min-h-screen flex-col overflow-hidden bg-[#faf8f7] pt-[76px] lg:flex-row">
-      <aside className="z-10 flex w-full shrink-0 flex-col overflow-hidden border-b border-[#d6b8b3]/30 bg-white shadow-lg lg:h-[calc(100vh-76px)] lg:w-[360px] lg:border-r lg:border-b-0 xl:w-[380px]">
+      <aside className="z-10 flex w-full shrink-0 flex-col overflow-hidden border-b border-[#d6b8b3]/30 bg-white shadow-lg lg:h-[calc(100vh-76px)] lg:w-[330px] lg:border-r lg:border-b-0 xl:w-[350px]">
         <div className="border-b border-[#faf4f2] p-5 pb-4">
-          <h1 className="font-poppins text-[22px] font-semibold leading-tight tracking-tight text-black sm:text-[25px]">Peta & Pariwisata</h1>
-          <p className="mt-1.5 font-poppins text-[13px] leading-relaxed text-[#444651]">Temukan berbagai destinasi wisata Bukittinggi melalui peta interaktif.</p>
+          <h1 className="font-poppins font-medium text-[#000000] text-[22px] leading-tight tracking-tight sm:text-[25px]">Peta & Pariwisata</h1>
+          <p className="mt-1.5 font-poppins font-normal text-[#444651] text-[13px] leading-relaxed">Temukan berbagai destinasi wisata Bukittinggi melalui peta interaktif.</p>
         </div>
-        <div className="flex gap-3 overflow-x-auto px-5 py-4 lg:block lg:flex-1 lg:space-y-4 lg:overflow-y-auto">
-              {HERITAGE_DESTINATIONS.map((site) => {
-                const isActive = activeSite.id === site.id;
-                return (
-                  <button
-                    key={site.id}
-                    type="button"
-                    onClick={() => selectSite(site)}
-                    className={`flex min-w-[278px] gap-3.5 rounded-[16px] border bg-white p-3 text-left transition duration-300 focus:outline-none focus:ring-2 focus:ring-[#d4a853] lg:w-full lg:min-w-0 lg:p-3.5 ${isActive ? 'border-[#6e1f1f] shadow-[0_8px_24px_rgba(110,31,31,0.08)]' : 'border-[#eae2e0] shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#d2c3c0] hover:shadow-[0_6px_18px_rgba(0,0,0,0.07)]'}`}
-                    aria-pressed={isActive}
-                  >
-                    <DestinationImage site={site} className="h-[85px] w-[85px] rounded-[14px] border border-neutral-100 sm:h-[92px] sm:w-[92px]" />
-                    <span className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
-                      <span>
-                        <span className="block truncate font-poppins text-[14.5px] font-medium leading-snug tracking-tight text-black sm:text-[15px]">{site.title}</span>
-                        <span className="mt-1 block line-clamp-2 font-poppins text-[11.5px] leading-relaxed text-[#444651]">{site.description}</span>
-                      </span>
-                      <span className="mt-2 inline-flex w-fit rounded-full bg-[#f7e0e0] px-2.5 py-0.5 font-manrope text-[9.5px] tracking-wider text-[#6e1f1f]">DESTINASI</span>
-                    </span>
-                  </button>
-                );
-              })}
+        <div className="flex gap-3 overflow-x-auto px-5 py-4 lg:block lg:flex-1 lg:space-y-3.5 lg:overflow-y-auto custom-peta-scrollbar">
+          {HERITAGE_DESTINATIONS.map((site, index) => {
+            const isActive = activeSite.id === site.id;
+            const category = BUBBLE_CATEGORIES[index] || 'DESTINASI';
+            return (
+              <button
+                key={site.id}
+                type="button"
+                onClick={() => selectSite(site)}
+                className={`flex min-w-[278px] gap-3 rounded-[16px] border bg-white p-1 pr-3 text-left transition duration-300 focus:outline-none focus:ring-2 focus:ring-[#d4a853] lg:w-full lg:min-w-0 lg:p-1.5 lg:pr-3.5 ${isActive ? 'border-[#6e1f1f] shadow-[0_8px_24px_rgba(110,31,31,0.08)]' : 'border-[#eae2e0] shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#d2c3c0] hover:shadow-[0_6px_18px_rgba(0,0,0,0.07)]'}`}
+                aria-pressed={isActive}
+              >
+                <DestinationImage site={site} className="mt-0.5 h-[84px] w-[78px] rounded-[12px] border border-neutral-100 sm:h-[92px] sm:w-[84px]" />
+                <span className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+                  <span>
+                    <span className="block truncate font-poppins font-medium text-[#000000] text-[13px] leading-snug tracking-tight sm:text-[13.5px]">{site.title}</span>
+                    <span className="mt-0.5 block line-clamp-2 font-poppins font-normal text-[#444651] text-[9.5px] leading-relaxed sm:text-[10px]">{site.description}</span>
+                  </span>
+                  <span className="mt-1.5 inline-flex w-fit rounded-[50px] bg-[#F7E0E0] px-2 py-0.5 font-manrope font-normal text-[8px] tracking-wider text-[#6E1F1F] sm:text-[8.5px]">{category}</span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </aside>
 
