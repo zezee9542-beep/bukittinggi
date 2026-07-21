@@ -47,10 +47,6 @@ export default function MascotLauncher({ hidden = false, onClick }: MascotLaunch
     const observer = new MutationObserver(keepOnlyCurrentCanvas);
     observer.observe(host, { childList: true, subtree: true });
     return () => observer.disconnect();
-  }, []);
-
-  const isHidden = hidden || isNearFooter;
-
   return (
     // Wrapper layout matches Figma specs: flex items-start with gap 10px
     <div
