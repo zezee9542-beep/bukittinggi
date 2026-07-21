@@ -13,6 +13,7 @@ import {
   HERITAGE_DESTINATIONS,
   type HeritageDestination,
 } from '../data/heritageDestinations';
+import { MapSkeleton } from '../components/ui/PageSkeletons';
 
 const MAP_BOUNDS: L.LatLngBoundsExpression = [
   [-0.72, 100.2],
@@ -261,6 +262,12 @@ export function PetaPage() {
   const [streetViewTarget, setStreetViewTarget] = useState<HeritageDestination | null>(null);
   const markersRef = useRef<Record<string, LeafletMarker | null>>({});
   const [activeMarker, setActiveMarker] = useState<LeafletMarker | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(t);
+  }, []);
 
   const selectSite = (site: HeritageDestination) => {
     setActiveSite(site);
@@ -268,7 +275,11 @@ export function PetaPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col bg-[#faf8f7] pt-[76px] lg:flex-row lg:h-screen lg:overflow-hidden">
+    <>
+      {isLoading ? (
+        <div className="pt-[76px] h-screen"><MapSkeleton /></div>
+      ) : (
+    <main className="flex min-h-screen flex-col bg-[#faf8f7] pt-[76px] lg:flex-row lg:h-screen lg:overflow-hidden animate-in fade-in duration-500">
       <aside className="z-10 flex w-full shrink-0 flex-col border-b border-[#d6b8b3]/30 bg-white shadow-lg lg:h-[calc(100vh-76px)] lg:w-[330px] lg:border-r lg:border-b-0 xl:w-[350px]">
         <div className="border-b border-[#faf4f2] p-5 pb-4">
           <h1 className="font-poppins font-medium text-[#000000] text-[22px] leading-tight tracking-tight sm:text-[25px]">Peta & Pariwisata</h1>
@@ -344,6 +355,8 @@ export function PetaPage() {
         <StreetViewPortal site={streetViewTarget} onClose={() => setStreetViewTarget(null)} />
       )}
     </main>
+      )}
+    </>
   );
 }
 
