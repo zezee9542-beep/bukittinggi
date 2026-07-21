@@ -26,7 +26,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer
-      className="w-full relative z-30 min-h-[500px] sm:min-h-[540px] px-6 sm:px-10 md:px-14 lg:px-20 pt-10 sm:pt-12 pb-6 sm:pb-8 text-white overflow-hidden border-none outline-none flex flex-col justify-between"
+      className="w-full relative z-30 min-h-[360px] sm:min-h-[380px] px-6 sm:px-10 md:px-14 lg:px-20 pt-10 sm:pt-12 pb-6 sm:pb-7 text-white overflow-hidden border-none outline-none flex flex-col justify-between"
       style={{ backgroundColor: '#5F1712' }}
     >
       {/* ── Background Image: frame (2).png ── */}
@@ -41,40 +41,40 @@ export const Footer: React.FC = () => {
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{
-          background: 'linear-gradient(180deg, rgba(95,23,18,0.78) 0%, rgba(95,23,18,0.92) 100%)',
+          background: 'linear-gradient(180deg, rgba(95,23,18,0.80) 0%, rgba(95,23,18,0.93) 100%)',
         }}
       />
 
       {/* ── Main Footer Content Container ── */}
-      <div className="relative z-20 max-w-[1340px] w-full mx-auto flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12 my-auto">
+      <div className="relative z-20 max-w-[1280px] w-full mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 lg:gap-12 my-auto">
         
         {/* ── Left Column: Logo (hama.svg), Tagline, Socials, Copyright ── */}
-        <div className="flex-1 flex flex-col items-start max-w-[340px]">
+        <div className="flex-1 flex flex-col items-start max-w-[300px] w-full">
           {/* Logo Brand using hama.svg */}
           <div
             onClick={() => navigate('/')}
-            className="cursor-pointer select-none mb-3 group"
+            className="cursor-pointer select-none mb-4 group"
           >
             <img
               src={hamaSvg}
               alt="Bukittinggi Heritage Logo"
-              className="h-[56px] sm:h-[68px] w-auto object-contain transition-transform group-hover:scale-105 duration-300"
+              className="h-[68px] sm:h-[82px] w-auto object-contain transition-transform group-hover:scale-105 duration-300"
             />
           </div>
 
           {/* Tagline */}
-          <p className="font-poppins font-normal text-white/90 text-[13px] sm:text-[13.5px] leading-[1.6] mb-5">
+          <p className="font-poppins font-normal text-white/90 text-[12.5px] sm:text-[13px] leading-[1.6] mb-5">
             Menelusuri jejak sejarah, budaya, dan pesona Bukittinggi dalam satu pengalaman digital.
           </p>
 
           {/* Social Media Buttons */}
-          <div className="flex items-center gap-2.5 mb-6">
+          <div className="flex items-center gap-2.5 mb-5">
             {/* Instagram */}
             <a
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8.5 h-8.5 rounded-full bg-[#F9CE65] hover:bg-[#ffe39c] text-[#5F1712] flex items-center justify-center transition-transform hover:scale-110 duration-200 shadow-md"
+              className="w-8 h-8 rounded-full bg-[#F9CE65] hover:bg-[#ffe39c] text-[#5F1712] flex items-center justify-center transition-transform hover:scale-110 duration-200 shadow-md"
               aria-label="Instagram"
             >
               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
@@ -85,10 +85,10 @@ export const Footer: React.FC = () => {
             {/* Email */}
             <a
               href="mailto:info@bukittinggiheritage.id"
-              className="w-8.5 h-8.5 rounded-full bg-[#F9CE65] hover:bg-[#ffe39c] text-[#5F1712] flex items-center justify-center transition-transform hover:scale-110 duration-200 shadow-md"
+              className="w-8 h-8 rounded-full bg-[#F9CE65] hover:bg-[#ffe39c] text-[#5F1712] flex items-center justify-center transition-transform hover:scale-110 duration-200 shadow-md"
               aria-label="Email"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </a>
@@ -98,29 +98,29 @@ export const Footer: React.FC = () => {
               href="https://youtube.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8.5 h-8.5 rounded-full bg-[#F9CE65] hover:bg-[#ffe39c] text-[#5F1712] flex items-center justify-center transition-transform hover:scale-110 duration-200 shadow-md"
+              className="w-8 h-8 rounded-full bg-[#F9CE65] hover:bg-[#ffe39c] text-[#5F1712] flex items-center justify-center transition-transform hover:scale-110 duration-200 shadow-md"
               aria-label="Youtube"
             >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
               </svg>
             </a>
           </div>
 
           {/* Copyright */}
-          <span className="font-poppins text-[12px] text-white/60">
+          <span className="font-poppins text-[11.5px] text-white/60">
             &copy; 2026 Bukittinggi Heritage
           </span>
         </div>
 
         {/* ── Center Column: Navigasi Links (2 Columns) ── */}
-        <div className="flex-1 max-w-[380px] w-full">
-          <h3 className="font-poppins font-bold text-white text-[16px] sm:text-[18px] mb-5 tracking-[0.18em] uppercase">
+        <div className="flex-1 max-w-[320px] w-full">
+          <h3 className="font-poppins font-bold text-white text-[15px] sm:text-[16.5px] mb-5 tracking-[0.18em] uppercase">
             NAVIGASI
           </h3>
-          <div className="grid grid-cols-2 gap-y-3.5 gap-x-6 text-[13.5px] sm:text-[14.5px] font-poppins text-white/85">
+          <div className="grid grid-cols-2 gap-y-3.5 gap-x-8 text-[13px] sm:text-[13.5px] font-poppins text-white/85">
             {/* Column 1 */}
-            <div className="flex flex-col gap-3.5">
+            <div className="flex flex-col gap-3">
               <span onClick={() => navigate('/')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Beranda
               </span>
@@ -136,7 +136,7 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* Column 2 */}
-            <div className="flex flex-col gap-3.5">
+            <div className="flex flex-col gap-3">
               <span onClick={() => navigate('/sejarah')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Sejarah
               </span>
@@ -153,23 +153,23 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Right Column: Card Jam Gadang 100 Tahun with Compact Size ── */}
-        <div className="flex-1 flex flex-col items-center lg:items-end max-w-[340px] w-full">
-          {/* Maroon Card Container — Fitted cleanly to image size */}
+        {/* ── Right Column: Card Jam Gadang 100 Tahun (Presisi Center Tanpa Offset) ── */}
+        <div className="w-full lg:w-auto flex justify-center items-center">
+          {/* Maroon Card Container */}
           <div
-            className="relative w-full bg-[#5F1712] rounded-[24px] sm:rounded-[28px] p-4.5 sm:p-5 border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.5)] flex flex-col items-center select-none backdrop-blur-md"
+            className="relative w-full max-w-[320px] sm:max-w-[340px] bg-[#5F1712] rounded-[24px] p-5 pb-6 border border-white/10 flex flex-col items-center justify-center text-center select-none backdrop-blur-md mx-auto"
             style={{
-              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
             }}
           >
-            {/* White Frame for Image — 100% edge-to-edge fit with zero gaps */}
-            <div className="relative w-full aspect-[1.38/1] rounded-[20px] sm:rounded-[22px] bg-white overflow-hidden shadow-md border border-white/90 leading-none p-0 flex items-center justify-center">
+            {/* Image Wrapper Container — Presisi di tengah kartu tanpa margin miring */}
+            <div className="relative w-full h-[140px] sm:h-[150px] my-1 flex items-center justify-center overflow-hidden">
               {images.map((imgSrc, index) => (
                 <img
                   key={index}
                   src={imgSrc}
                   alt="100 Tahun Jam Gadang"
-                  className={`absolute inset-0 w-full h-full object-cover block m-0 p-0 transition-all duration-700 ease-in-out select-none ${
+                  className={`absolute max-w-full max-h-full object-contain transition-all duration-700 ease-in-out select-none ${
                     currentImgIndex === index
                       ? 'opacity-100 scale-100'
                       : 'opacity-0 scale-95 pointer-events-none'
@@ -179,23 +179,16 @@ export const Footer: React.FC = () => {
               ))}
             </div>
 
-            {/* Date & Commemorative Text below Image Frame — Aligned & Neatly Formatted */}
-            <h4 className="font-poppins font-bold text-white tracking-[0.24em] text-[15px] sm:text-[16px] text-center mt-4 mb-2 uppercase leading-none">
+            {/* Date & Commemorative Text */}
+            <h4 className="font-poppins font-bold text-white tracking-[0.2em] text-[13.5px] sm:text-[14px] text-center mt-3 mb-1.5 uppercase leading-none w-full">
               20 JUNI 2026
             </h4>
-            <p className="font-poppins text-white/90 text-[11.5px] sm:text-[12.5px] italic text-center leading-[1.65] max-w-[270px] mx-auto">
-              "Memperingati 100 Tahun Berdirinya<br />Jam Gadang, Ikon Bukittinggi."
+            <p className="font-poppins text-white/90 text-[11px] sm:text-[11.5px] italic text-center leading-[1.5] max-w-[260px] mx-auto">
+              "Memperingati 100 Tahun Berdirinya Jam Gadang, Ikon Bukittinggi."
             </p>
           </div>
         </div>
 
-      </div>
-
-      {/* ── Bottom Watermark Text across Footer — Compact Font Size ── */}
-      <div className="relative z-20 w-full text-center mt-4 pointer-events-none select-none overflow-hidden">
-        <span className="font-cormorant font-bold text-white/[0.05] text-[42px] sm:text-[68px] md:text-[90px] lg:text-[105px] leading-none tracking-tight whitespace-nowrap inline-block">
-          Bukittinggi Heritage.
-        </span>
       </div>
     </footer>
   );

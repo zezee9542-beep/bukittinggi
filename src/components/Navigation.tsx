@@ -216,10 +216,10 @@ export function Navigation() {
 
             {/* Dropdown Card */}
             <div
-              className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-48 bg-white border border-neutral-200/60 rounded-2xl shadow-xl py-2.5 flex flex-col transition-all duration-300 origin-top z-[9999] ${
+              className={`absolute top-full left-1/2 -translate-x-1/2 mt-0.5 w-48 bg-white border border-neutral-200/80 rounded-2xl shadow-xl py-2 flex flex-col transition-all duration-300 origin-top z-[9999] ${
                 isJelajahiOpen
                   ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
-                  : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                  : 'opacity-0 scale-95 -translate-y-1.5 pointer-events-none'
               }`}
             >
               {jelajahiLinks.map((subLink) => {
@@ -283,8 +283,32 @@ export function Navigation() {
         {/* Right Side: Toggle Switch (Music Audio Toggle) + Mobile Menu Trigger */}
         <div className="flex items-center gap-2.5 sm:gap-4 md:gap-6">
           {/* Audio Music Toggle Switch with Hover Tooltip */}
-          <div className="relative flex items-center gap-2 sm:gap-3 group">
+          <div className="relative flex items-center gap-2 sm:gap-2.5 group">
+            {/* Music Icon OUTSIDE the toggle button */}
+            <div
+              className="flex items-center justify-center cursor-pointer transition-transform hover:scale-110 active:scale-95"
+              onClick={() => setMusicPlaying(!musicPlaying)}
+              title={musicPlaying ? 'Musik Nyala' : 'Musik Mati'}
+            >
+              {musicPlaying ? (
+                /* Music ON Icon: Glowing Yellow Music Note */
+                <svg className="w-5 h-5 text-[#F9CE65] animate-pulse drop-shadow-[0_2px_6px_rgba(249,206,101,0.5)]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                </svg>
+              ) : (
+                /* Music OFF Icon: Gray Music Note with diagonal slash */
+                <svg className="w-5 h-5 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18V5l12-2v13" opacity="0.6" />
+                  <circle cx="6" cy="18" r="2.5" opacity="0.6" />
+                  <circle cx="18" cy="16" r="2.5" opacity="0.6" />
+                  {/* Diagonal slash line */}
+                  <line x1="3" y1="3" x2="21" y2="21" stroke="#6E1F1F" strokeWidth="2.5" />
+                </svg>
+              )}
+            </div>
+
             <span className="hidden xs:inline font-poppins text-[13px] sm:text-[15px] font-medium text-neutral-500">Sounds</span>
+
             <button
               onClick={() => setMusicPlaying(!musicPlaying)}
               className="relative w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 focus:outline-none shadow-inner"
