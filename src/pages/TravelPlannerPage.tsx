@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { askTravelPlanner, type AiChatMessage } from '../lib/aiClient';
 import { downloadRundownPdf } from '../lib/rundownPdf';
@@ -148,6 +149,18 @@ export function TravelPlannerPage() {
       });
     }
   }, [chatLog, isGenerating]);
+
+  // Lock body scroll when DatePicker is open
+  useEffect(() => {
+    if (isDatePickerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isDatePickerOpen]);
 
   // ── Custom Predefined Fallback & Parsers ──
 
@@ -1177,9 +1190,9 @@ export function TravelPlannerPage() {
       </div>
 
       {/* ── Custom Date Picker Modal Popup ── */}
-      {isDatePickerOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[900px] max-h-[92vh] overflow-y-auto p-8 relative flex flex-col font-manrope">
+      {isDatePickerOpen && createPortal(
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[900px] max-h-[90vh] overflow-y-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] p-8 relative flex flex-col font-manrope">
             {/* Top-right close button */}
             <button 
               onClick={() => setIsDatePickerOpen(false)}
@@ -1438,7 +1451,7 @@ export function TravelPlannerPage() {
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
     </main>
   );
 }
