@@ -112,8 +112,8 @@ export function Navigation() {
 
   // Shared structural classes — background/color handled via inline style for smooth CSS transition
   const headerClass = isScrolled
-    ? 'fixed z-[9999] inset-x-0 mx-auto backdrop-blur-md top-4 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] max-w-[1200px] h-[58px] rounded-full px-8 border'
-    : 'fixed z-[9999] inset-x-0 mx-auto top-0 w-full h-[76px] px-6 md:px-12 border-b';
+    ? 'fixed z-[9999] inset-x-0 mx-auto backdrop-blur-md top-3 sm:top-4 w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] max-w-[1200px] h-[54px] sm:h-[58px] rounded-full px-3.5 sm:px-6 md:px-8 border'
+    : 'fixed z-[9999] inset-x-0 mx-auto top-0 w-full h-[68px] sm:h-[76px] px-3.5 sm:px-6 md:px-12 border-b';
 
   const smoothTransition = [
     'background-color 0.65s cubic-bezier(0.4,0,0.2,1)',
@@ -157,7 +157,7 @@ export function Navigation() {
             src={logoSvg}
             alt="Bukittinggi Heritage"
             className={`w-auto object-contain cursor-pointer transition-all duration-500 hover-spring active:scale-95 ${
-              isScrolled ? 'h-[40px] sm:h-[44px]' : 'h-[52px] sm:h-[60px]'
+              isScrolled ? 'h-[36px] sm:h-[40px] md:h-[44px]' : 'h-[42px] sm:h-[50px] md:h-[60px]'
             }`}
             onClick={() => handleNavClick('/')}
             style={{
@@ -281,10 +281,10 @@ export function Navigation() {
         </nav>
 
         {/* Right Side: Toggle Switch (Music Audio Toggle) + Mobile Menu Trigger */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2.5 sm:gap-4 md:gap-6">
           {/* Audio Music Toggle Switch with Hover Tooltip */}
-          <div className="relative flex items-center gap-3 group">
-            <span className="font-poppins text-[15px] font-medium text-neutral-500">Sounds</span>
+          <div className="relative flex items-center gap-2 sm:gap-3 group">
+            <span className="hidden xs:inline font-poppins text-[13px] sm:text-[15px] font-medium text-neutral-500">Sounds</span>
             <button
               onClick={() => setMusicPlaying(!musicPlaying)}
               className="relative w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 focus:outline-none shadow-inner"

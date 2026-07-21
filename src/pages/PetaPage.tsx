@@ -277,15 +277,15 @@ export function PetaPage() {
   return (
     <>
       {isLoading ? (
-        <div className="pt-[76px] h-screen"><MapSkeleton /></div>
+        <div className="pt-[68px] sm:pt-[76px] h-screen"><MapSkeleton /></div>
       ) : (
-    <main className="flex min-h-screen flex-col bg-[#faf8f7] pt-[76px] lg:flex-row lg:h-screen lg:overflow-hidden animate-in fade-in duration-500">
+    <main className="flex min-h-screen flex-col bg-[#faf8f7] pt-[68px] sm:pt-[76px] lg:flex-row lg:h-screen lg:overflow-hidden animate-in fade-in duration-500 overflow-x-hidden w-full">
       <aside className="z-10 flex w-full shrink-0 flex-col border-b border-[#d6b8b3]/30 bg-white shadow-lg lg:h-[calc(100vh-76px)] lg:w-[330px] lg:border-r lg:border-b-0 xl:w-[350px]">
-        <div className="border-b border-[#faf4f2] p-5 pb-4">
-          <h1 className="font-poppins font-medium text-[#000000] text-[22px] leading-tight tracking-tight sm:text-[25px]">Peta & Pariwisata</h1>
-          <p className="mt-1.5 font-poppins font-normal text-[#444651] text-[13px] leading-relaxed">Temukan berbagai destinasi wisata Bukittinggi melalui peta interaktif.</p>
+        <div className="border-b border-[#faf4f2] p-4 sm:p-5 pb-4">
+          <h1 className="font-poppins font-medium text-[#000000] text-[20px] sm:text-[25px] leading-tight tracking-tight">Peta & Pariwisata</h1>
+          <p className="mt-1 font-poppins font-normal text-[#444651] text-[12px] sm:text-[13px] leading-relaxed">Temukan berbagai destinasi wisata Bukittinggi melalui peta interaktif.</p>
         </div>
-        <div className="flex gap-3 overflow-x-auto px-5 py-4 lg:block lg:flex-1 lg:space-y-3.5 lg:overflow-y-auto custom-peta-scrollbar">
+        <div className="flex gap-2.5 sm:gap-3 overflow-x-auto px-4 sm:px-5 py-3.5 sm:py-4 lg:block lg:flex-1 lg:space-y-3.5 lg:overflow-y-auto custom-peta-scrollbar max-w-full">
           {HERITAGE_DESTINATIONS.map((site, index) => {
             const isActive = activeSite.id === site.id;
             const category = BUBBLE_CATEGORIES[index] || 'DESTINASI';
@@ -294,16 +294,16 @@ export function PetaPage() {
                 key={site.id}
                 type="button"
                 onClick={() => selectSite(site)}
-                className={`flex min-w-[278px] gap-3 rounded-[16px] border bg-white p-1 pr-3 text-left transition duration-300 focus:outline-none focus:ring-2 focus:ring-[#d4a853] lg:w-full lg:min-w-0 lg:p-1.5 lg:pr-3.5 ${isActive ? 'border-[#6e1f1f] shadow-[0_8px_24px_rgba(110,31,31,0.08)]' : 'border-[#eae2e0] shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#d2c3c0] hover:shadow-[0_6px_18px_rgba(0,0,0,0.07)]'}`}
+                className={`flex min-w-[245px] sm:min-w-[278px] gap-2.5 sm:gap-3 rounded-[16px] border bg-white p-1 pr-3 text-left transition duration-300 focus:outline-none focus:ring-2 focus:ring-[#d4a853] lg:w-full lg:min-w-0 lg:p-1.5 lg:pr-3.5 ${isActive ? 'border-[#6e1f1f] shadow-[0_8px_24px_rgba(110,31,31,0.08)]' : 'border-[#eae2e0] shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:border-[#d2c3c0] hover:shadow-[0_6px_18px_rgba(0,0,0,0.07)]'}`}
                 aria-pressed={isActive}
               >
-                <DestinationImage site={site} className="mt-0.5 h-[84px] w-[78px] rounded-[12px] border border-neutral-100 sm:h-[92px] sm:w-[84px]" />
+                <DestinationImage site={site} className="mt-0.5 h-[76px] w-[70px] sm:h-[92px] sm:w-[84px] rounded-[12px] border border-neutral-100" />
                 <span className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
                   <span>
-                    <span className="block truncate font-poppins font-medium text-[#000000] text-[13px] leading-snug tracking-tight sm:text-[13.5px]">{site.title}</span>
-                    <span className="mt-0.5 block line-clamp-2 font-poppins font-normal text-[#444651] text-[9.5px] leading-relaxed sm:text-[10px]">{site.description}</span>
+                    <span className="block truncate font-poppins font-medium text-[#000000] text-[12.5px] sm:text-[13.5px] leading-snug tracking-tight">{site.title}</span>
+                    <span className="mt-0.5 block line-clamp-2 font-poppins font-normal text-[#444651] text-[9.5px] sm:text-[10px] leading-relaxed">{site.description}</span>
                   </span>
-                  <span className="mt-1.5 inline-flex w-fit rounded-[50px] bg-[#F7E0E0] px-2 py-0.5 font-manrope font-normal text-[8px] tracking-wider text-[#6E1F1F] sm:text-[8.5px]">{category}</span>
+                  <span className="mt-1 inline-flex w-fit rounded-[50px] bg-[#F7E0E0] px-2 py-0.5 font-manrope font-normal text-[8px] tracking-wider text-[#6E1F1F] sm:text-[8.5px]">{category}</span>
                 </span>
               </button>
             );
