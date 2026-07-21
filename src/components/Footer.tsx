@@ -155,21 +155,21 @@ export const Footer: React.FC = () => {
 
         {/* ── Right Column: Card Jam Gadang 100 Tahun with Compact Size ── */}
         <div className="flex-1 flex flex-col items-center lg:items-end max-w-[340px] w-full">
-          {/* Maroon Card Container — Compact & balanced sizing */}
+          {/* Maroon Card Container — Fitted cleanly to image size */}
           <div
             className="relative w-full bg-[#5F1712] rounded-[24px] sm:rounded-[28px] p-4.5 sm:p-5 border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.5)] flex flex-col items-center select-none backdrop-blur-md"
             style={{
               boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
             }}
           >
-            {/* White Frame for Image — Compact & fitted to image size */}
-            <div className="relative w-full h-[155px] sm:h-[175px] rounded-[18px] sm:rounded-[20px] bg-white p-2.5 sm:p-3 border border-white/90 shadow-md flex items-center justify-center overflow-hidden">
+            {/* White Frame for Image — 100% edge-to-edge fit with zero gaps */}
+            <div className="relative w-full aspect-[1.38/1] rounded-[20px] sm:rounded-[22px] bg-white overflow-hidden shadow-md border border-white/90 leading-none p-0 flex items-center justify-center">
               {images.map((imgSrc, index) => (
                 <img
                   key={index}
                   src={imgSrc}
                   alt="100 Tahun Jam Gadang"
-                  className={`absolute inset-0 w-full h-full object-contain p-1.5 transition-all duration-700 ease-in-out select-none ${
+                  className={`absolute inset-0 w-full h-full object-cover block m-0 p-0 transition-all duration-700 ease-in-out select-none ${
                     currentImgIndex === index
                       ? 'opacity-100 scale-100'
                       : 'opacity-0 scale-95 pointer-events-none'
@@ -179,12 +179,12 @@ export const Footer: React.FC = () => {
               ))}
             </div>
 
-            {/* Date & Commemorative Text below Image Frame */}
-            <h4 className="font-poppins font-bold text-white tracking-[0.18em] text-[15px] sm:text-[16px] text-center mt-3.5 mb-1.5">
+            {/* Date & Commemorative Text below Image Frame — Aligned & Neatly Formatted */}
+            <h4 className="font-poppins font-bold text-white tracking-[0.24em] text-[15px] sm:text-[16px] text-center mt-4 mb-2 uppercase leading-none">
               20 JUNI 2026
             </h4>
-            <p className="font-poppins text-white/90 text-[11.5px] sm:text-[12px] italic text-center leading-relaxed max-w-[250px] mx-auto">
-              "Memperingati 100 Tahun Berdirinya Jam Gadang, Ikon Bukittinggi."
+            <p className="font-poppins text-white/90 text-[11.5px] sm:text-[12.5px] italic text-center leading-[1.65] max-w-[270px] mx-auto">
+              "Memperingati 100 Tahun Berdirinya<br />Jam Gadang, Ikon Bukittinggi."
             </p>
           </div>
         </div>
