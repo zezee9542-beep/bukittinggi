@@ -23,7 +23,7 @@ import img555 from '../assets/555.png';
 import img666 from '../assets/666.png';
 import img777 from '../assets/777.png';
 import img888 from '../assets/888.png';
-import cardImg from '../assets/card.png';
+import logoSvg from '../assets/logo.svg';
 
 const MAROON = '#5F1712';
 const GOLD = '#E9C46A';
@@ -227,7 +227,7 @@ export function GameFlipPage() {
         style={{ backgroundColor: MAROON }}
       >
         <h2 className="font-poppins font-bold text-white text-[26px] sm:text-[34px] mb-2 text-center">
-          Gacha Resep...
+          Mengacak Resep...
         </h2>
         <p className="font-poppins text-white/70 text-[14px] mb-10 text-center">
           Hadiah resep rahasia sedang diundi untukmu
@@ -462,14 +462,31 @@ export function GameFlipPage() {
                 >
                   {/* Card back */}
                   <div
-                    className="absolute inset-0 rounded-[12px] sm:rounded-[16px] overflow-hidden flex items-center justify-center"
+                    className="absolute inset-0 rounded-[12px] sm:rounded-[16px] overflow-hidden flex flex-col items-center justify-center"
                     style={{
                       backfaceVisibility: 'hidden',
-                      border: `1.5px solid ${GOLD}`,
+                      backgroundColor: '#3D0C11',
                       boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
                     }}
                   >
-                    <img src={cardImg} alt="" className="w-full h-full object-cover" />
+                    {/* Inner gold border */}
+                    <div className="absolute inset-1.5 sm:inset-2 rounded-[8px] sm:rounded-[12px] pointer-events-none" style={{ border: `2px solid #E5C158` }} />
+                    
+                    {/* Centered Logo / Text */}
+                    <div 
+                      className="relative z-10 w-14 h-14 sm:w-20 sm:h-20 pointer-events-none"
+                      style={{ 
+                        backgroundColor: '#E5C158',
+                        WebkitMaskImage: `url(${logoSvg})`,
+                        WebkitMaskSize: 'contain',
+                        WebkitMaskRepeat: 'no-repeat',
+                        WebkitMaskPosition: 'center',
+                        maskImage: `url(${logoSvg})`,
+                        maskSize: 'contain',
+                        maskRepeat: 'no-repeat',
+                        maskPosition: 'center',
+                      }}
+                    />
                   </div>
 
                   {/* Card front (dish) */}

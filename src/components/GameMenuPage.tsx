@@ -23,9 +23,9 @@ import wordImg from '../assets/word.png';
 // TOKEN WARNA — hasil inspeksi Figma node #536-19 (read-only)
 // ─────────────────────────────────────────────────────────────────────────────
 const MAROON = '#6E1F1F';  // Foundation/Red/Normal
-const GOLD   = '#F9CE65';  // Foundation/Yellow/Normal
-const CREAM  = '#F1E9E9';  // Foundation/Red/Light — latar kartu preview
-const DARK   = '#444651';  // fill_39581b88 — warna teks deskripsi
+const GOLD = '#F9CE65';  // Foundation/Yellow/Normal
+const CREAM = '#F1E9E9';  // Foundation/Red/Light — latar kartu preview
+const DARK = '#444651';  // fill_39581b88 — warna teks deskripsi
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TIPE DATA — struktur permainan yang mudah diperluas
@@ -158,37 +158,37 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
                 }}
                 aria-label={`Mulai bermain ${game.nama}`}
               >
-              Mulai Main
-              {/* Ikon panah atas (Figma: lucide:arrow-up #1153:1535, 24×24) */}
-              <svg
-                aria-hidden="true"
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="transition-transform duration-300 group-hover:-translate-y-1"
+                Mulai Main
+                {/* Ikon panah atas (Figma: lucide:arrow-up #1153:1535, 24×24) */}
+                <svg
+                  aria-hidden="true"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-transform duration-300 group-hover:-translate-y-1"
+                >
+                  <line x1="12" y1="19" x2="12" y2="5" />
+                  <polyline points="5 12 12 5 19 12" />
+                </svg>
+              </button>
+            ) : (
+              /* Tombol non-aktif untuk game yang belum tersedia */
+              <div
+                className="inline-flex items-center gap-2 font-poppins font-medium rounded-[16px] select-none"
+                style={{
+                  backgroundColor: '#E8E8E8',
+                  color: '#999',
+                  padding: '16px 24px',
+                  fontSize: 'clamp(16px, 2vw, 24px)',
+                }}
               >
-                <line x1="12" y1="19" x2="12" y2="5" />
-                <polyline points="5 12 12 5 19 12" />
-              </svg>
-            </button>
-          ) : (
-            /* Tombol non-aktif untuk game yang belum tersedia */
-            <div
-              className="inline-flex items-center gap-2 font-poppins font-medium rounded-[16px] select-none"
-              style={{
-                backgroundColor: '#E8E8E8',
-                color: '#999',
-                padding: '16px 24px',
-                fontSize: 'clamp(16px, 2vw, 24px)',
-              }}
-            >
-              Segera Hadir
-            </div>
+                Segera Hadir
+              </div>
             )}
           </div>
         </div>
@@ -299,7 +299,7 @@ export function GameMenuPage() {
             className="font-poppins font-medium text-white leading-tight mb-4"
             style={{ fontSize: 'clamp(28px, 5.5vw, 64px)' }}
           >
-            Cita Rasa Bukittinggi
+            Petualangan Bukittinggi
           </h1>
 
           {/* Garis dekoratif emas */}

@@ -19,6 +19,7 @@ import group6 from '../assets/Group 6.png';
 import group7 from '../assets/Group 7 (1).png';
 import coverBg from '../assets/cover.png';
 import daunSvg from '../assets/daun.png';
+import { KulinerSkeleton } from '../components/ui/PageSkeletons';
 
 import { GameCardPreviewStack } from '../components/GameCardPreviewStack';
 
@@ -421,9 +422,12 @@ export function KulinerPage() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayCategory, setDisplayCategory] = useState(activeCategory);
   const [selectedItem, setSelectedItem] = useState<{ item: KulinerItem; category: 'makanan' | 'manisan' | 'minuman' } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+    const t = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(t);
   }, []);
 
 
@@ -443,6 +447,10 @@ export function KulinerPage() {
       setActiveCategory(category);
     }
   };
+
+  if (isLoading) {
+    return <div className="mt-[76px]"><KulinerSkeleton /></div>;
+  }
 
   return (
     /*

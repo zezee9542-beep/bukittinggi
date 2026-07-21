@@ -6,6 +6,7 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import mapsSvg from '../assets/maps.svg';
 import tigaSvg from '../assets/tiga.svg';
 import budaya4kVideo from '../assets/Budaya 4k.mp4';
+import { BudayaSkeleton } from '../components/ui/PageSkeletons';
 
 // Custom left/right navigation cursors shown once the intro scroll-through is complete
 const PREV_SLIDE_CURSOR =
@@ -180,6 +181,12 @@ export function BudayaPage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(t);
+  }, []);
 
   // Scroll progress maps directly to a fractional horizontal slide position.
   const [activeSlide, setActiveSlide] = useState(0);
@@ -233,7 +240,7 @@ export function BudayaPage() {
       window.removeEventListener('scroll', requestUpdate);
       window.removeEventListener('resize', requestUpdate);
     };
-  }, []);
+  }, [isLoading]);
 
   const activeSlideInt = Math.min(slides.length - 1, Math.round(activeSlide));
   const slideProgress  = Math.max(0, Math.min(1, activeSlide / (slides.length - 1)));
@@ -282,9 +289,12 @@ export function BudayaPage() {
         ? NEXT_SLIDE_CURSOR
         : 'default';
 
+  if (isLoading) {
+    return <BudayaSkeleton />;
+  }
 
   return (
-    <div className="relative min-h-screen bg-[#3A0D0D] text-white overflow-x-clip">
+    <div className="relative min-h-screen bg-[#3A0D0D] text-white overflow-x-clip animate-in fade-in duration-500">
       {/* ── Hero Section ── */}
       <section
         ref={heroRef}
