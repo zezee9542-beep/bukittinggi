@@ -28,9 +28,8 @@ export const AITravelPlannerSection: React.FC = () => {
       {/* ════ Floating Premium Card: Heart Of Minangkabau (menara.webp) ════ */}
       <div className="w-full max-w-[1000px] px-4 sm:px-6 relative z-30 -mb-[180px] sm:-mb-[220px] md:-mb-[250px]">
         <div
-          className={`relative w-full min-h-[440px] sm:min-h-[490px] lg:h-[520px] rounded-[28px] sm:rounded-[38px] shadow-[0_22px_55px_rgba(0,0,0,0.35)] overflow-visible transition-all duration-1000 ease-out ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
+          className={`relative w-full min-h-[440px] sm:min-h-[490px] lg:h-[520px] rounded-[28px] sm:rounded-[38px] shadow-[0_22px_55px_rgba(0,0,0,0.35)] overflow-visible transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+            }`}
           style={{ backgroundColor: '#5C1616' }}
         >
           {/* Decorative Earth Image in bottom-right corner */}
@@ -86,9 +85,8 @@ export const AITravelPlannerSection: React.FC = () => {
 
       {/* ── Full Width Image pp.png (Seamless bottom connection without gap) ── */}
       <div
-        className={`w-full border-none outline-none transition-all duration-800 ease-out relative z-10 -mb-1 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
+        className={`w-full border-none outline-none transition-all duration-800 ease-out relative z-10 -mb-1 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
       >
         <img
           src={ppPng}
@@ -100,15 +98,30 @@ export const AITravelPlannerSection: React.FC = () => {
 
       {/* ════ Section Ambo RancakBot Promo Card (Background #6E1F1F - Merged seamlessly, front-most layer) ════ */}
       <div
-        className="w-full relative z-30 pt-12 sm:pt-16 md:pt-20 pb-24 sm:pb-32 lg:pb-40 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center border-none outline-none overflow-hidden -mt-1"
+        className="w-full relative z-30 pt-16 md:pt-24 pb-32 md:pb-44 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center border-none outline-none overflow-visible -mt-1"
         style={{ backgroundColor: '#6E1F1F' }}
       >
+        <style>{`
+          @keyframes floatBubble {
+            0%, 100% { transform: translateY(-10px); }
+            50% { transform: translateY(10px); }
+          }
+          .animate-float-bubble {
+            animation: floatBubble 3.5s ease-in-out infinite;
+          }
+        `}</style>
+
         {/* ── Card Container ── */}
         <div
-          className={`relative w-full max-w-[1020px] min-h-[420px] lg:h-[425px] rounded-[28px] sm:rounded-[34px] bg-white shadow-[0_30px_70px_rgba(0,0,0,0.45)] overflow-visible z-40 flex flex-col md:flex-row items-center transition-all duration-1000 ease-out ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
+          className={`relative w-full max-w-[1020px] min-h-[420px] lg:h-[425px] rounded-[28px] sm:rounded-[34px] bg-white shadow-[0_30px_70px_rgba(0,0,0,0.45)] overflow-visible z-40 flex flex-col md:flex-row items-center transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+            }`}
         >
+          {/* ── 4 Floating Sparkle Bubbles ── */}
+          <img src="/Frame 1686556430.svg" alt="" aria-hidden="true" className="absolute -top-6 right-8 md:-top-10 md:right-20 w-14 h-14 md:w-20 md:h-20 pointer-events-none z-30 animate-float-bubble" style={{ animationDelay: '0s' }} />
+          <img src="/Frame 1686556430.svg" alt="" aria-hidden="true" className="absolute top-4 -left-6 md:top-12 md:-left-16 w-16 h-16 md:w-24 md:h-24 pointer-events-none z-30 animate-float-bubble" style={{ animationDelay: '0.7s' }} />
+          <img src="/Frame 1686556430.svg" alt="" aria-hidden="true" className="absolute top-1/2 -right-8 md:-right-16 -translate-y-1/2 w-16 h-16 md:w-24 md:h-24 pointer-events-none z-30 animate-float-bubble" style={{ animationDelay: '1.4s' }} />
+          <img src="/Frame 1686556430.svg" alt="" aria-hidden="true" className="absolute -bottom-10 left-4 md:-bottom-25 md:left-16 w-16 h-16 md:w-24 md:h-24 pointer-events-none z-30 animate-float-bubble" style={{ animationDelay: '2.1s' }} />
+
           {/* Watermark Layer Background (jam.png) inside card - Prominently visible in bottom-right corner */}
           <img
             src={jamPng}
@@ -132,7 +145,7 @@ export const AITravelPlannerSection: React.FC = () => {
 
           {/* ── Right Content Area ── */}
           <div className="relative z-20 flex-1 flex flex-col justify-between items-start h-full py-7 sm:py-9 px-6 sm:px-10 md:pl-[410px] lg:pl-[460px] md:pr-10 lg:pr-12 text-left">
-            
+
             {/* Top Group: Bubble & Headline & Description */}
             <div className="w-full">
               {/* 1. AI Technology Badge: bg #F9CE65, Poppins Medium text #531717 */}
