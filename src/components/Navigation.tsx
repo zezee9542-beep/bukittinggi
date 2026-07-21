@@ -216,10 +216,10 @@ export function Navigation() {
 
             {/* Dropdown Card */}
             <div
-              className={`absolute top-full left-1/2 -translate-x-1/2 mt-0.5 w-48 bg-white border border-neutral-200/80 rounded-2xl shadow-xl py-2 flex flex-col transition-all duration-300 origin-top z-[9999] ${
+              className={`absolute top-full left-1/2 -translate-x-1/2 -mt-1.5 w-48 bg-white border border-neutral-200/80 rounded-2xl shadow-xl py-2 flex flex-col transition-all duration-300 origin-top z-[9999] before:absolute before:-top-4 before:inset-x-0 before:h-4 ${
                 isJelajahiOpen
                   ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
-                  : 'opacity-0 scale-95 -translate-y-1.5 pointer-events-none'
+                  : 'opacity-0 scale-95 -translate-y-1 pointer-events-none'
               }`}
             >
               {jelajahiLinks.map((subLink) => {
