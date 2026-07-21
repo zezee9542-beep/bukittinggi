@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import hamaSvg from '../assets/hama.svg';
-import fotJpeg from '../assets/fot.jpeg';
+import frame2Png from '../assets/frame (2).png';
+import i1Png from '../assets/i1.png';
+import i2Png from '../assets/i2.png';
 
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
+
+  // State to switch image between i1.png and i2.png smoothly
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const images = [i1Png, i2Png];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImgIndex((prev) => (prev === 0 ? 1 : 0));
+    }, 4500); // Swaps image every 4.5 seconds
+    return () => clearInterval(timer);
+  }, []);
 
   const handleOpenBot = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -13,10 +26,27 @@ export const Footer: React.FC = () => {
 
   return (
     <footer
-      className="w-full relative z-30 pt-16 pb-10 px-6 sm:px-10 md:px-14 lg:px-20 text-white overflow-hidden border-none outline-none"
+      className="w-full relative z-30 min-h-[718px] lg:h-[718px] px-6 sm:px-10 md:px-14 lg:px-20 pt-16 pb-12 text-white overflow-hidden border-none outline-none flex flex-col justify-between"
       style={{ backgroundColor: '#5F1712' }}
     >
-      <div className="relative z-20 max-w-[1400px] mx-auto flex flex-col lg:flex-row items-start justify-between gap-12 lg:gap-16">
+      {/* ── Background Image: frame (2).png ── */}
+      <img
+        src={frame2Png}
+        alt="Footer Background Frame"
+        className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none z-0"
+        draggable={false}
+      />
+
+      {/* Dark gradient overlay for rich maroon contrast */}
+      <div
+        className="absolute inset-0 pointer-events-none z-10"
+        style={{
+          background: 'linear-gradient(180deg, rgba(95,23,18,0.75) 0%, rgba(95,23,18,0.92) 100%)',
+        }}
+      />
+
+      {/* ── Main Footer Content Container ── */}
+      <div className="relative z-20 max-w-[1400px] w-full mx-auto flex flex-col lg:flex-row items-start justify-between gap-10 lg:gap-14 my-auto">
         
         {/* ── Left Column: Logo (hama.svg), Tagline, Socials, Copyright ── */}
         <div className="flex-1 flex flex-col items-start max-w-[360px]">
@@ -28,12 +58,12 @@ export const Footer: React.FC = () => {
             <img
               src={hamaSvg}
               alt="Bukittinggi Heritage Logo"
-              className="h-[65px] sm:h-[78px] w-auto object-contain transition-transform group-hover:scale-105 duration-300"
+              className="h-[68px] sm:h-[82px] w-auto object-contain transition-transform group-hover:scale-105 duration-300"
             />
           </div>
 
           {/* Tagline */}
-          <p className="font-poppins font-normal text-white/85 text-[13.5px] sm:text-[14px] leading-[1.65] mb-6">
+          <p className="font-poppins font-normal text-white/90 text-[13.5px] sm:text-[14px] leading-[1.65] mb-6">
             Menelusuri jejak sejarah, budaya, dan pesona Bukittinggi dalam satu pengalaman digital.
           </p>
 
@@ -78,82 +108,94 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Copyright */}
-          <span className="font-poppins text-[12.5px] text-white/50">
-            © 2024 Bukittinggi Heritage
+          <span className="font-poppins text-[12.5px] text-white/60">
+            &copy; 2026 Bukittinggi Heritage
           </span>
         </div>
 
         {/* ── Center Column: Navigasi Links (2 Columns) ── */}
         <div className="flex-1 max-w-[420px] w-full">
-          <h3 className="font-poppins font-semibold text-white text-[18px] sm:text-[19px] mb-5 tracking-tight">
-            Navigasi
+          <h3 className="font-poppins font-bold text-white text-[18px] sm:text-[20px] mb-6 tracking-[0.18em] uppercase">
+            NAVIGASI
           </h3>
-          <div className="grid grid-cols-2 gap-y-3.5 gap-x-8 text-[14px] sm:text-[15px] font-poppins text-white/80">
+          <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-[14px] sm:text-[15px] font-poppins text-white/85">
             {/* Column 1 */}
-            <div className="flex flex-col gap-3.5">
-              <span onClick={() => navigate('/')} className="hover:text-[#F9CE65] transition-colors cursor-pointer select-none">
+            <div className="flex flex-col gap-4">
+              <span onClick={() => navigate('/')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Beranda
               </span>
-              <span onClick={handleOpenBot} className="hover:text-[#F9CE65] transition-colors cursor-pointer select-none">
+              <span onClick={handleOpenBot} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Ambo Rancakbot
               </span>
-              <span onClick={() => navigate('/travel-planner')} className="hover:text-[#F9CE65] transition-colors cursor-pointer select-none">
+              <span onClick={() => navigate('/travel-planner')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 AI Travel Planner
               </span>
-              <span onClick={() => navigate('/game')} className="hover:text-[#F9CE65] transition-colors cursor-pointer select-none">
+              <span onClick={() => navigate('/game')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Game
               </span>
             </div>
 
             {/* Column 2 */}
-            <div className="flex flex-col gap-3.5">
-              <span onClick={() => navigate('/sejarah')} className="hover:text-[#F9CE65] transition-colors cursor-pointer select-none">
+            <div className="flex flex-col gap-4">
+              <span onClick={() => navigate('/sejarah')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Sejarah
               </span>
-              <span onClick={() => navigate('/budaya')} className="hover:text-[#F9CE65] transition-colors cursor-pointer select-none">
+              <span onClick={() => navigate('/budaya')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Budaya
               </span>
-              <span onClick={() => navigate('/kuliner')} className="hover:text-[#F9CE65] transition-colors cursor-pointer select-none">
+              <span onClick={() => navigate('/kuliner')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Kuliner
               </span>
-              <span onClick={() => navigate('/peta')} className="hover:text-[#F9CE65] transition-colors cursor-pointer select-none">
+              <span onClick={() => navigate('/peta')} className="hover:text-[#F9CE65] transition-all duration-300 hover:translate-x-1 cursor-pointer select-none">
                 Peta & Wisata
               </span>
             </div>
           </div>
         </div>
 
-        {/* ── Right Column: Card Image hai.png with Inner Shadow & Legal Links ── */}
-        <div className="flex-1 flex flex-col items-end max-w-[420px] w-full">
-          {/* Card Container fitted 100% perfectly with image aspect ratio */}
-          <div className="relative w-full aspect-[16/9.5] sm:aspect-[16/9] rounded-[24px] overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.35)] border border-white/10 mb-4 group select-none bg-[#3D1212]">
-            {/* Image hai.png */}
-            <img
-              src={fotJpeg}
-              alt="Jam Gadang Bukittinggi"
-              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 select-none"
-              draggable={false}
-            />
-            {/* Inner Shadow Effect on Card */}
-            <div
-              className="absolute inset-0 pointer-events-none rounded-[24px]"
-              style={{
-                boxShadow: 'inset 0px 0px 25px 5px rgba(0, 0, 0, 0.5)',
-              }}
-            />
-          </div>
+        {/* ── Right Column: Card Jam Gadang 100 Tahun with Alternating i1.png / i2.png Image ── */}
+        <div className="flex-1 flex flex-col items-center lg:items-end max-w-[420px] w-full">
+          {/* Maroon Card Container matching Figma selection colors & drop shadow */}
+          <div
+            className="relative w-full bg-[#5F1712] rounded-[32px] p-6 sm:p-7 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.55),0_0_35px_rgba(0,0,0,0.3)] flex flex-col items-center select-none backdrop-blur-md"
+            style={{
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
+            }}
+          >
+            {/* White Frame for Image — Fitted cleanly to image size */}
+            <div className="relative w-full rounded-[24px] bg-white p-3.5 sm:p-4 border border-white/90 shadow-md flex items-center justify-center overflow-hidden aspect-[1.18/1]">
+              {images.map((imgSrc, index) => (
+                <img
+                  key={index}
+                  src={imgSrc}
+                  alt="100 Tahun Jam Gadang"
+                  className={`absolute inset-0 w-full h-full object-contain p-2 transition-all duration-700 ease-in-out select-none ${
+                    currentImgIndex === index
+                      ? 'opacity-100 scale-100'
+                      : 'opacity-0 scale-95 pointer-events-none'
+                  }`}
+                  draggable={false}
+                />
+              ))}
+            </div>
 
-          {/* Legal Links */}
-          <div className="flex items-center gap-6 text-[12.5px] font-poppins text-white/65">
-            <span className="hover:text-white transition-colors cursor-pointer">
-              Terms of service
-            </span>
-            <span className="hover:text-white transition-colors cursor-pointer">
-              Privacy policy
-            </span>
+            {/* Date & Commemorative Text below Image Frame */}
+            <h4 className="font-poppins font-bold text-white tracking-[0.2em] text-[17px] sm:text-[19px] text-center mt-5 mb-2.5">
+              20 JUNI 2026
+            </h4>
+            <p className="font-poppins text-white/90 text-[12.5px] sm:text-[13.5px] italic text-center leading-relaxed max-w-[290px] mx-auto">
+              "Memperingati 100 Tahun Berdirinya Jam Gadang, Ikon Bukittinggi."
+            </p>
           </div>
         </div>
 
+      </div>
+
+      {/* ── Bottom Watermark Text across Footer ── */}
+      <div className="relative z-20 w-full text-center mt-8 pointer-events-none select-none overflow-hidden">
+        <span className="font-cormorant font-bold text-white/[0.07] text-[70px] sm:text-[120px] md:text-[150px] lg:text-[170px] leading-none tracking-tight whitespace-nowrap inline-block">
+          Bukittinggi Heritage.
+        </span>
       </div>
     </footer>
   );
