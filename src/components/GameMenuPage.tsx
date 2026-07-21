@@ -17,6 +17,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GameCardPreviewStack } from './GameCardPreviewStack';
 import cardImg from '../assets/card.png';
+import wordImg from '../assets/word.png';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TOKEN WARNA — hasil inspeksi Figma node #536-19 (read-only)
@@ -42,6 +43,8 @@ interface GameEntry {
   previewGambar: string[];
   /** Status ketersediaan: 'tersedia' = aktif, 'segera' = coming soon */
   status: 'tersedia' | 'segera';
+  /** Gambar preview khusus untuk card ini (opsional) */
+  previewImage?: string;
   /** Label kategori seperti "Memori", "Kuis", "Puzzle" */
   kategori: string;
 }
@@ -68,6 +71,7 @@ const DAFTAR_GAME: GameEntry[] = [
     rute: '/game/word-search',
     previewGambar: [cardImg, cardImg, cardImg],
     status: 'tersedia',
+    previewImage: wordImg,
     kategori: 'Puzzle',
   },
 ];
@@ -103,7 +107,7 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: () => void }) {
       >
         {/* ── Area Preview Atas ──────────────────────────────────────────────── */}
         <div className="px-6 mt-[29px] w-full">
-          <GameCardPreviewStack />
+          <GameCardPreviewStack imageSrc={game.previewImage} />
         </div>
 
         {/* ── Area Teks dan Tombol ───────────────────────────────────────────── */}

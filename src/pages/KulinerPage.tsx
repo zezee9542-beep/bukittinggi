@@ -16,7 +16,7 @@ import piringImg from '../assets/piring.png';
 import pringImg from '../assets/pring.png';
 import groupText from '../assets/Group.png';
 import group6 from '../assets/Group 6.png';
-import group7 from '../assets/Group 7.png';
+import group7 from '../assets/Group 7 (1).png';
 import coverBg from '../assets/cover.png';
 import daunSvg from '../assets/daun.png';
 

@@ -531,7 +531,9 @@ model-viewer::part(canvas) {
   animation: heroMarqueeTrack 34s linear infinite;
 }
 
-.animate-hero-marquee:hover {
+.animate-hero-marquee:hover,
+.animate-hero-marquee:hover .animate-wave-odd,
+.animate-hero-marquee:hover .animate-wave-even {
   animation-play-state: paused;
 }
 

@@ -95,7 +95,7 @@ function App() {
           <Route path="/landing" element={<LandingTestPage />} />
         </Routes>
       </main>
-      <Footer />
+      {location.pathname !== '/travel-planner' && location.pathname !== '/peta' && <Footer />}
       {showRancakBot && location.pathname !== '/profil-bukittinggi' && location.pathname !== '/peta' && (
         <>
           <RancakBotWidget />
