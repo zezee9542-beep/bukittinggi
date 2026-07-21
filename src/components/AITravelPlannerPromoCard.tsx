@@ -24,9 +24,8 @@ export const AITravelPlannerPromoCard: React.FC = () => {
     >
       {/* ── Section Title: AI Travel Planner ✨ ── */}
       <div
-        className={`flex items-center justify-center gap-3 mb-12 sm:mb-16 transition-all duration-1000 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}
+        className={`flex items-center justify-center gap-3 mb-12 sm:mb-16 transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
       >
         <h2 className="font-poppins font-semibold text-[32px] sm:text-[40px] lg:text-[46px] text-[#531717] tracking-tight">
           AI Travel Planner
@@ -36,9 +35,8 @@ export const AITravelPlannerPromoCard: React.FC = () => {
 
       {/* ── Main Dark Red Container & Floating Badge Wrapper ── */}
       <div
-        className={`relative w-full max-w-[1020px] transition-all duration-1000 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-        }`}
+        className={`relative w-full max-w-[1020px] transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+          }`}
       >
         {/* Dark Red Rounded Card (#5F1712 / #531717) */}
         <div

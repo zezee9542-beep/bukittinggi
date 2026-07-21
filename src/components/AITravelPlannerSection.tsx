@@ -23,10 +23,10 @@ export const AITravelPlannerSection: React.FC = () => {
   return (
     <section
       ref={ref}
-      className="relative z-20 bg-white pt-36 sm:pt-48 md:pt-60 w-full overflow-hidden flex flex-col items-center border-none outline-none"
+      className="relative z-20 bg-white pt-36 sm:pt-48 md:pt-56 w-full overflow-hidden flex flex-col items-center border-none outline-none"
     >
       {/* ════ Floating Premium Card: Heart Of Minangkabau (menara.webp) ════ */}
-      <div className="w-full max-w-[1000px] px-4 sm:px-6 relative z-30 -mb-[180px] sm:-mb-[220px] md:-mb-[250px]">
+      <div className="w-full max-w-[1000px] px-4 sm:px-6 relative z-30 -mb-[180px] sm:-mb-[220px] md:-mb-[240px]">
         <div
           className={`relative w-full min-h-[440px] sm:min-h-[490px] lg:h-[520px] rounded-[28px] sm:rounded-[38px] shadow-[0_22px_55px_rgba(0,0,0,0.35)] overflow-visible transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
             }`}
@@ -98,7 +98,7 @@ export const AITravelPlannerSection: React.FC = () => {
 
       {/* ════ Section Ambo RancakBot Promo Card (Background #6E1F1F - Merged seamlessly, front-most layer) ════ */}
       <div
-        className="w-full relative z-30 pt-16 md:pt-24 pb-32 md:pb-44 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center border-none outline-none overflow-visible -mt-1"
+        className="w-full relative z-30 pt-2 sm:pt-4 md:pt-6 pb-20 md:pb-28 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center border-none outline-none overflow-visible -mt-8 sm:-mt-12 md:-mt-16"
         style={{ backgroundColor: '#6E1F1F' }}
       >
         <style>{`
