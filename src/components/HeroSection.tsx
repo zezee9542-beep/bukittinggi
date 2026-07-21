@@ -34,10 +34,12 @@ const MARQUEE_ITEMS = [...BASE_CARDS, ...BASE_CARDS, ...BASE_CARDS, ...BASE_CARD
 export function HeroSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+  const isAnyHovered = hoveredIndex !== null;
+
   return (
     <section className="relative w-full bg-white pt-[82px] sm:pt-[86px] md:pt-[90px] px-1.5 sm:px-2.5 md:px-3.5 pb-16 sm:pb-20 flex justify-center overflow-visible">
       {/* Outer Hero Card Container - Enlarged background with slim gaps from navbar & sides */}
-      <div className="relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-visible shadow-2xl">
+      <div className="relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-hidden shadow-2xl">
         
         {/* Mobile Background Image (image copy 2.png - block sm:hidden) */}
         <img
@@ -53,9 +55,16 @@ export function HeroSection() {
           className="hidden sm:block absolute inset-0 w-full h-full object-cover object-[center_30%] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] select-none pointer-events-none"
         />
 
-        {/* Floating Cards Gallery Row - Shifted higher up & overlapping side white margins */}
-        <div className="absolute -left-2 -right-2 sm:-left-4 sm:-right-4 md:-left-6 md:-right-6 bottom-6 sm:bottom-10 md:bottom-14 z-30 overflow-hidden py-8 pointer-events-auto">
-          <div className="animate-hero-marquee group flex items-center gap-3.5 sm:gap-4.5 md:gap-6 px-2">
+        {/* ── Dark Overlay when a card is hovered/targeted (Spotlight ambience) ── */}
+        <div
+          className={`absolute inset-0 bg-black/65 backdrop-blur-[2px] transition-opacity duration-500 z-20 pointer-events-none ${
+            isAnyHovered ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+
+        {/* Floating Cards Gallery Row — Balanced medium card sizing positioned cleanly near bottom */}
+        <div className="absolute -left-2 -right-2 sm:-left-4 sm:-right-4 md:-left-6 md:-right-6 bottom-2 sm:bottom-4 md:bottom-5 z-30 overflow-visible py-4 pointer-events-auto">
+          <div className="animate-hero-marquee group flex items-center gap-3.5 sm:gap-4.5 md:gap-5.5 px-2">
             {MARQUEE_ITEMS.map((card, idx) => {
               const isEven = idx % 2 === 0;
               const isHovered = hoveredIndex === idx;
@@ -65,19 +74,57 @@ export function HeroSection() {
                   key={`${card.id}-${idx}`}
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className={`relative flex-shrink-0 rounded-[18px] sm:rounded-[22px] md:rounded-[26px] overflow-hidden shadow-[0_14px_36px_rgba(0,0,0,0.4)] border-2 border-white/95 transition-all duration-300 transform cursor-pointer w-[125px] sm:w-[155px] md:w-[185px] lg:w-[205px] aspect-[3/4] ${
+                  className={`relative flex-shrink-0 cursor-pointer transition-all duration-500 ease-out ${
                     isEven ? 'animate-wave-odd' : 'animate-wave-even'
                   } ${
-                    isHovered ? 'scale-110 -translate-y-3 border-white z-40 shadow-[0_22px_50px_rgba(0,0,0,0.6)]' : 'hover:scale-105'
+                    isHovered
+                      ? 'z-50 scale-100'
+                      : isAnyHovered
+                      ? 'opacity-35 brightness-50 scale-[0.96] blur-[0.5px] z-10'
+                      : 'opacity-100 scale-100 z-20'
                   }`}
                 >
-                  {/* Card Image — Fitted 100% perfectly */}
-                  <img
-                    src={card.image}
-                    alt={card.title}
-                    className="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105 select-none"
-                    draggable={false}
-                  />
+                  {/* Spotlight Radial Light Beam (Behind targeted card) */}
+                  {isHovered && (
+                    <div
+                      className="absolute -inset-8 sm:-inset-10 rounded-[36px] pointer-events-none transition-opacity duration-500 z-0 animate-pulse"
+                      style={{
+                        background:
+                          'radial-gradient(circle at center, rgba(255,255,255,0.95) 0%, rgba(249,206,101,0.7) 35%, rgba(249,206,101,0.2) 65%, transparent 85%)',
+                        filter: 'blur(10px)',
+                      }}
+                    />
+                  )}
+
+                  {/* Card Frame — Balanced medium size with zero whitespace */}
+                  <div
+                    className={`relative w-[132px] sm:w-[168px] md:w-[198px] lg:w-[220px] aspect-[3/4] rounded-[18px] sm:rounded-[22px] md:rounded-[26px] overflow-hidden border-2 leading-none p-0 flex items-center justify-center transition-all duration-500 ${
+                      isHovered
+                        ? 'border-[#F9CE65] shadow-[0_0_40px_rgba(249,206,101,0.95),0_0_80px_rgba(255,255,255,0.6)] ring-4 ring-white/80'
+                        : 'border-white/95 shadow-[0_14px_36px_rgba(0,0,0,0.4)]'
+                    }`}
+                  >
+                    {/* Card Image — Scaled 105% to completely fill container with no gaps */}
+                    <img
+                      src={card.image}
+                      alt={card.title}
+                      className={`w-full h-full object-cover object-center block m-0 p-0 select-none transition-all duration-500 scale-105 ${
+                        isHovered ? 'brightness-110 contrast-105' : ''
+                      }`}
+                      draggable={false}
+                    />
+
+                    {/* Spotlight Light Reflection Overlay on Hovered Card */}
+                    {isHovered && (
+                      <div
+                        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+                        style={{
+                          background:
+                            'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(249,206,101,0.15) 100%)',
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
               );
             })}
