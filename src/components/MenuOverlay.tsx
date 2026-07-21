@@ -45,7 +45,14 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
     }, 280);
   };
 
-  const navItems = [
+  interface NavItem {
+    path: string;
+    label: string;
+    sub: string;
+    sectionId?: string;
+  }
+
+  const navItems: NavItem[] = [
     { path: '/', label: t('nav_home'), sub: t('nav_back_home') },
     { path: '/sejarah', label: t('nav_history'), sub: t('nav_history_sub') },
     { path: '/budaya', label: t('nav_culture'), sub: t('nav_culture_sub') },
