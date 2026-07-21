@@ -23,10 +23,10 @@ export const AITravelPlannerSection: React.FC = () => {
   return (
     <section
       ref={ref}
-      className="relative z-20 bg-white pt-36 sm:pt-48 md:pt-56 w-full overflow-hidden flex flex-col items-center border-none outline-none"
+      className="relative z-20 bg-white pt-16 sm:pt-28 md:pt-56 w-full overflow-hidden flex flex-col items-center border-none outline-none"
     >
       {/* ════ Floating Premium Card: Heart Of Minangkabau (menara.webp) ════ */}
-      <div className="w-full max-w-[1000px] px-4 sm:px-6 relative z-30 -mb-[180px] sm:-mb-[220px] md:-mb-[240px]">
+      <div className="w-full max-w-[1000px] px-4 sm:px-6 relative z-30 -mb-[80px] sm:-mb-[160px] md:-mb-[240px]">
         <div
           className={`relative w-full min-h-[440px] sm:min-h-[490px] lg:h-[520px] rounded-[28px] sm:rounded-[38px] shadow-[0_22px_55px_rgba(0,0,0,0.35)] overflow-visible transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
             }`}
@@ -98,7 +98,7 @@ export const AITravelPlannerSection: React.FC = () => {
 
       {/* ════ Section Ambo RancakBot Promo Card (Background #6E1F1F - Merged seamlessly, front-most layer) ════ */}
       <div
-        className="w-full relative z-30 pt-2 sm:pt-4 md:pt-6 pb-20 md:pb-28 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center border-none outline-none overflow-visible -mt-8 sm:-mt-12 md:-mt-16"
+        className="w-full relative z-30 pt-8 sm:pt-12 md:pt-6 pb-20 md:pb-28 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center border-none outline-none overflow-visible -mt-2 sm:-mt-6 md:-mt-16"
         style={{ backgroundColor: '#6E1F1F' }}
       >
         <style>{`
@@ -131,7 +131,7 @@ export const AITravelPlannerSection: React.FC = () => {
           />
 
           {/* ── Left Smartphone Image Container (hp.png - Responsive Mobile Stacking) ── */}
-          <div className="relative md:absolute left-0 md:left-[-25px] lg:left-[-40px] bottom-0 z-50 flex items-end justify-center pointer-events-none self-center md:self-auto pt-6 md:pt-0 -mt-12 md:-mt-24">
+          <div className="relative md:absolute left-0 md:left-[-25px] lg:left-[-40px] bottom-0 z-50 flex items-end justify-center pointer-events-none self-center md:self-auto pt-4 md:pt-0 mt-0 md:-mt-24">
             <img
               src={hpPng}
               alt="Ambo RancakBot App Mockup"
@@ -144,7 +144,7 @@ export const AITravelPlannerSection: React.FC = () => {
           </div>
 
           {/* ── Right Content Area ── */}
-          <div className="relative z-20 flex-1 flex flex-col justify-between items-start h-full py-7 sm:py-9 px-6 sm:px-10 md:pl-[410px] lg:pl-[460px] md:pr-10 lg:pr-12 text-left">
+          <div className="relative z-20 flex-1 flex flex-col justify-between items-start h-full py-8 sm:py-9 px-6 sm:px-10 md:pl-[410px] lg:pl-[460px] md:pr-10 lg:pr-12 text-left">
 
             {/* Top Group: Bubble & Headline & Description */}
             <div className="w-full">

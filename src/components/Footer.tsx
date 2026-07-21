@@ -193,17 +193,17 @@ export const Footer: React.FC = () => {
 
       </div>
 
-      {/* ── Bottom Watermark Text: BUKITTINGGI HERITAGE (Diturunkan Lebih Bawah ke Dasar Footer) ── */}
-      <div className="relative z-20 w-full text-center mt-8 pt-6 pb-0 -mb-3 pointer-events-none select-none overflow-hidden">
+      {/* ── Bottom Watermark Text: Bukittinggi Heritage (Kapitalisasi Huruf Depan Saja & Diperkecil Sedikit) ── */}
+      <div className="relative z-20 w-full text-center mt-7 pt-4 pb-0 -mb-2 pointer-events-none select-none overflow-hidden">
         <h1
-          className="font-poppins font-medium uppercase text-center leading-none tracking-[0.18em] whitespace-nowrap"
+          className="font-poppins font-medium text-center leading-none tracking-[0.16em] whitespace-nowrap"
           style={{
-            fontSize: 'clamp(28px, 6.5vw, 98px)',
+            fontSize: 'clamp(24px, 5.8vw, 86px)',
             color: 'rgba(255, 255, 255, 0.06)',
             filter: 'blur(1.2px)',
           }}
         >
-          BUKITTINGGI HERITAGE
+          Bukittinggi Heritage
         </h1>
       </div>
     </footer>
