@@ -1192,31 +1192,36 @@ export function TravelPlannerPage() {
       {/* ── Custom Date Picker Modal Popup ── */}
       {isDatePickerOpen && createPortal(
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[900px] max-h-[90vh] overflow-y-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] p-8 relative flex flex-col font-manrope">
-            {/* Top-right close button */}
-            <button 
-              onClick={() => setIsDatePickerOpen(false)}
-              className="absolute top-6 right-6 w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 hover:text-neutral-800 transition-colors cursor-pointer"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
+          <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[900px] max-h-[90vh] flex flex-col relative font-manrope overflow-hidden">
+            {/* Sticky Header */}
+            <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md px-6 sm:px-8 py-5 border-b border-neutral-100 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="w-[48px] h-[48px] rounded-full bg-[#6B2D22] flex items-center justify-center flex-shrink-0">
+                  <img src={kalendSvg} alt="" className="w-5 h-5 invert brightness-0" style={{ filter: 'brightness(0) invert(1)' }} />
+                </div>
+                <div>
+                  <h2 className="font-cormorant font-bold text-[#1A1C1A] text-[22px] leading-tight">
+                    Pilih Tanggal Perjalanan
+                  </h2>
+                  <p className="text-neutral-500 text-[13px] mt-0.5">
+                    Pilih tanggal berangkat dan tanggal pergi untuk perjalananmu
+                  </p>
+                </div>
+              </div>
 
-            {/* Modal Header */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-[52px] h-[52px] rounded-full bg-[#6B2D22] flex items-center justify-center flex-shrink-0">
-                <img src={kalendSvg} alt="" className="w-6 h-6 invert brightness-0" style={{ filter: 'brightness(0) invert(1)' }} />
-              </div>
-              <div>
-                <h2 className="font-cormorant font-bold text-[#1A1C1A] text-[22px] leading-tight">
-                  Pilih Tanggal Perjalanan
-                </h2>
-                <p className="text-neutral-500 text-[13px] mt-0.5">
-                  Pilih tanggal berangkat dan tanggal pergi untuk perjalananmu
-                </p>
-              </div>
+              {/* Close button */}
+              <button 
+                onClick={() => setIsDatePickerOpen(false)}
+                className="w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 hover:text-neutral-800 transition-colors cursor-pointer flex-shrink-0"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
+
+            {/* Scrollable Modal Content (Scrollbar hidden) */}
+            <div className="flex-1 overflow-y-auto hide-scrollbar scrollbar-none p-6 sm:p-8" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 
             {/* Side-by-Side Calendars */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -1451,7 +1456,8 @@ export function TravelPlannerPage() {
             </div>
           </div>
         </div>
-      , document.body)}
+      </div>
+    , document.body)}
     </main>
   );
 }

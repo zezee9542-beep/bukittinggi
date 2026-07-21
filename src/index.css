@@ -24,36 +24,19 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-html {
-  overflow-x: clip;
+/* ── Completely Hide All Native Scrollbars visually (scrolling still works) ── */
+*, html, body {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100dvh;
-  background-color: #ffffff;
-  overflow-x: clip;
-}
-
-/* ── Custom Sleek Scrollbar ── */
+*::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #fafafa;
-}
-::-webkit-scrollbar-thumb {
-  background: #d4d4d4;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #a3a3a3;
-}
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #d4d4d4 #fafafa;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 #root {
@@ -348,13 +331,17 @@ body {
   animation: revealFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ── Hide scrollbar for mobile swipe carousels ── */
-.hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+/* ── Hide scrollbars helper ── */
+.hide-scrollbar,
+.scrollbar-none {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
+.hide-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Keep native browser chrome hidden only while the Culinary route is active. */

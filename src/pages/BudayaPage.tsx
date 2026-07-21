@@ -389,9 +389,7 @@ export function BudayaPage() {
         <div className="sticky top-24 h-[calc(100dvh-6rem)] overflow-hidden flex flex-col items-center justify-center">
           <div
             ref={featureRef}
-            className={`w-full max-w-[1240px] mx-auto px-4 md:px-6 overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              featureVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
-            }`}
+            className="w-full max-w-[1240px] mx-auto px-4 md:px-6 overflow-hidden"
           >
             {/* ── Slide Viewport — locked to scroll during the intro pass, cursor-driven afterwards ── */}
             <div
@@ -415,7 +413,7 @@ export function BudayaPage() {
                   className="w-full flex-shrink-0 flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 items-start justify-start px-4 md:px-12"
                   style={{ width: '100%' }}
                 >
-                  {/* ── LEFT Image ── */}
+                  {/* ── LEFT Image (Static - No scroll entrance animation) ── */}
                   <img
                     src={slide.img}
                     alt={slide.title}
@@ -423,8 +421,10 @@ export function BudayaPage() {
                     loading={idx === 0 ? 'eager' : 'lazy'}
                   />
 
-                  {/* ── RIGHT Content ── */}
-                  <div className="flex-1 flex flex-col justify-start min-w-0 pt-1 md:pt-2 gap-4 md:gap-5">
+                  {/* ── RIGHT Content (Animated Text & Elements on Scroll) ── */}
+                  <div className={`flex-1 flex flex-col justify-start min-w-0 pt-1 md:pt-2 gap-4 md:gap-5 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                    featureVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  }`}>
                     <p
                       className="font-poppins uppercase tracking-[0.28em]"
                       style={{ color: '#F9CE65', fontSize: 11, fontWeight: 500 }}
@@ -623,18 +623,16 @@ function GridCard({
       className={[
         'group relative w-full overflow-hidden cursor-pointer select-none',
         'border-[1.5px] border-[#F9CE65] bg-[#2D0606]',
-        'transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]',
-        isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-[0.97]',
+        'transition-transform duration-500 ease-out hover:scale-[1.02]',
         mobileOpen ? 'mobile-active' : '',
       ].join(' ')}
       style={{
-        transitionDelay: `${index * 150}ms`,
         aspectRatio: '413 / 552',
         borderRadius: '5.81% 0 5.81% 0 / 4.35% 0 4.35% 0',
       }}
       onClick={() => setMobileOpen((v) => !v)}
     >
-      {/* Background photo */}
+      {/* Background photo (Static - No scroll entrance animation) */}
       <img
         src={item.img}
         alt={item.title}
@@ -669,8 +667,13 @@ function GridCard({
         }}
       />
 
-      {/* ── Content: Title + Gold Line + Description stacked inside one flex container ── */}
-      <div className="absolute inset-x-[8%] bottom-[7%] z-10 flex flex-col items-start text-left pointer-events-none w-[84%]">
+      {/* ── Content: Title + Gold Line + Description (Animated Text on Scroll) ── */}
+      <div 
+        className={`absolute inset-x-[8%] bottom-[7%] z-10 flex flex-col items-start text-left pointer-events-none w-[84%] transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+        }`}
+        style={{ transitionDelay: `${index * 150}ms` }}
+      >
         
         {/* Title — Cormorant Garamond Bold Italic */}
         <h3
