@@ -545,5 +545,67 @@ model-viewer::part(canvas) {
   animation: waveMotionEven 3.8s ease-in-out infinite;
 }
 
+/* ── Captivating Scroll Reveal Animation Utilities ── */
+@keyframes scrollRevealUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes scrollRevealScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scrollRevealLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollRevealRight {
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.scroll-reveal-up {
+  animation: scrollRevealUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.scroll-reveal-scale {
+  animation: scrollRevealScale 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.scroll-reveal-left {
+  animation: scrollRevealLeft 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.scroll-reveal-right {
+  animation: scrollRevealRight 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+
 
 
