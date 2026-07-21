@@ -1,71 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import logoSvg from '../assets/logo.svg';
-import { useMode } from '../context/ModeContext';
 import { useTranslation } from '../hooks/useTranslation';
 
 interface MenuOverlayProps {
   onClose: () => void;
 }
 
-export function MenuOverlay({ onClose }: MenuOverlayProps) {
-  const [mounted, setMounted] = useState(false);
-  const [closing, setClosing] = useState(false);
-  const { mode } = useMode();
-
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const isExplorer = mode === 'explorer';
-  const { t } = useTranslation();
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    const id = setTimeout(() => setMounted(true), 30);
-    return () => {
-      document.body.style.overflow = '';
-      clearTimeout(id);
-    };
-  }, []);
-
-  const handleClose = () => {
-    setClosing(true);
-    setTimeout(() => onClose(), 420);
-  };
-
-  const handleNavigate = (path: string, sectionId?: string) => {
-    setClosing(true);
-    setTimeout(() => {
-      navigate(path);
-      onClose();
-      if (sectionId) {
-        setTimeout(() => {
-          const el = document.getElementById(sectionId);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 350);
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }, 380);
-  };
-
-  const navItems: {
-    path: string;
-    label: string;
-    sub: string;
-    sectionId?: string;
-  }[] = [
-    { path: '/', label: t('nav_home'), sub: t('nav_back_home') },
-    { path: '/sejarah', label: t('nav_history'), sub: t('nav_history_sub') },
-    { path: '/budaya', label: t('nav_culture'), sub: t('nav_culture_sub') },
-    { path: '/kuliner', label: t('nav_culinary'), sub: 'Jelajahi Kuliner Khas' },
-    { path: '/travel-planner', label: 'AI Planner', sub: 'Rencanakan Perjalananmu' },
-    /* [Refactor]: Merged map route and game route logic */
-    { path: '/peta', label: 'Peta', sub: 'Peta Warisan Budaya' },
-    { path: '/game', label: 'Game', sub: 'Mainkan Sekarang' },
-  ];
-
-  return (
 export function MenuOverlay({ onClose }: MenuOverlayProps) {
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -196,7 +137,5 @@ export function MenuOverlay({ onClose }: MenuOverlayProps) {
         </div>
       </div>
     </div>
-  );
-}
   );
 }
