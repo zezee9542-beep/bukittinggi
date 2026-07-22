@@ -10,7 +10,6 @@ import foodIcon from '../assets/food.png';
 import leafBig from '../assets/leaf.png';
 import leaf1 from '../assets/leaf (1).png';
 import leaf2 from '../assets/leaf (2).png';
-import leaf3 from '../assets/leaf (3).png';
 import makanPlate from '../assets/makan.png';
 import piringImg from '../assets/piring.png';
 import pringImg from '../assets/pring.png';
@@ -464,7 +463,7 @@ const KULINER_DATA: Record<'makanan' | 'manisan' | 'minuman', KulinerItem[]> = {
 
 export function KulinerPage() {
   const navigate = useNavigate();
-  const { ref: heroRef, isVisible: heroVisible } = useScrollReveal<HTMLElement>({ threshold: 0.01 });
+  const { ref: heroRef } = useScrollReveal<HTMLElement>({ threshold: 0.01 });
   const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.15 });
   const { ref: decorationRef, isVisible: decorationVisible } = useScrollReveal<HTMLElement>({ threshold: 0.2 });
   const { ref: gameRef, isVisible: gameVisible } = useScrollReveal<HTMLElement>({ threshold: 0.15 });
