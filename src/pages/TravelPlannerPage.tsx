@@ -420,6 +420,20 @@ export function TravelPlannerPage() {
   };
 
 
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch {
+          // ignore
+        }
+      }
+    };
+  }, []);
+
   // 3. Voice: Web Speech API — toggle listening, transcript → chat input
   const handleVoice = () => {
     interface SpeechRecognitionCtor {
@@ -440,6 +454,7 @@ export function TravelPlannerPage() {
     if (isListening) return; // already running
 
     const recognition = new SpeechRecognitionAPI();
+    recognitionRef.current = recognition;
     recognition.lang = 'id-ID';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
@@ -451,8 +466,14 @@ export function TravelPlannerPage() {
       setChatInput(prev => prev ? `${prev} ${transcript}` : transcript);
     };
 
-    recognition.onend = () => setIsListening(false);
-    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+    recognition.onerror = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
 
     recognition.start();
   };

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 type Mode = 'heritage' | 'explorer';
@@ -81,22 +81,22 @@ export function ModeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [musicPlaying, location.pathname]);
 
-  const setMode = (newMode: Mode) => {
+  const setMusicPlaying = useCallback((play: boolean) => {
+    setMusicPlayingState(play);
+    localStorage.setItem('app-music', String(play));
+  }, []);
+
+  const setMode = useCallback((newMode: Mode) => {
     setModeState(newMode);
     if (location.pathname === '/') {
       setMusicPlaying(newMode === 'heritage');
     }
-  };
+  }, [location.pathname, setMusicPlaying]);
 
-  const setMusicPlaying = (play: boolean) => {
-    setMusicPlayingState(play);
-    localStorage.setItem('app-music', String(play));
-  };
-
-  const setLanguage = (lang: AppLanguage) => {
+  const setLanguage = useCallback((lang: AppLanguage) => {
     setLanguageState(lang);
     localStorage.setItem('app-language', lang);
-  };
+  }, []);
 
   useEffect(() => {
     if (mode === 'explorer') {
@@ -119,8 +119,13 @@ export function ModeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [language]);
 
+  const contextValue = useMemo(
+    () => ({ mode, setMode, language, setLanguage, musicPlaying, setMusicPlaying }),
+    [mode, setMode, language, setLanguage, musicPlaying, setMusicPlaying]
+  );
+
   return (
-    <ModeContext.Provider value={{ mode, setMode, language, setLanguage, musicPlaying, setMusicPlaying }}>
+    <ModeContext.Provider value={contextValue}>
       {children}
     </ModeContext.Provider>
   );

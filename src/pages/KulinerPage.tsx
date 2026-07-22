@@ -116,6 +116,7 @@ interface KulinerDetailModalProps {
 function KulinerDetailModal({ item, category, onClose }: KulinerDetailModalProps) {
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 20);
@@ -125,6 +126,7 @@ function KulinerDetailModal({ item, category, onClose }: KulinerDetailModalProps
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       clearTimeout(timer);
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
@@ -132,7 +134,7 @@ function KulinerDetailModal({ item, category, onClose }: KulinerDetailModalProps
   const handleClose = () => {
     setClosing(true);
     setMounted(false);
-    setTimeout(() => {
+    closeTimerRef.current = setTimeout(() => {
       onClose();
     }, 350);
   };

@@ -84,6 +84,26 @@ export function GameFlipPage() {
   const [reward, setReward] = useState<Recipe | null>(null);
   const [reelOffset, setReelOffset] = useState(0);
 
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const addTimeout = useCallback((cb: () => void, delay: number) => {
+    const id = setTimeout(() => {
+      cb();
+      timeoutsRef.current = timeoutsRef.current.filter((t) => t !== id);
+    }, delay);
+    timeoutsRef.current.push(id);
+    return id;
+  }, []);
+
+  const clearAllTimeouts = useCallback(() => {
+    timeoutsRef.current.forEach((id) => clearTimeout(id));
+    timeoutsRef.current = [];
+  }, []);
+
+  useEffect(() => {
+    return () => clearAllTimeouts();
+  }, [clearAllTimeouts]);
+
   const matchedCount = matched.length;
   const timeUsed = GAME_SECONDS - secondsLeft;
 
@@ -141,24 +161,25 @@ export function GameFlipPage() {
 
         if (first.dishId === second.dishId) {
           // match
-          setTimeout(() => {
+          addTimeout(() => {
             setMatched((prev) => [...prev, first.dishId]);
             setFlipped([]);
             setLockBoard(false);
           }, 520);
         } else {
           // no match — flip back
-          setTimeout(() => {
+          addTimeout(() => {
             setFlipped([]);
             setLockBoard(false);
           }, 850);
         }
       }
     },
-    [lockBoard, phase, flipped, matched, deck],
+    [lockBoard, phase, flipped, matched, deck, addTimeout],
   );
 
   const resetGame = useCallback(() => {
+    clearAllTimeouts();
     setDeck(buildDeck());
     setFlipped([]);
     setMatched([]);
@@ -168,7 +189,7 @@ export function GameFlipPage() {
     setReward(null);
     setReelOffset(0);
     setPhase('playing');
-  }, []);
+  }, [clearAllTimeouts]);
 
   // ── Gacha spin ──
   const reelRef = useRef<HTMLDivElement>(null);
@@ -206,9 +227,9 @@ export function GameFlipPage() {
   // After the spin transition ends, reveal the recipe.
   const handleReelTransitionEnd = useCallback(() => {
     if (phase === 'spinning') {
-      setTimeout(() => setPhase('reward'), 500);
+      addTimeout(() => setPhase('reward'), 500);
     }
-  }, [phase]);
+  }, [phase, addTimeout]);
 
   // ══════════════════════════════════════════════════════════════
   // RENDER: REWARD (recipe page)
