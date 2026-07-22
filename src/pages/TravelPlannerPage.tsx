@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { askTravelPlanner, type AiChatMessage } from '../lib/aiClient';
@@ -714,7 +714,7 @@ export function TravelPlannerPage() {
         <div className="max-w-[1440px] mx-auto w-full flex flex-col lg:flex-row gap-8 items-start animate-fade-in overflow-visible">
           
           {/* ── Left Column (Itinerary Cards) ── */}
-          <div className="w-full lg:w-[32%] flex flex-col gap-6 flex-shrink-0 sticky lg:sticky top-24 lg:top-24 self-start lg:self-start z-10">
+          <div className="w-full lg:w-[32%] flex flex-col gap-6 flex-shrink-0 static lg:sticky top-auto lg:top-24 self-start z-10">
             
             {/* Top Card */}
             <div className="bg-white border border-[#F3DDDB]/30 rounded-[24px] p-6 flex flex-col gap-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
@@ -809,12 +809,12 @@ export function TravelPlannerPage() {
                 className="bg-white border border-[#F3DDDB]/30 rounded-[24px] overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.015)] flex flex-col"
               >
                 {/* Header */}
-                <div className="bg-[#F4F3F0] px-6 py-4.5 flex items-center justify-between border-b border-neutral-100">
+                <div className="bg-[#F4F3F0] px-4 sm:px-6 py-4 flex items-center justify-between border-b border-neutral-100">
                   <div className="flex items-center gap-3">
                     <div className="w-7 h-7 rounded-full bg-[#5F1712] text-white font-bold flex items-center justify-center text-[12.5px]">
                       {day.dayNumber}
                     </div>
-                    <h3 className="font-noto font-bold text-[#5F1712] text-[16px] md:text-[17px]">
+                    <h3 className="font-noto font-bold text-[#5F1712] text-[15px] sm:text-[16px] md:text-[17px]">
                       Hari {day.dayNumber}: {day.title}
                     </h3>
                   </div>
@@ -823,34 +823,54 @@ export function TravelPlannerPage() {
                   </span>
                 </div>
 
-                {/* Table Header Row */}
-                <div className="grid grid-cols-12 bg-[#EFEEEB] px-6 py-3.5 text-[11px] font-manrope font-semibold text-[#554240] tracking-wider uppercase border-b border-neutral-150/40">
+                {/* Table Header Row (Desktop only) */}
+                <div className="hidden sm:grid grid-cols-12 bg-[#EFEEEB] px-6 py-3.5 text-[11px] font-manrope font-semibold text-[#554240] tracking-wider uppercase border-b border-neutral-150/40">
                   <div className="col-span-2">Waktu</div>
                   <div className="col-span-3">Aktivitas</div>
                   <div className="col-span-3">Lokasi</div>
                   <div className="col-span-4">Catatan & Deskripsi</div>
                 </div>
 
-                {/* Table Body Rows */}
+                {/* Table Body Rows (Responsive Desktop & Mobile) */}
                 <div className="flex flex-col">
                   {day.activities.map((act, actIdx) => (
-                    <div 
-                      key={actIdx}
-                      className="grid grid-cols-12 px-6 py-4.5 border-b border-neutral-100/60 last:border-b-0 hover:bg-neutral-50/50 transition-colors items-start"
-                    >
-                      <div className="col-span-2 font-manrope font-medium text-[#554240] text-[13px]">
-                        {act.waktu}
+                    <Fragment key={actIdx}>
+                      {/* Desktop Row View */}
+                      <div 
+                        className="hidden sm:grid grid-cols-12 px-6 py-4.5 border-b border-neutral-100/60 last:border-b-0 hover:bg-neutral-50/50 transition-colors items-start"
+                      >
+                        <div className="col-span-2 font-manrope font-medium text-[#554240] text-[13px]">
+                          {act.waktu}
+                        </div>
+                        <div className="col-span-3 font-manrope font-bold text-[#5F1712] text-[13.5px] leading-snug pr-3">
+                          {act.aktivitas}
+                        </div>
+                        <div className="col-span-3 font-manrope font-medium text-[#554240] text-[13px] pr-3">
+                          {act.lokasi}
+                        </div>
+                        <div className="col-span-4 font-manrope font-medium text-[#554240] text-[13px] leading-relaxed">
+                          {act.deskripsi}
+                        </div>
                       </div>
-                      <div className="col-span-3 font-manrope font-bold text-[#5F1712] text-[13.5px] leading-snug pr-3">
-                        {act.aktivitas}
+
+                      {/* Mobile Card Row View */}
+                      <div className="sm:hidden p-4 border-b border-neutral-100/80 last:border-b-0 flex flex-col gap-2 bg-white">
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <span className="inline-flex items-center gap-1 font-manrope font-semibold text-[11.5px] text-[#5F1712] bg-[#FAF3F2] px-2.5 py-1 rounded-full border border-[#F3DDDB]/60">
+                            ⏱️ {act.waktu}
+                          </span>
+                          <span className="inline-flex items-center gap-1 font-manrope font-medium text-[11.5px] text-[#554240] bg-neutral-100 px-2.5 py-1 rounded-full">
+                            📍 {act.lokasi}
+                          </span>
+                        </div>
+                        <h4 className="font-manrope font-bold text-[#5F1712] text-[13.5px] leading-snug">
+                          {act.aktivitas}
+                        </h4>
+                        <p className="font-manrope font-normal text-[#554240] text-[12px] leading-relaxed">
+                          {act.deskripsi}
+                        </p>
                       </div>
-                      <div className="col-span-3 font-manrope font-medium text-[#554240] text-[13px] pr-3">
-                        {act.lokasi}
-                      </div>
-                      <div className="col-span-4 font-manrope font-medium text-[#554240] text-[13px] leading-relaxed">
-                        {act.deskripsi}
-                      </div>
-                    </div>
+                    </Fragment>
                   ))}
                 </div>
               </div>

@@ -163,23 +163,35 @@ function KulinerDetailModal({ item, category, onClose }: KulinerDetailModalProps
       aria-modal="true"
     >
       <div
-        className="relative w-full max-w-5xl overflow-hidden rounded-[28px] bg-[#FDFBF7] p-5 sm:p-8 shadow-2xl border border-[#EBE8E2] text-[#1E1E1E]"
+        className="relative w-[94%] sm:w-full max-w-lg md:max-w-[780px] max-h-[85vh] md:max-h-[85vh] overflow-y-auto rounded-[20px] sm:rounded-[24px] bg-[#FDFBF7] p-4 sm:p-5 md:p-6 shadow-2xl border border-[#EBE8E2] text-[#1E1E1E]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button X (Top Right as in reference image) */}
+        {/* Close Button X (Top Right) */}
         <button
           type="button"
           onClick={handleClose}
-          className="absolute right-4 top-4 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#333333] shadow-md border border-[#E5E5E5] transition hover:bg-gray-100 cursor-pointer font-bold"
+          className="absolute right-3 top-3 sm:right-4 sm:top-4 z-50 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white/95 text-[#333333] shadow-md border border-[#E5E5E5] transition hover:bg-gray-100 cursor-pointer font-bold text-xs"
           aria-label="Tutup Detail"
         >
           ✕
         </button>
 
-        {/* Split Container (Membelah Dua) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
+        {/* ── MOBILE ONLY: Hero Image Header at the top ── */}
+        <div className="md:hidden relative w-full h-40 sm:h-48 rounded-[14px] overflow-hidden mb-3 border border-[#EBE8E2] shadow-sm">
+          <img
+            src={item.image}
+            alt={item.title}
+            className="w-full h-full object-cover"
+          />
+          <span className="absolute bottom-2 left-2 bg-white/90 backdrop-blur px-2.5 py-0.5 rounded-full text-[10px] font-medium text-[#333333] shadow-sm flex items-center gap-1 font-poppins">
+            <span>🥣</span> Sajian Khas Bukittinggi
+          </span>
+        </div>
+
+        {/* Split Container (Membelah Dua pada Desktop) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 items-start">
           
-          {/* ── LEFT COLUMN (Membuat membelah ke kiri) ── */}
+          {/* ── LEFT COLUMN ── */}
           <div
             className={`flex flex-col justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               mounted && !closing
@@ -189,59 +201,59 @@ function KulinerDetailModal({ item, category, onClose }: KulinerDetailModalProps
           >
             <div>
               {/* Category Pill Tag */}
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-[#F0EEEA] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#5C584F] font-poppins mb-3 border border-[#EBE8E2]">
+              <div className="inline-flex items-center gap-1 rounded-full bg-[#F0EEEA] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#5C584F] font-poppins mb-2 border border-[#EBE8E2]">
                 <span>🌿</span> {categoryLabel}
               </div>
 
               {/* Title */}
-              <h2 className="font-poppins font-semibold text-2xl sm:text-[34px] text-[#1E1E1E] leading-tight mb-1.5 tracking-tight">
+              <h2 className="font-poppins font-semibold text-lg sm:text-xl md:text-[23px] text-[#1E1E1E] leading-tight mb-1 tracking-tight">
                 {item.title}
               </h2>
 
               {/* Location */}
-              <p className="font-poppins text-xs sm:text-sm text-[#706C62] flex items-center gap-1 mb-4">
+              <p className="font-poppins text-[11px] sm:text-xs text-[#706C62] flex items-center gap-1 mb-2.5">
                 <span>📍 Bukittinggi, Sumatera Barat</span>
               </p>
 
-              <div className="h-[1px] w-full bg-[#EBE8E2] mb-4" />
+              <div className="h-[1px] w-full bg-[#EBE8E2] mb-3" />
 
               {/* KARAKTERISTIK Section */}
-              <div className="mb-4">
-                <h4 className="font-poppins text-[11px] font-bold uppercase tracking-wider text-[#827E73] mb-2.5">
+              <div className="mb-3">
+                <h4 className="font-poppins text-[10px] font-bold uppercase tracking-wider text-[#827E73] mb-1.5">
                   KARAKTERISTIK
                 </h4>
-                <div className="grid grid-cols-2 gap-2.5">
-                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[10px] p-2 flex items-center gap-1.5 font-poppins text-[10.5px] sm:text-[11px] font-medium text-[#2C2A26] shadow-sm">
                     <span>🍃</span> Kaya Rempah
                   </div>
-                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[10px] p-2 flex items-center gap-1.5 font-poppins text-[10.5px] sm:text-[11px] font-medium text-[#2C2A26] shadow-sm">
                     <span>🔥</span> Otentik Tradisional
                   </div>
-                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[10px] p-2 flex items-center gap-1.5 font-poppins text-[10.5px] sm:text-[11px] font-medium text-[#2C2A26] shadow-sm">
                     <span>⭐</span> Kuliner Wajib Bukittinggi
                   </div>
-                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[10px] p-2 flex items-center gap-1.5 font-poppins text-[10.5px] sm:text-[11px] font-medium text-[#2C2A26] shadow-sm">
                     <span>💖</span> Manis & Gurih
                   </div>
                 </div>
               </div>
 
               {/* BAHAN & BUMBU UTAMA Section */}
-              <div className="mb-5">
-                <h4 className="font-poppins text-[11px] font-bold uppercase tracking-wider text-[#827E73] mb-2.5">
+              <div className="mb-3">
+                <h4 className="font-poppins text-[10px] font-bold uppercase tracking-wider text-[#827E73] mb-1.5">
                   BAHAN & BUMBU UTAMA
                 </h4>
-                <div className="grid grid-cols-2 gap-2.5">
-                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2.5 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[10px] p-2 flex items-center gap-1.5 font-poppins text-[10.5px] sm:text-[11px] font-medium text-[#2C2A26] shadow-sm">
                     <span>🌶️</span> Rempah Minang Asli
                   </div>
-                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2.5 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[10px] p-2 flex items-center gap-1.5 font-poppins text-[10.5px] sm:text-[11px] font-medium text-[#2C2A26] shadow-sm">
                     <span>🥥</span> Santan Kelapa Murni
                   </div>
-                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2.5 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[10px] p-2 flex items-center gap-1.5 font-poppins text-[10.5px] sm:text-[11px] font-medium text-[#2C2A26] shadow-sm">
                     <span>🌶️</span> Cabai Keriting Pilihan
                   </div>
-                  <div className="bg-white border border-[#EBE8E2] rounded-[12px] p-2.5 flex items-center gap-2.5 font-poppins text-xs font-medium text-[#2C2A26] shadow-sm">
+                  <div className="bg-white border border-[#EBE8E2] rounded-[10px] p-2 flex items-center gap-1.5 font-poppins text-[10.5px] sm:text-[11px] font-medium text-[#2C2A26] shadow-sm">
                     <span>🍃</span> Resep Warisan Leluhur
                   </div>
                 </div>
@@ -249,58 +261,58 @@ function KulinerDetailModal({ item, category, onClose }: KulinerDetailModalProps
             </div>
 
             {/* Bottom Metadata Stats */}
-            <div className="grid grid-cols-4 gap-2 pt-4 border-t border-[#EBE8E2] text-center font-poppins">
-              <div className="border-r border-[#EBE8E2] pr-1">
-                <span className="block text-base mb-0.5">⏱️</span>
-                <span className="block text-[10px] text-[#706C62]">Dibuat</span>
-                <span className="block text-xs font-semibold text-[#1E1E1E]">30 Menit</span>
+            <div className="grid grid-cols-4 gap-1 pt-2.5 border-t border-[#EBE8E2] text-center font-poppins">
+              <div className="border-r border-[#EBE8E2] pr-0.5">
+                <span className="block text-xs sm:text-sm mb-0.5">⏱️</span>
+                <span className="block text-[9px] text-[#706C62]">Dibuat</span>
+                <span className="block text-[10px] font-semibold text-[#1E1E1E]">30 Mnt</span>
               </div>
-              <div className="border-r border-[#EBE8E2] pr-1">
-                <span className="block text-base mb-0.5">🍌</span>
-                <span className="block text-[10px] text-[#706C62]">Bahan Utama</span>
-                <span className="block text-xs font-semibold text-[#1E1E1E] truncate">{mainIngredient}</span>
+              <div className="border-r border-[#EBE8E2] pr-0.5">
+                <span className="block text-xs sm:text-sm mb-0.5">🍌</span>
+                <span className="block text-[9px] text-[#706C62]">Bahan Utama</span>
+                <span className="block text-[10px] font-semibold text-[#1E1E1E] truncate">{mainIngredient}</span>
               </div>
-              <div className="border-r border-[#EBE8E2] pr-1">
-                <span className="block text-base mb-0.5">📍</span>
-                <span className="block text-[10px] text-[#706C62]">Asal</span>
-                <span className="block text-xs font-semibold text-[#1E1E1E]">Bukittinggi</span>
+              <div className="border-r border-[#EBE8E2] pr-0.5">
+                <span className="block text-xs sm:text-sm mb-0.5">📍</span>
+                <span className="block text-[9px] text-[#706C62]">Asal</span>
+                <span className="block text-[10px] font-semibold text-[#1E1E1E]">Bukittinggi</span>
               </div>
               <div>
-                <span className="block text-base mb-0.5">⭐</span>
-                <span className="block text-[10px] text-[#706C62]">Rating Kuliner</span>
-                <span className="block text-xs font-semibold text-[#1E1E1E]">4.9 / 5</span>
+                <span className="block text-xs sm:text-sm mb-0.5">⭐</span>
+                <span className="block text-[9px] text-[#706C62]">Rating</span>
+                <span className="block text-[10px] font-semibold text-[#1E1E1E]">4.9 / 5</span>
               </div>
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN (Membuat membelah ke kanan) ── */}
+          {/* ── RIGHT COLUMN (Desktop view / DESKRIPSI & Button on Mobile) ── */}
           <div
-            className={`flex flex-col justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`flex flex-col justify-between h-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               mounted && !closing
                 ? 'opacity-100 translate-x-0'
                 : 'opacity-0 translate-x-14'
             }`}
           >
             <div>
-              {/* Image Frame */}
-              <div className="relative w-full aspect-[4/3] rounded-[20px] overflow-hidden shadow-sm mb-4 border border-[#EBE8E2] group">
+              {/* Image Frame (Desktop only) */}
+              <div className="hidden md:block relative w-full aspect-[16/10] max-h-[190px] rounded-[16px] overflow-hidden shadow-sm mb-3 border border-[#EBE8E2] group">
                 <img
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <span className="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-medium text-[#333333] shadow-sm flex items-center gap-1.5 font-poppins">
+                <span className="absolute bottom-2 left-2 bg-white/90 backdrop-blur px-2.5 py-1 rounded-full text-[11px] font-medium text-[#333333] shadow-sm flex items-center gap-1 font-poppins">
                   <span>🥣</span> Sajian Khas Bukittinggi
                 </span>
               </div>
 
               {/* DESKRIPSI Box */}
-              <div className="bg-[#F5F3EF] rounded-[16px] p-4 border border-[#EBE8E2] mb-5">
-                <h4 className="font-poppins text-[11px] font-bold uppercase tracking-wider text-[#706C62] mb-2">
+              <div className="bg-[#F5F3EF] rounded-[14px] p-3 sm:p-3.5 border border-[#EBE8E2] mb-3 md:mb-4">
+                <h4 className="font-poppins text-[10px] font-bold uppercase tracking-wider text-[#706C62] mb-1">
                   DESKRIPSI
                 </h4>
-                <p className="font-poppins text-xs sm:text-sm text-[#3D3A34] leading-relaxed">
-                  {item.description} Hidangan ini merupakan salah satu kekayaan kuliner kebanggaan masyarakat Minangkabau yang menyajikan keseimbangan cita rasa gurih, aroma rempah yang pekat, dan keaslian bumbu khas Bukittinggi.
+                <p className="font-poppins text-[11.5px] sm:text-xs text-[#3D3A34] leading-relaxed">
+                  {item.description} Hidangan ini merupakan kekayaan kuliner kebanggaan masyarakat Minangkabau yang menyajikan cita rasa gurih, aroma rempah khas, dan keaslian resep Bukittinggi.
                 </p>
               </div>
             </div>
@@ -309,7 +321,7 @@ function KulinerDetailModal({ item, category, onClose }: KulinerDetailModalProps
             <button
               type="button"
               onClick={handleClose}
-              className="w-full bg-[#63685F] hover:bg-[#52564F] text-white font-poppins font-medium py-3.5 rounded-[16px] text-sm transition shadow-sm cursor-pointer text-center"
+              className="w-full bg-[#63685F] hover:bg-[#52564F] active:scale-[0.99] text-white font-poppins font-medium py-2.5 sm:py-3 rounded-[12px] sm:rounded-[14px] text-xs transition shadow-sm cursor-pointer text-center mt-auto"
             >
               Tutup Detail
             </button>
