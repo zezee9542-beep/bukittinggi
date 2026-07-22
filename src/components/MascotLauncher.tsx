@@ -88,21 +88,21 @@ export default function MascotLauncher({ hidden = false, onClick }: MascotLaunch
     >
       {/* Interactive Pill Badge - Hides when scrolling, near footer, or when chat panel is open */}
       <div 
-        className={`flex h-[50px] md:h-[60px] items-center pl-[18px] pr-[20px] rounded-[20px] rounded-br-none bg-[#531717] border border-[#F9CE65] shadow-lg transition-all duration-500 ease-in-out cursor-pointer ${
+        className={`flex h-[34px] md:h-[38px] items-center pl-[12px] pr-[14px] md:pl-[14px] md:pr-[16px] rounded-[16px] md:rounded-[18px] rounded-br-none bg-[#531717] border border-[#F9CE65] shadow-lg transition-all duration-500 ease-in-out cursor-pointer ${
           hidden || isNearFooter || isScrolling ? 'opacity-0 scale-90 -translate-x-4 pointer-events-none' : 'opacity-100 scale-100 translate-x-0 pointer-events-auto'
         }`}
       >
-        <span className="relative mr-[10px] flex h-[11px] w-[11px]">
+        <span className="relative mr-[7px] md:mr-[8px] flex h-[8px] w-[8px] md:h-[9px] md:w-[9px]">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00B242] opacity-75"></span>
           <span className="relative inline-flex h-full w-full rounded-full bg-[#00B242]"></span>
         </span>
-        <span className="font-poppins text-[14px] md:text-[16px] font-normal leading-[1.8em] text-[#DED8E1] whitespace-nowrap">
+        <span className="font-poppins text-[12px] md:text-[13px] font-medium leading-none text-[#DED8E1] whitespace-nowrap">
           Tanya Ambo RancakBot
         </span>
       </div>
 
       {/* 3D Mascot Container */}
-      <div className="relative mt-[18px] md:mt-[23px] w-[80px] h-[106px] md:w-[104px] md:h-[138px] transition-transform duration-200 ease-out hover:scale-[1.05] active:scale-[0.95] cursor-pointer pointer-events-auto">
+      <div className="relative mt-[8px] md:mt-[12px] w-[80px] h-[106px] md:w-[104px] md:h-[138px] transition-transform duration-200 ease-out hover:scale-[1.05] active:scale-[0.95] cursor-pointer pointer-events-auto">
         <span className="sr-only">Buka RancakBot</span>
         <span ref={modelHostRef} className="relative block h-full w-full">
           <Mascot3D />
