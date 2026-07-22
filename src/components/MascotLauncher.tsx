@@ -51,11 +51,7 @@ export default function MascotLauncher({ hidden = false, onClick }: MascotLaunch
   return (
     // Wrapper layout matches Figma specs: flex items-start with gap 10px
     <div
-      className={`group fixed bottom-5 right-3 z-[65] flex items-start gap-[10px] transition-all duration-500 ease-in-out pointer-events-none ${
-        hidden 
-          ? 'opacity-0 translate-y-10 scale-95 pointer-events-none' 
-          : 'opacity-100 translate-y-0 scale-100'
-      }`}
+      className="group fixed bottom-5 right-3 z-[65] flex items-start gap-[10px] transition-all duration-500 ease-in-out pointer-events-none opacity-100 translate-y-0 scale-100"
       onClick={onClick}
       role="button"
       tabIndex={0}

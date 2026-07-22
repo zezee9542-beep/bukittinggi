@@ -657,13 +657,21 @@ export function RancakBotWidget() {
     closeTimerRef.current = setTimeout(() => setMounted(false), 380);
   }, []);
 
+  const toggleModal = useCallback(() => {
+    if (visible) {
+      closeModal();
+    } else {
+      openModal();
+    }
+  }, [visible, closeModal, openModal]);
+
   useEffect(() => {
     const handleOpen = () => {
-      openModal();
+      toggleModal();
     };
     window.addEventListener('open-rancak-bot', handleOpen);
     return () => window.removeEventListener('open-rancak-bot', handleOpen);
-  }, [openModal]);
+  }, [toggleModal]);
 
   const handleSend = useCallback((text: string) => {
     if (!text.trim()) return;
@@ -740,7 +748,7 @@ export function RancakBotWidget() {
       */}
       {mounted && (
         <div
-          className="fixed z-50 flex flex-row items-end select-none pointer-events-none max-w-[calc(100vw-24px)] bottom-5 right-3 md:right-[126px]"
+          className="fixed z-50 flex flex-row items-end select-none pointer-events-none max-w-[calc(100vw-24px)] bottom-[130px] right-3 md:bottom-5 md:right-[126px]"
           style={{
             gap: '12px',
           }}
