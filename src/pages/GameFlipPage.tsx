@@ -10,7 +10,7 @@
 // Matching pairs by image (Gambar ↔ Gambar). Rewards are drawn at random from
 // the 8 recipes in ../lib/gameRecipes.
 
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RECIPES, pickRandomRecipe, type Recipe } from '../lib/gameRecipes';
 
@@ -68,6 +68,89 @@ function buildDeck(): Card[] {
   ]);
   return shuffle(doubled);
 }
+
+interface FlipCardItemProps {
+  card: Card;
+  isFaceUp: boolean;
+  isMatched: boolean;
+  disabled: boolean;
+  onFlip: (card: Card) => void;
+}
+
+const FlipCardItem = memo(function FlipCardItem({
+  card,
+  isFaceUp,
+  isMatched,
+  disabled,
+  onFlip,
+}: FlipCardItemProps) {
+  return (
+    <button
+      onClick={() => onFlip(card)}
+      disabled={disabled}
+      className="relative aspect-[3/4] w-full cursor-pointer disabled:cursor-default"
+      style={{ perspective: '1000px' }}
+      aria-label={isFaceUp ? card.name : 'Kartu tertutup'}
+    >
+      <div
+        className="relative w-full h-full transition-transform duration-500"
+        style={{
+          transformStyle: 'preserve-3d',
+          transform: isFaceUp ? 'rotateY(180deg)' : 'rotateY(0deg)',
+        }}
+      >
+        {/* Card back */}
+        <div
+          className="absolute inset-0 rounded-[12px] sm:rounded-[16px] overflow-hidden flex flex-col items-center justify-center"
+          style={{
+            backfaceVisibility: 'hidden',
+            backgroundColor: '#3D0C11',
+            boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
+          }}
+        >
+          {/* Inner gold border */}
+          <div className="absolute inset-1.5 sm:inset-2 rounded-[8px] sm:rounded-[12px] pointer-events-none" style={{ border: `2px solid #E5C158` }} />
+          
+          {/* Centered Logo / Text */}
+          <div 
+            className="relative z-10 w-14 h-14 sm:w-20 sm:h-20 pointer-events-none"
+            style={{ 
+              backgroundColor: '#E5C158',
+              WebkitMaskImage: `url(${logoSvg})`,
+              WebkitMaskSize: 'contain',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskPosition: 'center',
+              maskImage: `url(${logoSvg})`,
+              maskSize: 'contain',
+              maskRepeat: 'no-repeat',
+              maskPosition: 'center',
+            }}
+          />
+        </div>
+
+        {/* Card front (dish) */}
+        <div
+          className="absolute inset-0 rounded-[12px] sm:rounded-[16px] overflow-hidden bg-white flex flex-col"
+          style={{
+            backfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg)',
+            border: isMatched ? `2.5px solid ${GOLD}` : '2px solid #fff',
+            boxShadow: isMatched ? `0 0 18px ${GOLD}` : '0 6px 16px rgba(0,0,0,0.3)',
+          }}
+        >
+          <div className="flex-1 overflow-hidden">
+            <img src={card.image} alt={card.name} className="w-full h-full object-cover" />
+          </div>
+          <div className="px-1 py-1 bg-white">
+            <span className="block text-center font-poppins font-medium text-[#1A1C1A] text-[8px] sm:text-[10px] leading-tight line-clamp-1">
+              {card.name}
+            </span>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+});
 
 export function GameFlipPage() {
   const navigate = useNavigate();
@@ -466,71 +549,14 @@ export function GameFlipPage() {
             const isFaceUp = flipped.includes(card.key) || matched.includes(card.dishId);
             const isMatched = matched.includes(card.dishId);
             return (
-              <button
+              <FlipCardItem
                 key={card.key}
-                onClick={() => handleFlip(card)}
+                card={card}
+                isFaceUp={isFaceUp}
+                isMatched={isMatched}
                 disabled={isFaceUp || lockBoard}
-                className="relative aspect-[3/4] w-full cursor-pointer disabled:cursor-default"
-                style={{ perspective: '1000px' }}
-                aria-label={isFaceUp ? card.name : 'Kartu tertutup'}
-              >
-                <div
-                  className="relative w-full h-full transition-transform duration-500"
-                  style={{
-                    transformStyle: 'preserve-3d',
-                    transform: isFaceUp ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                  }}
-                >
-                  {/* Card back */}
-                  <div
-                    className="absolute inset-0 rounded-[12px] sm:rounded-[16px] overflow-hidden flex flex-col items-center justify-center"
-                    style={{
-                      backfaceVisibility: 'hidden',
-                      backgroundColor: '#3D0C11',
-                      boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
-                    }}
-                  >
-                    {/* Inner gold border */}
-                    <div className="absolute inset-1.5 sm:inset-2 rounded-[8px] sm:rounded-[12px] pointer-events-none" style={{ border: `2px solid #E5C158` }} />
-                    
-                    {/* Centered Logo / Text */}
-                    <div 
-                      className="relative z-10 w-14 h-14 sm:w-20 sm:h-20 pointer-events-none"
-                      style={{ 
-                        backgroundColor: '#E5C158',
-                        WebkitMaskImage: `url(${logoSvg})`,
-                        WebkitMaskSize: 'contain',
-                        WebkitMaskRepeat: 'no-repeat',
-                        WebkitMaskPosition: 'center',
-                        maskImage: `url(${logoSvg})`,
-                        maskSize: 'contain',
-                        maskRepeat: 'no-repeat',
-                        maskPosition: 'center',
-                      }}
-                    />
-                  </div>
-
-                  {/* Card front (dish) */}
-                  <div
-                    className="absolute inset-0 rounded-[12px] sm:rounded-[16px] overflow-hidden bg-white flex flex-col"
-                    style={{
-                      backfaceVisibility: 'hidden',
-                      transform: 'rotateY(180deg)',
-                      border: isMatched ? `2.5px solid ${GOLD}` : '2px solid #fff',
-                      boxShadow: isMatched ? `0 0 18px ${GOLD}` : '0 6px 16px rgba(0,0,0,0.3)',
-                    }}
-                  >
-                    <div className="flex-1 overflow-hidden">
-                      <img src={card.image} alt={card.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="px-1 py-1 bg-white">
-                      <span className="block text-center font-poppins font-medium text-[#1A1C1A] text-[8px] sm:text-[10px] leading-tight line-clamp-1">
-                        {card.name}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </button>
+                onFlip={handleFlip}
+              />
             );
           })}
         </div>
