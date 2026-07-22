@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { siteContent } from '../data/stories';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import menaraPng from '../assets/menara.webp';
-import earthPng from '../assets/earth.png';
+import earthPng from '../assets/earth.webp';
 
 export function EditorialIntro() {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export function EditorialIntro() {
         aria-hidden="true"
       />
 
-      {/* ── Tall Jam Gadang tower image (menara.png) stretching from top to bottom ── */}
+      {/* ── Tall Jam Gadang tower image (menara.webp) stretching from top to bottom ── */}
       <div
         className={`absolute top-[-30px] bottom-[-40px] left-[-4%] md:left-[-1%] lg:left-[2%] w-full md:w-[44%] lg:w-[42%] flex items-end justify-center pointer-events-none transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isVisible ? 'translate-x-0 opacity-15 md:opacity-100' : '-translate-x-16 opacity-0'

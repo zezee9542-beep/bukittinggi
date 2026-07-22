@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import ssPng from '../assets/ss.png';
-import calendarPng from '../assets/Calendar.png';
-import pdfPng from '../assets/pdf.png';
+import ssPng from '../assets/ss.webp';
+import calendarPng from '../assets/Calendar.webp';
+import pdfPng from '../assets/pdf.webp';
 
 export const AITravelPlannerPromoCard: React.FC = () => {
   const navigate = useNavigate();
@@ -43,9 +43,9 @@ export const AITravelPlannerPromoCard: React.FC = () => {
           className="relative w-full min-h-[440px] lg:h-[470px] rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row items-center justify-between shadow-[0_25px_65px_rgba(0,0,0,0.4)] overflow-visible"
           style={{ backgroundColor: '#5F1712' }}
         >
-          {/* ── Left Side: Stacked Document (ss.png) & Calendar (Calendar.png) ── */}
+          {/* ── Left Side: Stacked Document (ss.webp) & Calendar (Calendar.webp) ── */}
           <div className="relative w-full lg:w-[490px] h-[320px] sm:h-[370px] lg:h-[400px] flex items-center justify-center flex-shrink-0 mb-8 lg:mb-0">
-            {/* 1. Paper Document Screenshot (ss.png) — Straight */}
+            {/* 1. Paper Document Screenshot (ss.webp) — Straight */}
             <div className="absolute left-0 top-0 sm:top-2 w-[85%] sm:w-[88%] lg:w-[90%] h-auto z-10">
               <img
                 src={ssPng}
@@ -55,7 +55,7 @@ export const AITravelPlannerPromoCard: React.FC = () => {
               />
             </div>
 
-            {/* 2. Calendar Image (Calendar.png) — Straight, no wrapper box, shifted right */}
+            {/* 2. Calendar Image (Calendar.webp) — Straight, no wrapper box, shifted right */}
             <div className="absolute right-[-20px] sm:right-[-35px] lg:right-[-50px] bottom-0 sm:bottom-2 w-[54%] sm:w-[52%] lg:w-[54%] h-auto z-20">
               <img
                 src={calendarPng}
@@ -85,7 +85,7 @@ export const AITravelPlannerPromoCard: React.FC = () => {
             ))}
           </div>
 
-          {/* Floating pdf.png badge — tilted right + float up-down animation */}
+          {/* Floating pdf.webp badge — tilted right + float up-down animation */}
           <img
             src={pdfPng}
             alt="PDF"

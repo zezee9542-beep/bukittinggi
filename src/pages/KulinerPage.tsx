@@ -4,51 +4,51 @@ import { useNavigate } from 'react-router-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 // ── Assets ─────────────────────────────────────────────────────────
-import sonBg from '../assets/son.png';
-import gradientBg from '../assets/14.png';
-import foodIcon from '../assets/food.png';
-import leafBig from '../assets/leaf.png';
-import leaf1 from '../assets/leaf (1).png';
-import leaf2 from '../assets/leaf (2).png';
-import makanPlate from '../assets/makan.png';
-import piringImg from '../assets/piring.png';
-import pringImg from '../assets/pring.png';
-import groupText from '../assets/Group.png';
-import group6 from '../assets/Group 6 (1).png';
-import group7 from '../assets/Group 7 (1).png';
-import coverBg from '../assets/cover.png';
-import daunSvg from '../assets/daun.png';
+import sonBg from '../assets/son.webp';
+import gradientBg from '../assets/14.webp';
+import foodIcon from '../assets/food.webp';
+import leafBig from '../assets/leaf.webp';
+import leaf1 from '../assets/leaf (1).webp';
+import leaf2 from '../assets/leaf (2).webp';
+import makanPlate from '../assets/makan.webp';
+import piringImg from '../assets/piring.webp';
+import pringImg from '../assets/pring.webp';
+import groupText from '../assets/Group.webp';
+import group6 from '../assets/Group 6 (1).webp';
+import group7 from '../assets/Group 7 (1).webp';
+import coverBg from '../assets/cover.webp';
+import daunSvg from '../assets/daun.webp';
 import { KulinerSkeleton } from '../components/ui/PageSkeletons';
 
 import { GameCardPreviewStack } from '../components/GameCardPreviewStack';
 
 // ── Icons & Culinary Assets ────────────────────────────────────────
-import mknIcon from '../assets/mkn.png';
-import mnsIcon from '../assets/mns.png';
-import drnkIcon from '../assets/drnk.png';
+import mknIcon from '../assets/mkn.webp';
+import mnsIcon from '../assets/mns.webp';
+import drnkIcon from '../assets/drnk.webp';
 
-import img111 from '../assets/111.png';
-import img222 from '../assets/222.png';
-import img333 from '../assets/333.png';
-import img444 from '../assets/444.png';
-import img555 from '../assets/555.png';
-import img666 from '../assets/666.png';
-import img777 from '../assets/777.png';
-import img888 from '../assets/888.png';
+import img111 from '../assets/111.webp';
+import img222 from '../assets/222.webp';
+import img333 from '../assets/333.webp';
+import img444 from '../assets/444.webp';
+import img555 from '../assets/555.webp';
+import img666 from '../assets/666.webp';
+import img777 from '../assets/777.webp';
+import img888 from '../assets/888.webp';
 
-import img889 from '../assets/889.png';
-import img890 from '../assets/890.png';
-import img891 from '../assets/891.png';
-import img892 from '../assets/892.png';
-import img893 from '../assets/893.png';
-import img894 from '../assets/894.png';
-import img895 from '../assets/895.png';
-import img896 from '../assets/896.png';
+import img889 from '../assets/889.webp';
+import img890 from '../assets/890.webp';
+import img891 from '../assets/891.webp';
+import img892 from '../assets/892.webp';
+import img893 from '../assets/893.webp';
+import img894 from '../assets/894.webp';
+import img895 from '../assets/895.webp';
+import img896 from '../assets/896.webp';
 
-import img123 from '../assets/123.png';
-import img124 from '../assets/124.png';
-import img125 from '../assets/125.png';
-import img126 from '../assets/126.png';
+import img123 from '../assets/123.webp';
+import img124 from '../assets/124.webp';
+import img125 from '../assets/125.webp';
+import img126 from '../assets/126.webp';
 
 interface KulinerItem {
   id: string;
@@ -503,8 +503,8 @@ export function KulinerPage() {
 
   return (
     /*
-      cover.png: background dari atas sampai akhir Group 7.png (full page via bg-cover)
-      White: hanya di bawah Group 7.png (handled di dalam game section)
+      cover.webp: background dari atas sampai akhir Group 7.webp (full page via bg-cover)
+      White: hanya di bawah Group 7.webp (handled di dalam game section)
     */
     <div
       className="kuliner-page relative min-h-[250vh] overflow-x-hidden select-none"
@@ -525,7 +525,7 @@ export function KulinerPage() {
       {/* overflow-hidden on mobile stops decorative elements from blocking scroll */}
       <section ref={heroRef} className="relative z-10 mt-[76px] h-[500px] w-full overflow-hidden sm:h-[520px] md:mt-0 md:h-auto md:overflow-visible">
 
-        {/* ── [LAYER 1] SON.PNG (Background Utama) ── */}
+        {/* ── [LAYER 1] SON.webp (Background Utama) ── */}
         <img
           src={sonBg}
           alt=""
@@ -535,7 +535,7 @@ export function KulinerPage() {
           }}
         />
 
-        {/* ── [LAYER 2] 14.PNG (Overlay Gradient Merah) ── */}
+        {/* ── [LAYER 2] 14.webp (Overlay Gradient Merah) ── */}
         <div
           className="absolute inset-0 z-[2] -translate-y-52 sm:-translate-y-8 scale-[1.14] sm:scale-[1.03] md:-mt-[8%] md:-translate-y-10 md:scale-100"
           style={{
@@ -604,7 +604,7 @@ export function KulinerPage() {
 
         {/* ── DECORATIVE LEAF ELEMENTS (ATAS) ── */}
 
-        {/* Left Large Leaf (leaf.png) — Animasi Masuk dari SISI KIRI LUAR (Far Left) + Sway */}
+        {/* Left Large Leaf (leaf.webp) — Animasi Masuk dari SISI KIRI LUAR (Far Left) + Sway */}
         <div
           className="absolute left-[-8%] top-[18%] z-20 w-[86px] pointer-events-none sm:w-[110px] md:left-[-2%] md:top-[16%] md:w-[clamp(120px,18vw,240px)]"
           style={{
@@ -619,7 +619,7 @@ export function KulinerPage() {
           />
         </div>
 
-        {/* Leaf (1).png - Right of title — Animasi Masuk dari SISI KANAN LUAR (Far Right) + Sway */}
+        {/* Leaf (1).webp - Right of title — Animasi Masuk dari SISI KANAN LUAR (Far Right) + Sway */}
         <div
           className="absolute right-[4%] top-[20%] z-20 w-[48px] pointer-events-none sm:w-[60px] md:right-[15%] md:top-[32%] md:w-[clamp(60px,10vw,120px)]"
           style={{
@@ -655,7 +655,7 @@ export function KulinerPage() {
               }}
             />
 
-            {/* Small Leaf - Left of makan.png, centered */}
+            {/* Small Leaf - Left of makan.webp, centered */}
             <div
               className="absolute z-40 pointer-events-none opacity-90"
               style={{
@@ -671,7 +671,7 @@ export function KulinerPage() {
           </div>
         </div>
 
-        {/* ── TEKS MELENGKUNG (Group.png) — Animasi Masuk dari BAWAH (Bottom) ── */}
+        {/* ── TEKS MELENGKUNG (Group.webp) — Animasi Masuk dari BAWAH (Bottom) ── */}
         <div
           className="pointer-events-none absolute bottom-[8%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 sm:w-[92%] md:bottom-[-16%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
           style={{
@@ -700,7 +700,7 @@ export function KulinerPage() {
           />
         </div>
 
-        {/* Bottom Right Leaf (leaf (1).png) — Animasi Masuk dari BAWAH KANAN (Bottom-Right) */}
+        {/* Bottom Right Leaf (leaf (1).webp) — Animasi Masuk dari BAWAH KANAN (Bottom-Right) */}
         <div
           className="absolute bottom-[10%] right-[-4%] z-30 w-[72px] pointer-events-none sm:w-[90px] md:bottom-[-10%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)]"
           style={{
@@ -1004,7 +1004,7 @@ export function KulinerPage() {
           }}
         />
 
-        {/* pring.png — bottom-left corner decoration, z-10 (in front of background), pushed further down */}
+        {/* pring.webp — bottom-left corner decoration, z-10 (in front of background), pushed further down */}
         <img
           src={pringImg}
           alt=""

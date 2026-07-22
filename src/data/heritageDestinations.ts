@@ -1,12 +1,12 @@
-import rectangle1 from '../assets/Rectangle 1432.png';
-import rectangle2 from '../assets/Rectangle 1432 (1).png';
-import rectangle3 from '../assets/Rectangle 1432 (2).png';
-import rectangle4 from '../assets/Rectangle 1432 (3).png';
-import rectangle5 from '../assets/Rectangle 1432 (4).png';
-import rectangle6 from '../assets/Rectangle 1432 (5).png';
-import rectangle7 from '../assets/Rectangle 1432 (6).png';
-import rectangle8 from '../assets/Rectangle 1432 (7).png';
-import rectangle9 from '../assets/Rectangle 1432 (8).png';
+import rectangle1 from '../assets/Rectangle 1432.webp';
+import rectangle2 from '../assets/Rectangle 1432 (1).webp';
+import rectangle3 from '../assets/Rectangle 1432 (2).webp';
+import rectangle4 from '../assets/Rectangle 1432 (3).webp';
+import rectangle5 from '../assets/Rectangle 1432 (4).webp';
+import rectangle6 from '../assets/Rectangle 1432 (5).webp';
+import rectangle7 from '../assets/Rectangle 1432 (6).webp';
+import rectangle8 from '../assets/Rectangle 1432 (7).webp';
+import rectangle9 from '../assets/Rectangle 1432 (8).webp';
 
 export interface HeritageDestination {
   id: string;

@@ -5,15 +5,15 @@ import bggImage from '../assets/bg.webp';
 import gadangImage from '../assets/gadang.svg';
 
 // Import Stat Icons
-import iconPopulasi from '../assets/Icon.png';
-import iconKetinggian from '../assets/Icon (1).png';
-import iconIklim from '../assets/Icon (2).png';
-import iconGunung from '../assets/Icon (3).png';
+import iconPopulasi from '../assets/Icon.webp';
+import iconKetinggian from '../assets/Icon (1).webp';
+import iconIklim from '../assets/Icon (2).webp';
+import iconGunung from '../assets/Icon (3).webp';
 
 // Import Geografis Assets
 import iconGroup2 from '../assets/Group (2).svg';
-import jekImage from '../assets/jek.png';
-import okeImage from '../assets/oke.png';
+import jekImage from '../assets/jek.webp';
+import okeImage from '../assets/oke.webp';
 
 export function ProfilBukittinggiPage() {
   const navigate = useNavigate();
@@ -260,7 +260,7 @@ export function ProfilBukittinggiPage() {
 
             {/* Right Side: Landscape image with Maps overlay (Fully Responsive) */}
             <div className="flex-shrink-0 relative w-full max-w-[420px] aspect-[420/430] mt-8 lg:mt-0">
-              {/* Main Landscape Frame (jek.png) with inner shadow */}
+              {/* Main Landscape Frame (jek.webp) with inner shadow */}
               <div className="w-[90%] h-[95%] rounded-[24px] overflow-hidden relative ml-auto shadow-[0_12px_28px_rgba(0,0,0,0.15)]">
                 <img src={jekImage} alt="Ngarai Sianok" className="w-full h-full object-cover select-none" draggable={false} />
                 {/* Inner shadow overlay */}
@@ -270,7 +270,7 @@ export function ProfilBukittinggiPage() {
                 />
               </div>
 
-              {/* Map Overlay (oke.png) overlapping bottom-left */}
+              {/* Map Overlay (oke.webp) overlapping bottom-left */}
               <div className="absolute bottom-0 left-0 z-10 w-[55%] max-w-[240px] rounded-[16px] overflow-hidden border-2 border-[#6E1F1F] bg-white p-1 shadow-[0_12px_24px_rgba(0,0,0,0.2)]">
                 <img src={okeImage} alt="Peta Administratif" className="w-full h-auto object-contain rounded-[10px]" draggable={false} />
               </div>

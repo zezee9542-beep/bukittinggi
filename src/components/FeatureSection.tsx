@@ -1,9 +1,9 @@
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useNavigate } from 'react-router-dom';
 import group12Png from '../assets/Group 12.webp';
-import searPng from '../assets/sear.png';
-import chPng from '../assets/ch.png';
-import simPng from '../assets/sim.png';
+import searPng from '../assets/sear.webp';
+import chPng from '../assets/ch.webp';
+import simPng from '../assets/sim.webp';
 
 export function FeatureSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>();
@@ -62,7 +62,7 @@ export function FeatureSection() {
       className="relative bg-white pt-24 sm:pt-32 pb-32 sm:pb-40 overflow-hidden flex flex-col items-center justify-center border-none shadow-none"
       aria-labelledby="features-heading"
     >
-      {/* ── Keyframe Animations for Floating Group 12.png Particles ── */}
+      {/* ── Keyframe Animations for Floating Group 12.webp Particles ── */}
       <style>{`
         @keyframes floatOrb1 {
           0%, 100% { transform: translateY(0px); }
@@ -79,7 +79,7 @@ export function FeatureSection() {
         }}
       />
 
-      {/* ── Floating Ball Particles (Slightly smaller Group 12.png image asset moved higher up) ── */}
+      {/* ── Floating Ball Particles (Slightly smaller Group 12.webp image asset moved higher up) ── */}
       <div className="absolute top-[2%] sm:top-[4%] inset-x-0 pointer-events-none z-10 overflow-hidden flex items-center justify-center px-4">
         <img
           src={group12Png}

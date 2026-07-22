@@ -1,4 +1,4 @@
-import cardImg from '../assets/card.png';
+import cardImg from '../assets/card.webp';
 
 export function GameCardPreviewStack({ imageSrc }: { imageSrc?: string }) {
   return (

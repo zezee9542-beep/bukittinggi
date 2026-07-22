@@ -573,7 +573,7 @@ html.kuliner-scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
 
-/* On mobile, cover.png is one continuous background layer. This prevents
+/* On mobile, cover.webp is one continuous background layer. This prevents
    repeated background tiles from appearing in front of later Kuliner content. */
 .kuliner-page {
   background-size: 100% 100%;

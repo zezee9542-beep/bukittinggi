@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import hamaSvg from '../assets/hama.svg';
-import frame2Png from '../assets/frame (2).png';
-import i1Png from '../assets/i1.png';
-import i2Png from '../assets/i2.png';
+import frame2Png from '../assets/frame (2).webp';
+import i1Png from '../assets/i1.webp';
+import i2Png from '../assets/i2.webp';
 
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
 
-  // State to switch image between i1.png and i2.png smoothly
+  // State to switch image between i1.webp and i2.webp smoothly
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const images = [i1Png, i2Png];
 
@@ -29,7 +29,7 @@ export const Footer: React.FC = () => {
       className="w-full relative z-30 px-6 sm:px-10 md:px-14 lg:px-20 pt-10 sm:pt-14 pb-2 sm:pb-3 text-white overflow-hidden border-none outline-none flex flex-col justify-between"
       style={{ backgroundColor: '#5F1712' }}
     >
-      {/* ── Background Image: frame (2).png ── */}
+      {/* ── Background Image: frame (2).webp ── */}
       <img
         src={frame2Png}
         alt="Footer Background Frame"

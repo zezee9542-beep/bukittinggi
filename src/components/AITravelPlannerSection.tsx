@@ -7,10 +7,10 @@ import earthPng from '../assets/earth.webp';
 import ppPng from '../assets/pp.webp';
 
 // ── Assets for Ambo RancakBot Promo Card ──
-import hpPng from '../assets/hp.png';
-import ysPng from '../assets/ys.png';
-import ctPng from '../assets/ct.png';
-import jamPng from '../assets/jam.png';
+import hpPng from '../assets/hp.webp';
+import ysPng from '../assets/ys.webp';
+import ctPng from '../assets/ct.webp';
+import jamPng from '../assets/jam.webp';
 
 export const AITravelPlannerSection: React.FC = () => {
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ export const AITravelPlannerSection: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Full Width Image pp.png (Seamless bottom connection without gap) ── */}
+      {/* ── Full Width Image pp.webp (Seamless bottom connection without gap) ── */}
       <div
         className={`w-full border-none outline-none transition-all duration-800 ease-out relative z-10 -mb-1 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
@@ -122,7 +122,7 @@ export const AITravelPlannerSection: React.FC = () => {
           <img src="/Frame 1686556430.svg" alt="" aria-hidden="true" className="absolute top-1/2 -right-8 md:-right-16 -translate-y-1/2 w-16 h-16 md:w-24 md:h-24 pointer-events-none z-30 animate-float-bubble" style={{ animationDelay: '1.4s' }} />
           <img src="/Frame 1686556430.svg" alt="" aria-hidden="true" className="absolute -bottom-10 left-4 md:-bottom-25 md:left-16 w-16 h-16 md:w-24 md:h-24 pointer-events-none z-30 animate-float-bubble" style={{ animationDelay: '2.1s' }} />
 
-          {/* Watermark Layer Background (jam.png) inside card - Prominently visible in bottom-right corner */}
+          {/* Watermark Layer Background (jam.webp) inside card - Prominently visible in bottom-right corner */}
           <img
             src={jamPng}
             alt="Jam Gadang Motif"
@@ -130,7 +130,7 @@ export const AITravelPlannerSection: React.FC = () => {
             draggable={false}
           />
 
-          {/* ── Left Smartphone Image Container (hp.png - Responsive Mobile Stacking) ── */}
+          {/* ── Left Smartphone Image Container (hp.webp - Responsive Mobile Stacking) ── */}
           <div className="relative md:absolute left-0 md:left-[-25px] lg:left-[-40px] bottom-0 z-50 flex items-end justify-center pointer-events-none self-center md:self-auto pt-4 md:pt-0 mt-0 md:-mt-24">
             <img
               src={hpPng}
@@ -173,7 +173,7 @@ export const AITravelPlannerSection: React.FC = () => {
                 Tidak menemukan informasi yang Anda cari? Tanyakan langsung kepada Ambo RancakBot dan dapatkan jawaban yang lebih personal, lengkap, dan sesuai kebutuhan Anda.
               </p>
 
-              {/* 4. Checklist Items with Icon ys.png (Poppins Medium 16px, color #531717) */}
+              {/* 4. Checklist Items with Icon ys.webp (Poppins Medium 16px, color #531717) */}
               <div className="flex flex-col gap-2.5 mb-6">
                 <div className="flex items-center gap-3">
                   <img src={ysPng} alt="Check" className="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" />
@@ -190,7 +190,7 @@ export const AITravelPlannerSection: React.FC = () => {
               </div>
             </div>
 
-            {/* 5. CTA Button: bg #6E1F1F, radius 12px, icon ct.png */}
+            {/* 5. CTA Button: bg #6E1F1F, radius 12px, icon ct.webp */}
             <div className="w-full flex justify-end mt-2">
               <button
                 onClick={handleOpenBot}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import chtPng from '../assets/cht.png';
-import enterPng from '../assets/enter.png';
+import chtPng from '../assets/cht.webp';
+import enterPng from '../assets/enter.webp';
 import { useMode } from '../context/ModeContext';
 import { useTranslation } from '../hooks/useTranslation';
 import { askAi, type AiChatMessage } from '../lib/aiClient';

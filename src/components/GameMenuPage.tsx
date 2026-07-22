@@ -16,8 +16,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GameCardPreviewStack } from './GameCardPreviewStack';
-import cardImg from '../assets/card.png';
-import wordImg from '../assets/word.png';
+import cardImg from '../assets/card.webp';
+import wordImg from '../assets/word.webp';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TOKEN WARNA — hasil inspeksi Figma node #536-19 (read-only)

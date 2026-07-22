@@ -19,8 +19,8 @@ import campSvg from '../assets/camp.svg';
 import pdfSvg from '../assets/pdf.svg';
 
 // Custom PNG Asset Imports
-import flagPng from '../assets/flag.png';
-import sawahPng from '../assets/sawah.png';
+import flagPng from '../assets/flag.webp';
+import sawahPng from '../assets/sawah.webp';
 
 interface Message {
   sender: 'bot' | 'user';
@@ -1380,7 +1380,7 @@ export function TravelPlannerPage() {
 
             {/* Bottom summary card: Ringkasan Perjalanan */}
             <div className="relative bg-[#FAF5F2] border border-[#F3DDDB]/50 rounded-[20px] p-5 flex items-center justify-between overflow-hidden mb-8 min-h-[100px]">
-              {/* Background image sawah.png absolute right, covering half, beautifully faded */}
+              {/* Background image sawah.webp absolute right, covering half, beautifully faded */}
               <div className="absolute right-0 top-0 bottom-0 w-[45%] pointer-events-none select-none">
                 <img src={sawahPng} alt="" className="h-full w-full object-cover object-right" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#FAF5F2] via-[#FAF5F2]/80 to-transparent" />

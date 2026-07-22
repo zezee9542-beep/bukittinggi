@@ -4,7 +4,7 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import { CinematicImage } from '../components/CinematicImage';
 import { ScrollSection } from '../components/ScrollSection';
 import minNGSrc from '../assets/minNG.svg';
-import jmPng from '../assets/jm.png';
+import jmPng from '../assets/jm.webp';
 
 export function HistoryPage() {
   const { timeline } = siteContent;
@@ -205,7 +205,7 @@ export function HistoryPage() {
             “Genap 100 tahun Jam Gadang berdetak, menandai sebuah momen bersejarah dalam perjalanan Kota Bukittinggi dari masa ke masa.”
           </p>
 
-          {/* Centered Image jm.png (Enlarged) */}
+          {/* Centered Image jm.webp (Enlarged) */}
           <div className="w-full flex justify-center items-center">
             <img
               src={jmPng}

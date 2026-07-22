@@ -1,5 +1,5 @@
 import bg4Png from '../assets/bg4.webp';
-import bgMobilePng from '../assets/image copy 2.png';
+import bgMobilePng from '../assets/image copy 2.webp';
 
 // Card images ordered from a.webp to g.webp (WebP for performance)
 import imgA from '../assets/a.webp';
@@ -36,7 +36,7 @@ export function HeroSection() {
       {/* Outer Hero Card Container - Enlarged background with slim gaps from navbar & sides */}
       <div className="relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-hidden shadow-2xl">
         
-        {/* Mobile Background Image (image copy 2.png - block sm:hidden) */}
+        {/* Mobile Background Image (image copy 2.webp - block sm:hidden) */}
         <img
           src={bgMobilePng}
           alt="Bukittinggi Background Mobile"

@@ -8,14 +8,14 @@
 // Dish images are reused from the existing Kuliner assets (111–888) so the
 // gacha rewards line up with the dishes shown on the Kuliner page.
 
-import img111 from '../assets/111.png';
-import img222 from '../assets/222.png';
-import img333 from '../assets/333.png';
-import img444 from '../assets/444.png';
-import img555 from '../assets/555.png';
-import img666 from '../assets/666.png';
-import img777 from '../assets/777.png';
-import img888 from '../assets/888.png';
+import img111 from '../assets/111.webp';
+import img222 from '../assets/222.webp';
+import img333 from '../assets/333.webp';
+import img444 from '../assets/444.webp';
+import img555 from '../assets/555.webp';
+import img666 from '../assets/666.webp';
+import img777 from '../assets/777.webp';
+import img888 from '../assets/888.webp';
 
 export interface IngredientGroup {
   /** Group label shown in caps, e.g. "THE MAIN PROTEIN". */
