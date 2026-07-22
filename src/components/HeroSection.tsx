@@ -34,8 +34,6 @@ const MARQUEE_ITEMS = [...BASE_CARDS, ...BASE_CARDS, ...BASE_CARDS, ...BASE_CARD
 export function HeroSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const isAnyHovered = hoveredIndex !== null;
-
   return (
     <section className="relative w-full bg-white pt-[82px] sm:pt-[86px] md:pt-[90px] px-1.5 sm:px-2.5 md:px-3.5 pb-16 sm:pb-20 flex justify-center overflow-visible">
       {/* Outer Hero Card Container - Enlarged background with slim gaps from navbar & sides */}
@@ -55,13 +53,6 @@ export function HeroSection() {
           className="hidden sm:block absolute inset-0 w-full h-full object-cover object-[center_30%] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] select-none pointer-events-none"
         />
 
-        {/* ── Dark Overlay when a card is hovered/targeted (Spotlight ambience) ── */}
-        <div
-          className={`absolute inset-0 bg-black/65 backdrop-blur-[2px] transition-opacity duration-500 z-20 pointer-events-none ${
-            isAnyHovered ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-
         {/* Floating Cards Gallery Row — Balanced medium card sizing positioned cleanly near bottom */}
         <div className="absolute -left-2 -right-2 sm:-left-4 sm:-right-4 md:-left-6 md:-right-6 bottom-2 sm:bottom-4 md:bottom-5 z-30 overflow-visible py-4 pointer-events-auto">
           <div className="animate-hero-marquee group flex items-center gap-3.5 sm:gap-4.5 md:gap-5.5 px-2">
@@ -74,56 +65,48 @@ export function HeroSection() {
                   key={`${card.id}-${idx}`}
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className={`relative flex-shrink-0 cursor-pointer transition-all duration-500 ease-out ${
+                  className={`relative flex-shrink-0 cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                     isEven ? 'animate-wave-odd' : 'animate-wave-even'
                   } ${
                     isHovered
-                      ? 'z-50 scale-100'
-                      : isAnyHovered
-                      ? 'opacity-35 brightness-50 scale-[0.96] blur-[0.5px] z-10'
-                      : 'opacity-100 scale-100 z-20'
+                      ? 'z-40 -translate-y-3 sm:-translate-y-4 md:-translate-y-5 scale-[1.08] active:scale-100 active:-translate-y-2'
+                      : 'z-20 scale-100 opacity-100'
                   }`}
                 >
-                  {/* Spotlight Radial Light Beam (Behind targeted card) */}
-                  {isHovered && (
-                    <div
-                      className="absolute -inset-8 sm:-inset-10 rounded-[36px] pointer-events-none transition-opacity duration-500 z-0 animate-pulse"
-                      style={{
-                        background:
-                          'radial-gradient(circle at center, rgba(255,255,255,0.95) 0%, rgba(249,206,101,0.7) 35%, rgba(249,206,101,0.2) 65%, transparent 85%)',
-                        filter: 'blur(10px)',
-                      }}
-                    />
-                  )}
-
-                  {/* Card Frame — Balanced medium size with zero whitespace */}
+                  {/* Card Frame — Clean border with soft elevation shadow */}
                   <div
                     className={`relative w-[132px] sm:w-[168px] md:w-[198px] lg:w-[220px] aspect-[3/4] rounded-[18px] sm:rounded-[22px] md:rounded-[26px] overflow-hidden border-2 leading-none p-0 flex items-center justify-center transition-all duration-500 ${
                       isHovered
-                        ? 'border-[#F9CE65] shadow-[0_0_40px_rgba(249,206,101,0.95),0_0_80px_rgba(255,255,255,0.6)] ring-4 ring-white/80'
-                        : 'border-white/95 shadow-[0_14px_36px_rgba(0,0,0,0.4)]'
+                        ? 'border-white shadow-[0_22px_45px_rgba(0,0,0,0.45)] ring-2 ring-white/50'
+                        : 'border-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.35)]'
                     }`}
                   >
-                    {/* Card Image — Scaled 105% to completely fill container with no gaps */}
+                    {/* Card Image — Scaled smoothly on hover with no whitespace */}
                     <img
                       src={card.image}
                       alt={card.title}
-                      className={`w-full h-full object-cover object-center block m-0 p-0 select-none transition-all duration-500 scale-105 ${
-                        isHovered ? 'brightness-110 contrast-105' : ''
+                      className={`w-full h-full object-cover object-center block m-0 p-0 select-none transition-transform duration-700 ease-out ${
+                        isHovered ? 'scale-115' : 'scale-105'
                       }`}
                       draggable={false}
                     />
 
-                    {/* Spotlight Light Reflection Overlay on Hovered Card */}
-                    {isHovered && (
-                      <div
-                        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
-                        style={{
-                          background:
-                            'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(249,206,101,0.15) 100%)',
-                        }}
-                      />
-                    )}
+                    {/* Subtle Gradient Shadow at bottom for title contrast */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 pointer-events-none" />
+
+                    {/* Glassmorphism Title Pill Tag on Hover */}
+                    <div
+                      className={`absolute bottom-2.5 left-2.5 right-2.5 px-3 py-1.5 rounded-[12px] bg-black/45 backdrop-blur-md border border-white/20 text-white text-center transition-all duration-300 ease-out pointer-events-none ${
+                        isHovered ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95'
+                      }`}
+                    >
+                      <span className="block font-poppins text-[10px] sm:text-[11px] font-medium tracking-tight truncate text-white">
+                        {card.title}
+                      </span>
+                      <span className="block font-poppins text-[8px] sm:text-[9px] text-amber-200/90 uppercase tracking-wider truncate">
+                        {card.category}
+                      </span>
+                    </div>
                   </div>
                 </div>
               );
