@@ -3,37 +3,36 @@ import { useEffect, useRef, useState } from 'react';
 interface UseScrollRevealOptions {
   threshold?: number;
   rootMargin?: string;
+  once?: boolean;
 }
 
 export function useScrollReveal<T extends HTMLElement>(
   options: UseScrollRevealOptions = {},
 ) {
-  const { threshold = 0.05, rootMargin = '0px 0px 50px 0px' } = options;
+  const { threshold = 0.1, rootMargin = '0px 0px -40px 0px', once = false } = options;
   const ref = useRef<T | null>(null);
-  const [isVisible, setIsVisible] = useState(() =>
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  );
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (isVisible) return;
     const node = ref.current;
     if (!node) {
-      // Fallback if ref not mounted yet
       setIsVisible(true);
       return;
     }
 
-    // Fallback timer: ensure content reveals within 400ms even if IntersectionObserver delays
-    const fallbackTimer = setTimeout(() => {
+    // Prefers reduced motion check
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setIsVisible(true);
-    }, 400);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
           setIsVisible(true);
-          observer.disconnect();
-          clearTimeout(fallbackTimer);
+          if (once) observer.disconnect();
+        } else if (!once) {
+          setIsVisible(false);
         }
       },
       { threshold, rootMargin },
@@ -42,9 +41,8 @@ export function useScrollReveal<T extends HTMLElement>(
     observer.observe(node);
     return () => {
       observer.disconnect();
-      clearTimeout(fallbackTimer);
     };
-  }, [isVisible, rootMargin, threshold]);
+  }, [once, rootMargin, threshold]);
 
   return { ref, isVisible };
 }

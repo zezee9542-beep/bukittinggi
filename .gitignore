@@ -39,16 +39,15 @@ public/assets/*
 
 # Ignore all assets in src/assets by default
 src/assets/*
-
-# Exceptions - Allow all media/image assets in src/assets
-!src/assets/*.webp
-!src/assets/*.png
-!src/assets/*.svg
-!src/assets/*.jpg
-!src/assets/*.mp3
-!src/assets/*.mp4
-!src/assets/*.glb
-!src/assets/*.jpeg
-!src/assets/*.webm
+!src/assets/*/
+!src/assets/**/*.webp
+!src/assets/**/*.png
+!src/assets/**/*.svg
+!src/assets/**/*.jpg
+!src/assets/**/*.mp3
+!src/assets/**/*.mp4
+!src/assets/**/*.glb
+!src/assets/**/*.jpeg
+!src/assets/**/*.webm
 
 

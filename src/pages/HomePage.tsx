@@ -12,8 +12,8 @@ function ScrollSection({ children, className = '' }: { children: React.ReactNode
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ${
-        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-[0.98]'
+      className={`transition-all duration-700 ease-out ${
+        isVisible ? 'opacity-100 translate-y-0 scale-100 blur-none' : 'opacity-0 translate-y-8 scale-[0.98] blur-[2px]'
       } ${className}`}
     >
       {children}

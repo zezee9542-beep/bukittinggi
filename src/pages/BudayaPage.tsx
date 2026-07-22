@@ -23,14 +23,14 @@ import grid5 from '../assets/05.webp';
 import grid6 from '../assets/06.webp';
 
 // Carousel slide images — High-resolution Minangkabau culture assets
-import rumahImg from '../assets/budaya/Rectangle 1385 (1).png';
-import piringImg from '../assets/budaya/Rectangle 1385 (1).svg';
-import talempongImg from '../assets/budaya/Rectangle 1385 (2).svg';
-import randaiImg from '../assets/budaya/Rectangle 1385 (3).svg';
-import saluangImg from '../assets/budaya/Rectangle 1385 (9).svg';
-import silekImg from '../assets/budaya/Rectangle 1385 (5).svg';
-import merantauImg from '../assets/budaya/Rectangle 1385 (6).svg';
-import baralekImg from '../assets/budaya/Rectangle 1385 (8).svg';
+import rumahImg from '../assets/Rectangle 1385 (1).svg';
+import piringImg from '../assets/Rectangle 1385 (2).svg';
+import talempongImg from '../assets/Rectangle 1385 (3).svg';
+import randaiImg from '../assets/Rectangle 1385 (4).svg';
+import saluangImg from '../assets/Rectangle 1385 (5).svg';
+import silekImg from '../assets/Rectangle 1385 (6).svg';
+import merantauImg from '../assets/Rectangle 1385 (7).svg';
+import baralekImg from '../assets/Rectangle 1385 (8).svg';
 
 interface SlideData {
   id: number;
