@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 import bg4Png from '../assets/bg4.webp';
 import bgMobilePng from '../assets/image copy 2.png';
 
@@ -33,11 +34,14 @@ const MARQUEE_ITEMS = [...BASE_CARDS, ...BASE_CARDS, ...BASE_CARDS, ...BASE_CARD
 
 export function HeroSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { ref: heroRef, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.05 });
 
   return (
-    <section className="relative w-full bg-white pt-[82px] sm:pt-[86px] md:pt-[90px] px-1.5 sm:px-2.5 md:px-3.5 pb-16 sm:pb-20 flex justify-center overflow-visible">
-      {/* Outer Hero Card Container - Enlarged background with slim gaps from navbar & sides */}
-      <div className="relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-hidden shadow-2xl">
+    <section ref={heroRef} className="relative w-full bg-white pt-[82px] sm:pt-[86px] md:pt-[90px] px-1.5 sm:px-2.5 md:px-3.5 pb-16 sm:pb-20 flex justify-center overflow-visible">
+      {/* Outer Hero Card Container - Enlarged background with fade-in on load & scroll */}
+      <div className={`relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-hidden shadow-2xl transition-all duration-1000 ease-out ${
+        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-[0.98]'
+      }`}>
         
         {/* Mobile Background Image (image copy 2.png - block sm:hidden) */}
         <img
@@ -81,7 +85,7 @@ export function HeroSection() {
                         : 'border-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.35)]'
                     }`}
                   >
-                    {/* Card Image — Scaled smoothly on hover with no whitespace */}
+                    {/* Card Image — Scaled smoothly on hover without any text inside */}
                     <img
                       src={card.image}
                       alt={card.title}
@@ -91,22 +95,8 @@ export function HeroSection() {
                       draggable={false}
                     />
 
-                    {/* Subtle Gradient Shadow at bottom for title contrast */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 pointer-events-none" />
-
-                    {/* Glassmorphism Title Pill Tag on Hover */}
-                    <div
-                      className={`absolute bottom-2.5 left-2.5 right-2.5 px-3 py-1.5 rounded-[12px] bg-black/45 backdrop-blur-md border border-white/20 text-white text-center transition-all duration-300 ease-out pointer-events-none ${
-                        isHovered ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95'
-                      }`}
-                    >
-                      <span className="block font-poppins text-[10px] sm:text-[11px] font-medium tracking-tight truncate text-white">
-                        {card.title}
-                      </span>
-                      <span className="block font-poppins text-[8px] sm:text-[9px] text-amber-200/90 uppercase tracking-wider truncate">
-                        {card.category}
-                      </span>
-                    </div>
+                    {/* Subtle Gradient Shadow at bottom */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60 pointer-events-none" />
                   </div>
                 </div>
               );

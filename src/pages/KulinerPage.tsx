@@ -548,14 +548,14 @@ export function KulinerPage() {
 
         {/* ── [LAYER 3] KONTEN ELEMEN HERO ── */}
 
-        {/* Judul: "Cita Rasa Bukittinggi" */}
+        {/* Judul: "Cita Rasa Bukittinggi" (Solid White Font) */}
         <div
           className={`absolute left-1/2 top-[16%] z-25 w-full -translate-x-1/2 -translate-y-1/2 px-4 text-center transition-all duration-1000 delay-150 ease-out md:top-[28%] ${
             heroVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-8 scale-90'
           }`}
         >
           <h1
-            className="font-poppins font-medium text-white tracking-wide animate-text-shimmer drop-shadow-2xl"
+            className="font-poppins font-medium text-white tracking-wide drop-shadow-2xl"
             style={{
               fontSize: 'clamp(1.5rem, 4.4vw, 3.6rem)',
               textShadow: '0 4px 22px rgba(0,0,0,0.85), 0 2px 8px rgba(0,0,0,0.9)',
@@ -564,7 +564,7 @@ export function KulinerPage() {
             Cita Rasa Bukittinggi
           </h1>
           <p
-            className={`font-poppins text-xs sm:text-sm md:text-base text-amber-100/90 font-light mt-1.5 transition-all duration-1000 delay-300 ${
+            className={`font-poppins text-xs sm:text-sm md:text-base text-white/90 font-light mt-1.5 transition-all duration-1000 delay-300 ${
               heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
             }`}
             style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}
@@ -575,7 +575,7 @@ export function KulinerPage() {
 
         {/* Top Right Floating Badge */}
         <div
-          className={`absolute right-4 top-3 z-20 flex items-center gap-2 rounded-[12px] px-3 py-2 shadow-xl transition-all duration-700 ease-out sm:right-5 sm:top-4 sm:gap-2.5 sm:px-4 sm:py-2.5 md:right-[6%] md:top-[75px] md:gap-3 md:rounded-[14px] md:px-5 md:py-3 hover:scale-105 hover:bg-[#692020]/60 ${
+          className={`absolute right-4 top-3 z-20 flex items-center gap-2 rounded-[12px] px-3 py-2 shadow-xl transition-all duration-700 ease-out sm:right-5 sm:top-4 sm:gap-2.5 sm:px-4 sm:py-2.5 md:right-[6%] md:top-[75px] md:gap-3 md:rounded-[14px] md:px-5 md:py-3 ${
             heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'
           }`}
           style={{
@@ -587,7 +587,7 @@ export function KulinerPage() {
           }}
         >
           <div
-            className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-[8px] sm:h-8 sm:w-8 md:h-9 md:w-9 md:rounded-[10px] animate-pulse"
+            className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-[8px] sm:h-8 sm:w-8 md:h-9 md:w-9 md:rounded-[10px]"
             style={{ background: 'rgba(255,255,255,0.18)' }}
           >
             <img
@@ -607,67 +607,55 @@ export function KulinerPage() {
           </div>
         </div>
 
-        {/* ── DECORATIVE LEAF ELEMENTS (ATAS) ── */}
+        {/* ── DECORATIVE LEAF ELEMENTS (ATAS) — Jatuh dari atas ke bawah ── */}
 
         {/* Left Large Leaf (leaf.png) */}
         <div
           className={`absolute left-[-8%] top-[18%] z-20 w-[86px] pointer-events-none transition-all duration-[1400ms] delay-0 ease-out sm:w-[110px] md:left-[-2%] md:top-[16%] md:w-[clamp(120px,18vw,240px)] ${
-            heroVisible ? 'opacity-100 rotate-0 translate-x-0' : 'opacity-0 -rotate-45 -translate-x-8'
+            heroVisible ? 'opacity-100 translate-y-0 rotate-0 scale-100' : 'opacity-0 -translate-y-16 -rotate-45 scale-90'
           }`}
         >
-          <div className="animate-leaf-sway-left">
-            <img
-              src={leafBig}
-              alt=""
-              className="w-full h-auto object-contain filter drop-shadow(0 8px 16px rgba(0,0,0,0.35))"
-            />
-          </div>
+          <img
+            src={leafBig}
+            alt=""
+            className="w-full h-auto object-contain filter drop-shadow(0 8px 16px rgba(0,0,0,0.35))"
+          />
         </div>
 
         {/* Leaf (1).png - Right of title */}
         <div
           className={`absolute right-[4%] top-[20%] z-20 w-[48px] pointer-events-none transition-all duration-[1500ms] delay-200 ease-out sm:w-[60px] md:right-[15%] md:top-[32%] md:w-[clamp(60px,10vw,120px)] ${
-            heroVisible ? 'opacity-100 rotate-15 scale-100' : 'opacity-0 rotate-90 scale-75'
+            heroVisible ? 'opacity-100 translate-y-0 rotate-15 scale-100' : 'opacity-0 -translate-y-16 rotate-45 scale-75'
           }`}
         >
-          <div className="animate-leaf-sway-right">
-            <img
-              src={leaf1}
-              alt=""
-              className="w-full h-auto object-contain filter drop-shadow(0 4px 10px rgba(0,0,0,0.25))"
-            />
-          </div>
+          <img
+            src={leaf1}
+            alt=""
+            className="w-full h-auto object-contain filter drop-shadow(0 4px 10px rgba(0,0,0,0.25))"
+          />
         </div>
 
-        {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) — diturunkan ── */}
+        {/* ── INTERSEKSI ELEMEN UTAMA (PIRING MAKANAN) ── */}
         <div
           className="pointer-events-none absolute bottom-[15%] left-1/2 z-30 flex w-[88%] max-w-[430px] -translate-x-1/2 flex-col items-center md:bottom-[-16%] md:w-[clamp(350px,55vw,680px)] md:max-w-none"
         >
-          {/* Container Piring dengan Floating 3D Animation & Steam FX */}
+          {/* Container Piring (Hanya animasi masuk) */}
           <div className={`relative w-full transition-all duration-[1200ms] delay-400 ease-out ${
             heroVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.85]'
           }`}>
-            {/* Steam particles rising from hot food */}
-            <div className="absolute top-[18%] left-[28%] w-8 h-8 rounded-full bg-white/20 blur-md pointer-events-none animate-aroma-steam-1 z-35" />
-            <div className="absolute top-[22%] left-[48%] w-10 h-10 rounded-full bg-white/25 blur-lg pointer-events-none animate-aroma-steam-2 z-35" />
-            <div className="absolute top-[18%] right-[30%] w-9 h-9 rounded-full bg-white/20 blur-md pointer-events-none animate-aroma-steam-3 z-35" />
-
-            {/* Floating Food Plate */}
-            <div className="animate-hero-plate-float">
-              <img
-                src={makanPlate}
-                alt="Nasi Kapau"
-                className="w-full h-auto object-contain mx-auto transition-transform duration-700 hover:scale-[1.03]"
-                style={{
-                  filter: 'drop-shadow(0 22px 34px rgba(0,0,0,0.4))',
-                }}
-              />
-            </div>
+            <img
+              src={makanPlate}
+              alt="Nasi Kapau"
+              className="w-full h-auto object-contain mx-auto"
+              style={{
+                filter: 'drop-shadow(0 22px 34px rgba(0,0,0,0.4))',
+              }}
+            />
 
             {/* Small Leaf - Left of makan.png, centered */}
             <div
               className={`absolute z-40 pointer-events-none transition-all duration-[1300ms] delay-350 ease-out ${
-                heroVisible ? 'opacity-90 translate-x-0' : 'opacity-0 -translate-x-4'
+                heroVisible ? 'opacity-90 translate-y-0 scale-100' : 'opacity-0 -translate-y-10 scale-90'
               }`}
               style={{
                 left: '-3%',
@@ -676,48 +664,40 @@ export function KulinerPage() {
                 width: 'clamp(50px, 7vw, 90px)',
               }}
             >
-              <div className="animate-leaf-sway-left">
-                <img src={leaf2} alt="" className="w-full h-auto object-contain" />
-              </div>
+              <img src={leaf2} alt="" className="w-full h-auto object-contain" />
             </div>
           </div>
         </div>
 
-        {/* ── TEKS MELENGKUNG (Group.png) — diturunkan ── */}
+        {/* ── TEKS MELENGKUNG (Group.png) ── */}
         <div
           className={`pointer-events-none absolute bottom-[8%] left-1/2 z-[35] w-[86%] max-w-[390px] -translate-x-1/2 transition-all duration-[1100ms] delay-550 ease-out sm:w-[92%] md:bottom-[-16%] md:w-[clamp(350px,55vw,680px)] md:max-w-none ${
             heroVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-12'
           }`}
         >
-          <div className="animate-curved-text-float">
-            <img
-              src={groupText}
-              alt="Cita Rasa Minang · Kaya Rempah"
-              className="w-full h-auto object-contain mx-auto filter drop-shadow(0 6px 12px rgba(0,0,0,0.3))"
-            />
-          </div>
+          <img
+            src={groupText}
+            alt="Cita Rasa Minang · Kaya Rempah"
+            className="w-full h-auto object-contain mx-auto filter drop-shadow(0 6px 12px rgba(0,0,0,0.3))"
+          />
         </div>
 
-        {/* Bottom Left Leaf (leaf (3).png) */}
+        {/* Bottom Left Leaf (leaf (3).png) - Jatuh dari atas */}
         <div
           className={`absolute bottom-[10%] left-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1600ms] delay-450 ease-out sm:w-[90px] md:bottom-[-10%] md:left-[-1%] md:w-[clamp(85px,12vw,160px)] ${
-            heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+            heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-14'
           }`}
         >
-          <div className="animate-leaf-sway-left">
-            <img src={leaf3} alt="" className="w-full h-auto object-contain filter drop-shadow(0 6px 12px rgba(0,0,0,0.25))" />
-          </div>
+          <img src={leaf3} alt="" className="w-full h-auto object-contain filter drop-shadow(0 6px 12px rgba(0,0,0,0.25))" />
         </div>
 
-        {/* Bottom Right Leaf (leaf (1).png) */}
+        {/* Bottom Right Leaf (leaf (1).png) - Jatuh dari atas */}
         <div
           className={`absolute bottom-[10%] right-[-4%] z-30 w-[72px] pointer-events-none transition-all duration-[1550ms] delay-500 ease-out sm:w-[90px] md:bottom-[-10%] md:right-[-1%] md:w-[clamp(85px,12vw,160px)] ${
-            heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-14'
           }`}
         >
-          <div className="animate-leaf-sway-right">
-            <img src={leaf1} alt="" className="w-full h-auto object-contain filter drop-shadow(0 6px 12px rgba(0,0,0,0.25))" />
-          </div>
+          <img src={leaf1} alt="" className="w-full h-auto object-contain filter drop-shadow(0 6px 12px rgba(0,0,0,0.25))" />
         </div>
 
       </section>
@@ -727,7 +707,7 @@ export function KulinerPage() {
 
         {/* ── Tab Navigation with white background ── */}
         <div
-          className={`inline-flex max-w-full items-end overflow-x-auto bg-white rounded-t-[24px] pt-4 pl-2 transition-[opacity,transform] duration-500 ease-out hide-scrollbar ${
+          className={`inline-flex max-w-full items-end overflow-x-auto bg-white rounded-t-[24px] pt-4 pl-2 transition-all duration-700 ease-out hide-scrollbar ${
             sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
           }`}
           style={{
@@ -783,7 +763,7 @@ export function KulinerPage() {
 
         {/* ── White Card Panel — wraps ONLY the cards ── */}
         <div
-          className={`rounded-b-[24px] p-6 sm:p-8 transition-[opacity,transform] duration-500 delay-100 ease-out ${
+          className={`rounded-b-[24px] p-6 sm:p-8 transition-all duration-700 delay-100 ease-out ${
             sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
           }`}
           style={{
@@ -795,7 +775,7 @@ export function KulinerPage() {
         >
           <div
             key={displayCategory}
-            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 transition-[opacity,transform] duration-300 ease-out ${
+            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 transition-all duration-300 ease-out ${
               isAnimating
                 ? 'opacity-0 translate-y-1'
                 : 'opacity-100 translate-y-0'
@@ -870,7 +850,7 @@ export function KulinerPage() {
         {/* ── Decorative Section with Two Images ── */}
         <section
           ref={decorationRef}
-          className={`w-full pt-5 sm:pt-7 pb-14 sm:pb-20 px-5 sm:px-10 lg:px-20 transition-[opacity,transform] duration-700 ease-out ${
+          className={`w-full pt-5 sm:pt-7 pb-14 sm:pb-20 px-5 sm:px-10 lg:px-20 transition-all duration-700 ease-out ${
             decorationVisible
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-12'
@@ -880,8 +860,8 @@ export function KulinerPage() {
           <div className="hidden md:flex max-w-[1440px] mx-auto items-center justify-between gap-2 lg:gap-4">
             {/* Left Image */}
             <div
-              className={`flex w-[50%] justify-start transition-[opacity,transform] duration-700 delay-75 ease-out will-change-transform ${
-                decorationVisible ? 'translate-x-0 opacity-100' : '-translate-x-6 opacity-0'
+              className={`flex w-[50%] justify-start transition-all duration-1000 delay-100 ease-out will-change-transform ${
+                decorationVisible ? 'translate-x-0 opacity-100 scale-100' : '-translate-x-10 opacity-0 scale-95'
               }`}
             >
               <img
@@ -891,10 +871,10 @@ export function KulinerPage() {
               />
             </div>
 
-            {/* Right Image - Piring */}
+            {/* Right Image - Piring (Jatuh dari Bawah ke Atas) */}
             <div
-              className={`flex w-[47%] justify-end pr-2 lg:pr-5 transition-[opacity,transform] duration-700 delay-150 ease-out will-change-transform ${
-                decorationVisible ? 'translate-x-0 opacity-100' : 'translate-x-6 opacity-0'
+              className={`flex w-[47%] justify-end pr-2 lg:pr-5 transition-all duration-1000 delay-200 ease-out will-change-transform ${
+                decorationVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-95'
               }`}
             >
               <img
@@ -908,8 +888,8 @@ export function KulinerPage() {
           {/* Mobile - Vertical Layout */}
           <div className="md:hidden flex flex-col items-center gap-9">
             <div
-              className={`flex justify-center transition-[opacity,transform] duration-700 ease-out will-change-transform ${
-                decorationVisible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
+              className={`flex justify-center transition-all duration-700 ease-out will-change-transform ${
+                decorationVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
               }`}
             >
               <img
@@ -918,9 +898,10 @@ export function KulinerPage() {
                 className="w-[90%] max-w-[620px] h-auto -translate-y-5 scale-105 object-contain"
               />
             </div>
+            {/* Right Image - piring.png (Jatuh dari Bawah ke Atas) */}
             <div
-              className={`flex justify-center transition-[opacity,transform] duration-700 delay-150 ease-out will-change-transform ${
-                decorationVisible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
+              className={`flex justify-center transition-all duration-700 delay-150 ease-out will-change-transform ${
+                decorationVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-95'
               }`}
             >
               <img
