@@ -5,7 +5,8 @@ import segitigaSvg from '../assets/segitiga.webp';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import mapsSvg from '../assets/maps.webp';
 import tigaSvg from '../assets/tiga.webp';
-import budaya4kVideo from '../assets/Budaya_720p.webm';
+import budaya4kVideo from '../assets/Budaya_720p.mp4';
+import bgPoster from '../assets/bg.webp';
 import { BudayaSkeleton } from '../components/ui/PageSkeletons';
 
 // Custom left/right navigation cursors shown once the intro scroll-through is complete
@@ -182,9 +183,11 @@ export function BudayaPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 600);
+    setIsLoading(false);
+    const t = setTimeout(() => setShouldLoadVideo(true), 1200);
     return () => clearTimeout(t);
   }, []);
 
@@ -302,29 +305,41 @@ export function BudayaPage() {
         style={{ minHeight: '90svh' }}
         aria-labelledby="budaya-heading"
       >
-        <video
-          ref={videoRef}
-          src={budaya4kVideo}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-          onTimeUpdate={(e) => {
-            const v = e.currentTarget;
-            // Preemptively loop 0.25 seconds before the video ends to avoid a black flash/gap
-            if (v.duration && v.currentTime >= v.duration - 0.25) {
+        {/* Instant WebP background poster — renders in 0 ms on initial visit */}
+        <img
+          src={bgPoster}
+          alt="Warisan Budaya Bukittinggi"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+        />
+
+        {/* Deferred background video — starts streaming in background without blocking initial page render */}
+        {shouldLoadVideo && (
+          <video
+            ref={videoRef}
+            src={budaya4kVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-1000 ease-out opacity-90"
+            onTimeUpdate={(e) => {
+              const v = e.currentTarget;
+              if (v.duration && v.currentTime >= v.duration - 0.25) {
+                v.currentTime = 0;
+                void v.play().catch(() => {});
+              }
+            }}
+            onEnded={(e) => {
+              const v = e.currentTarget;
               v.currentTime = 0;
               void v.play().catch(() => {});
-            }
-          }}
-          onEnded={(e) => {
-            const v = e.currentTarget;
-            v.currentTime = 0;
-            void v.play().catch(() => {});
-          }}
-        />
+            }}
+          />
+        )}
         <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/60 to-transparent z-10 pointer-events-none" />
         {/* Warm reddish-brown tint matching design reference */}
         <div className="absolute inset-0 bg-[#6B1C0C]/35 mix-blend-multiply z-10 pointer-events-none" />

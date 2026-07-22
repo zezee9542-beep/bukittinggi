@@ -792,8 +792,12 @@ export function RancakBotWidget() {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div
-                    className={`max-w-[82%] px-4 py-2.5 text-[13px] leading-relaxed font-poppins ${msg.sender === 'user' ? 'bg-[#F9CE65] text-[#2A0606] font-medium' : 'bg-[#4A0E0E] text-white/90 border border-[#F9CE65]/15'}`}
-                    style={{ borderRadius: msg.sender === 'user' ? '16px 16px 0 16px' : '16px 16px 16px 0' }}
+                    className={`max-w-[85%] sm:max-w-[82%] px-4 py-3 text-[13px] sm:text-[13.5px] leading-[1.75] tracking-[0.01em] font-poppins whitespace-pre-line ${
+                      msg.sender === 'user'
+                        ? 'bg-[#F9CE65] text-[#2A0606] font-medium shadow-sm'
+                        : 'bg-[#4A0E0E] text-white/95 border border-[#F9CE65]/20 shadow-md space-y-2'
+                    }`}
+                    style={{ borderRadius: msg.sender === 'user' ? '18px 18px 2px 18px' : '18px 18px 18px 2px' }}
                   >
                     {msg.text}
                   </div>

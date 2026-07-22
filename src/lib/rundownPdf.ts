@@ -35,7 +35,10 @@ export interface RundownTripInfo {
 }
 
 // Heritage palette pulled from the design tokens used on-screen.
+// Heritage palette pulled from the design tokens used on-screen.
 const MAROON: [number, number, number] = [95, 23, 18]; // #5F1712
+const GOLD: [number, number, number] = [249, 206, 101]; // #F9CE65
+const GOLD_BORDER: [number, number, number] = [230, 208, 151]; // #E6D097
 const HEADER_GREY: [number, number, number] = [244, 243, 240]; // #F4F3F0
 const TABLE_HEAD: [number, number, number] = [239, 238, 235]; // #EFEEEB
 const INK: [number, number, number] = [26, 28, 26]; // #1A1C1A
@@ -56,64 +59,92 @@ export function downloadRundownPdf(
   const margin = 40;
   const contentWidth = pageWidth - margin * 2;
 
-  // ── Cover header band ──
+  // ── Executive Heritage Header Band ──
+  const headerHeight = 110;
   doc.setFillColor(...MAROON);
-  doc.rect(0, 0, pageWidth, 96, 'F');
+  doc.rect(0, 0, pageWidth, headerHeight, 'F');
 
-  doc.setTextColor(255, 255, 255);
+  // Bottom Gold Accent Line across header
+  doc.setFillColor(...GOLD);
+  doc.rect(0, headerHeight - 3.5, pageWidth, 3.5, 'F');
+
+  // Top Heritage Brand Tag
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(20);
+  doc.setFontSize(8);
+  doc.setTextColor(...GOLD);
+  doc.text('BUKITTINGGI CULTURAL HERITAGE HUB · AI TRAVEL PLANNER', margin, 28);
+
+  // Main Trip Title
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(255, 255, 255);
   const title = tripInfo.judul || 'Rencana Perjalanan Bukittinggi';
-  doc.text(doc.splitTextToSize(title, contentWidth - 140), margin, 42);
+  const titleLines = doc.splitTextToSize(title, contentWidth - 40);
+  doc.text(titleLines, margin, 54);
 
+  // Subtitle with Gold Star
+  const titleOffset = titleLines.length > 1 ? 74 : 64;
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(240, 224, 221);
-  doc.text('Bukittinggi Heritage — Rekomendasi Perjalanan Khusus dari AI', margin, 64);
+  doc.setFontSize(9.5);
+  doc.setTextColor(252, 239, 203);
+  doc.text('✦ Rekomendasi Perjalanan Khusus & Itinerary Warisan Budaya Minangkabau', margin, titleOffset + 18);
 
-  // ── Trip summary chips ──
-  const summaryY = 120;
+  // ── Trip Summary Cards ──
+  const summaryY = headerHeight + 20;
   const stats: Array<[string, string]> = [
-    ['Tujuan', tripInfo.destination || 'Bukittinggi'],
-    ['Durasi', tripInfo.duration || `${days.length} Hari`],
-    ['Wisatawan', tripInfo.companions || '-'],
-    ['Estimasi Biaya', tripInfo.estimasi || '-'],
+    ['TUJUAN', tripInfo.destination || 'Bukittinggi'],
+    ['DURASI', tripInfo.duration || `${days.length} Hari`],
+    ['WISATAWAN', tripInfo.companions || 'Wisatawan'],
+    ['ESTIMASI BIAYA', tripInfo.estimasi || 'Sesuai Budget'],
   ];
   const chipW = contentWidth / stats.length;
   stats.forEach(([label, value], i) => {
     const x = margin + i * chipW;
+    // Card background
     doc.setFillColor(...ROW_ALT);
-    doc.roundedRect(x + 2, summaryY, chipW - 8, 48, 6, 6, 'F');
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
-    doc.setTextColor(...MUTE);
-    doc.text(label.toUpperCase(), x + 12, summaryY + 18);
+    doc.setDrawColor(...GOLD_BORDER);
+    doc.setLineWidth(0.8);
+    doc.roundedRect(x + 2, summaryY, chipW - 8, 52, 6, 6, 'FD');
+    
+    // Label Header
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
+    doc.setFontSize(7.5);
+    doc.setTextColor(...MAROON);
+    doc.text(label, x + 12, summaryY + 18);
+    
+    // Value Content
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9.5);
     doc.setTextColor(...INK);
-    doc.text(doc.splitTextToSize(value, chipW - 20), x + 12, summaryY + 34);
+    const valueLines = doc.splitTextToSize(value, chipW - 20);
+    doc.text(valueLines, x + 12, summaryY + 34);
   });
 
-  // ── AI advisor note ──
-  let cursorY = summaryY + 72;
+  // ── AI Advisor Summary Note ──
+  let cursorY = summaryY + 74;
   const advice = tripInfo.ringkasan?.trim();
   if (advice) {
-    doc.setFillColor(250, 246, 244);
-    const noteLines = doc.splitTextToSize(`"${advice}"`, contentWidth - 24);
-    const noteH = noteLines.length * 12 + 24;
-    doc.roundedRect(margin, cursorY, contentWidth, noteH, 8, 8, 'F');
-    doc.setDrawColor(...MAROON);
-    doc.setLineWidth(2);
-    doc.line(margin, cursorY + 4, margin, cursorY + noteH - 4);
+    doc.setFillColor(252, 249, 245);
+    doc.setDrawColor(...GOLD_BORDER);
+    doc.setLineWidth(0.8);
+    const noteLines = doc.splitTextToSize(`"${advice}"`, contentWidth - 28);
+    const noteH = noteLines.length * 13 + 28;
+    doc.roundedRect(margin, cursorY, contentWidth, noteH, 6, 6, 'FD');
+    
+    // Thick Maroon Accent bar on the left edge
+    doc.setFillColor(...MAROON);
+    doc.rect(margin, cursorY, 4, noteH, 'F');
+    
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
+    doc.setFontSize(8.5);
     doc.setTextColor(...MAROON);
-    doc.text('AI KONSULTAN PERJALANAN', margin + 14, cursorY + 16);
+    doc.text('✦ CATATAN KONSULTAN PERJALANAN AI', margin + 14, cursorY + 18);
+    
     doc.setFont('helvetica', 'italic');
-    doc.setFontSize(9.5);
+    doc.setFontSize(9);
     doc.setTextColor(...MUTE);
-    doc.text(noteLines, margin + 14, cursorY + 32);
-    cursorY += noteH + 18;
+    doc.text(noteLines, margin + 14, cursorY + 34);
+    cursorY += noteH + 20;
   }
 
   // ── Per-day tables ──
