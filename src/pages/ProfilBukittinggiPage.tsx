@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMode } from '../context/ModeContext';
 import { ScrollSection } from '../components/ScrollSection';
 import bggImage from '../assets/bg.webp';
-import gadangImage from '../assets/gadang.svg';
+import gadangImage from '../assets/gadang.webp';
 
 // Import Stat Icons
 import iconPopulasi from '../assets/Icon.webp';

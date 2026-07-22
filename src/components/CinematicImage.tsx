@@ -173,8 +173,9 @@ export function CinematicImage({ story, index, totalItems, progress }: Cinematic
             alt={story.alt}
             width={story.width}
             height={story.height}
-            loading="lazy"
+            loading={isFirst ? "eager" : "lazy"}
             decoding="async"
+            fetchPriority={isFirst ? "high" : "auto"}
             className="w-full h-auto block transition-all duration-[1800ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
             style={{
               transform: hasBeenVisible ? 'scale(1)' : 'scale(1.06)',

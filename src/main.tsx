@@ -44,3 +44,14 @@ createRoot(document.getElementById('root')!).render(
   </BrowserRouter>,
 )
 
+// Register Service Worker for caching images, fonts & 3D models on slow networks
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(
+      (reg) => console.log('[ServiceWorker] Registered with scope:', reg.scope),
+      (err) => console.warn('[ServiceWorker] Registration failed:', err)
+    );
+  });
+}
+
+

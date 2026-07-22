@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect, type MouseEvent as ReactMouseEvent } from 'react';
-import frameSvg from '../assets/frame.svg';
-import gadangSvg from '../assets/gadang.svg';
-import segitigaSvg from '../assets/segitiga.svg';
+import frameSvg from '../assets/frame.webp';
+import gadangSvg from '../assets/gadang.webp';
+import segitigaSvg from '../assets/segitiga.webp';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import mapsSvg from '../assets/maps.svg';
-import tigaSvg from '../assets/tiga.svg';
-import budaya4kVideo from '../assets/Budaya 4k.mp4';
+import mapsSvg from '../assets/maps.webp';
+import tigaSvg from '../assets/tiga.webp';
+import budaya4kVideo from '../assets/Budaya_720p.mp4';
 import { BudayaSkeleton } from '../components/ui/PageSkeletons';
 
 // Custom left/right navigation cursors shown once the intro scroll-through is complete
@@ -23,13 +23,13 @@ import grid5 from '../assets/05.webp';
 import grid6 from '../assets/06.webp';
 
 // Carousel slide images
-import rect2 from "../assets/Rectangle 1385 (2).svg";
-import rect3 from "../assets/Rectangle 1385 (3).svg";
-import rect4 from "../assets/Rectangle 1385 (4).svg";
-import rect5 from "../assets/Rectangle 1385 (5).svg";
-import rect6 from "../assets/Rectangle 1385 (6).svg";
-import rect7 from "../assets/Rectangle 1385 (7).svg";
-import rect8 from "../assets/Rectangle 1385 (8).svg";
+import rect2 from "../assets/Rectangle 1385 (2).webp";
+import rect3 from "../assets/Rectangle 1385 (3).webp";
+import rect4 from "../assets/Rectangle 1385 (4).webp";
+import rect5 from "../assets/Rectangle 1385 (5).webp";
+import rect6 from "../assets/Rectangle 1385 (6).webp";
+import rect7 from "../assets/Rectangle 1385 (7).webp";
+import rect8 from "../assets/Rectangle 1385 (8).webp";
 
 interface SlideData {
   id: number;

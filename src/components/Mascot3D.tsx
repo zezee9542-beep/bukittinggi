@@ -5,7 +5,10 @@ import * as THREE from 'three';
 
 const MODEL_URL = '/textured.glb';
 
-function TrackingModel({ pointerRef }: { pointerRef: RefObject<THREE.Vector2> }) {
+// Preload GLB model in background for fast initialization
+useGLTF.preload(MODEL_URL);
+
+function TrackingModel({ pointerRef, onLoaded }: { pointerRef: RefObject<THREE.Vector2>; onLoaded?: () => void }) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(MODEL_URL);
   const model = useMemo(() => scene.clone(true), [scene]);
@@ -37,7 +40,9 @@ function TrackingModel({ pointerRef }: { pointerRef: RefObject<THREE.Vector2> })
         material.needsUpdate = true;
       });
     });
-  }, [model]);
+
+    if (onLoaded) onLoaded();
+  }, [model, onLoaded]);
 
   useFrame((_, delta) => {
     const group = groupRef.current;
@@ -46,9 +51,6 @@ function TrackingModel({ pointerRef }: { pointerRef: RefObject<THREE.Vector2> })
     const pointer = pointerRef.current;
     const damping = 1 - Math.exp(-delta * 6.5);
 
-    // The GLB has no head bone, so use a very small root rotation rather than
-    // translating it left/right. This reads as “looking” while preventing the
-    // full-body spin that happened with unrestricted pointer rotation.
     const targetPitch = THREE.MathUtils.clamp(pointer.y * 0.09, -0.09, 0.09);
     const targetYaw = THREE.MathUtils.clamp(pointer.x * 0.18, -0.18, 0.18);
     const targetQuaternion = new THREE.Quaternion().setFromEuler(
@@ -67,10 +69,27 @@ function TrackingModel({ pointerRef }: { pointerRef: RefObject<THREE.Vector2> })
   );
 }
 
-function MascotFallback() {
+function MascotAvatarFallback() {
   return (
-    <div className="flex h-full w-full items-center justify-center rounded-full bg-[#7B1F2A] text-xs font-semibold text-[#F9CE65] shadow-[0_12px_34px_rgba(24,5,7,0.36)]">
-      RB
+    <div className="relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-b from-[#7B1F2A] via-[#5A161E] to-[#3B0E14] border-2 border-[#F9CE65]/60 shadow-[0_12px_34px_rgba(24,5,7,0.48)] overflow-hidden animate-pulse">
+      <div className="flex flex-col items-center justify-center text-center select-none p-1">
+        {/* Minang Deta / Crown Icon */}
+        <div className="relative mb-[2px]">
+          <svg width="28" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+            <path d="M14 2L2 14L6 22H22L26 14L14 2Z" fill="#F9CE65" stroke="#7B1F2A" strokeWidth="1.5" />
+            <path d="M14 6L8 15H20L14 6Z" fill="#7B1F2A" />
+            <circle cx="14" cy="11" r="2" fill="#F9CE65" />
+          </svg>
+        </div>
+        {/* Mascot Face Details */}
+        <div className="flex gap-1.5 items-center my-0.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#F9CE65] shadow-[0_0_6px_#F9CE65]"></span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#F9CE65] shadow-[0_0_6px_#F9CE65]"></span>
+        </div>
+        <span className="text-[9px] font-bold tracking-wider text-[#F9CE65] uppercase leading-none mt-0.5">
+          Rancak
+        </span>
+      </div>
     </div>
   );
 }
@@ -78,8 +97,6 @@ function MascotFallback() {
 export default function Mascot3D() {
   const pointerRef = useRef(new THREE.Vector2());
 
-  // Track the whole viewport, so the mascot follows the visitor even when
-  // their cursor is nowhere near its small canvas in the bottom corner.
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
       if (event.pointerType === 'touch') return;
@@ -99,9 +116,9 @@ export default function Mascot3D() {
   }, []);
 
   return (
-    <Suspense fallback={<MascotFallback />}>
+    <Suspense fallback={<MascotAvatarFallback />}>
       <Canvas
-        className="pointer-events-none h-full w-full"
+        className="pointer-events-none h-full w-full transition-opacity duration-500 ease-out opacity-100"
         camera={{ position: [0, 0.08, 3.45], fov: 30, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         frameloop="always"
@@ -122,5 +139,6 @@ export default function Mascot3D() {
     </Suspense>
   );
 }
+
 
 

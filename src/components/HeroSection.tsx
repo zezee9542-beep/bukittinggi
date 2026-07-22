@@ -40,6 +40,9 @@ export function HeroSection() {
         <img
           src={bgMobilePng}
           alt="Bukittinggi Background Mobile"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
           className="block sm:hidden absolute inset-0 w-full h-full object-cover object-top rounded-[32px] select-none pointer-events-none"
         />
 
@@ -47,6 +50,9 @@ export function HeroSection() {
         <img
           src={bg4Png}
           alt="Bukittinggi Ngarai Sianok Background"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
           className="hidden sm:block absolute inset-0 w-full h-full object-cover object-[center_30%] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] select-none pointer-events-none"
         />
 
@@ -69,7 +75,9 @@ export function HeroSection() {
                     <img
                       src={card.image}
                       alt={card.title}
-                      className="w-full h-full object-cover object-center block m-0 p-0 select-none scale-105"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-auto min-h-full min-w-full object-cover object-center block m-0 p-0 select-none scale-105"
                       draggable={false}
                     />
                   </div>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import videoSrc from '../assets/Bukittinggi 4K.mp4';
+import videoSrc from '../assets/Bukittinggi_720p.mp4';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const MARQUEE_TEXT = '✦ Parijs Van Sumatra ✦ Kota Wisata ✦ Minangkabau ✦ Sumatera Barat ✦ Alam Minang ✦ Warisan Budaya ✦ ';
