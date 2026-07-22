@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { useScrollReveal } from '../hooks/useScrollReveal';
 import bg4Png from '../assets/bg4.webp';
 import bgMobilePng from '../assets/image copy 2.png';
 
@@ -33,15 +31,10 @@ const BASE_CARDS: HeroCardItem[] = [
 const MARQUEE_ITEMS = [...BASE_CARDS, ...BASE_CARDS, ...BASE_CARDS, ...BASE_CARDS];
 
 export function HeroSection() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const { ref: heroRef, isVisible } = useScrollReveal<HTMLElement>({ threshold: 0.05 });
-
   return (
-    <section ref={heroRef} className="relative w-full bg-white pt-[82px] sm:pt-[86px] md:pt-[90px] px-1.5 sm:px-2.5 md:px-3.5 pb-16 sm:pb-20 flex justify-center overflow-visible">
-      {/* Outer Hero Card Container - Enlarged background with fade-in on load & scroll */}
-      <div className={`relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-hidden shadow-2xl transition-all duration-1000 ease-out ${
-        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-[0.98]'
-      }`}>
+    <section className="relative w-full bg-white pt-[82px] sm:pt-[86px] md:pt-[90px] px-1.5 sm:px-2.5 md:px-3.5 pb-16 sm:pb-20 flex justify-center overflow-visible">
+      {/* Outer Hero Card Container - Enlarged background with slim gaps from navbar & sides */}
+      <div className="relative w-full max-w-[1530px] h-[520px] sm:h-[620px] md:h-[700px] lg:h-[760px] rounded-[32px] sm:rounded-[40px] md:rounded-[48px] overflow-hidden shadow-2xl">
         
         {/* Mobile Background Image (image copy 2.png - block sm:hidden) */}
         <img
@@ -62,41 +55,23 @@ export function HeroSection() {
           <div className="animate-hero-marquee group flex items-center gap-3.5 sm:gap-4.5 md:gap-5.5 px-2">
             {MARQUEE_ITEMS.map((card, idx) => {
               const isEven = idx % 2 === 0;
-              const isHovered = hoveredIndex === idx;
 
               return (
                 <div
                   key={`${card.id}-${idx}`}
-                  onMouseEnter={() => setHoveredIndex(idx)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  className={`relative flex-shrink-0 cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  className={`relative flex-shrink-0 cursor-pointer transition-all duration-500 ease-out ${
                     isEven ? 'animate-wave-odd' : 'animate-wave-even'
-                  } ${
-                    isHovered
-                      ? 'z-40 -translate-y-3 sm:-translate-y-4 md:-translate-y-5 scale-[1.08] active:scale-100 active:-translate-y-2'
-                      : 'z-20 scale-100 opacity-100'
                   }`}
                 >
-                  {/* Card Frame — Clean border with soft elevation shadow */}
-                  <div
-                    className={`relative w-[132px] sm:w-[168px] md:w-[198px] lg:w-[220px] aspect-[3/4] rounded-[18px] sm:rounded-[22px] md:rounded-[26px] overflow-hidden border-2 leading-none p-0 flex items-center justify-center transition-all duration-500 ${
-                      isHovered
-                        ? 'border-white shadow-[0_22px_45px_rgba(0,0,0,0.45)] ring-2 ring-white/50'
-                        : 'border-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.35)]'
-                    }`}
-                  >
-                    {/* Card Image — Scaled smoothly on hover without any text inside */}
+                  {/* Card Frame — Balanced medium size with zero whitespace */}
+                  <div className="relative w-[132px] sm:w-[168px] md:w-[198px] lg:w-[220px] aspect-[3/4] rounded-[18px] sm:rounded-[22px] md:rounded-[26px] overflow-hidden border-2 border-white/95 shadow-[0_14px_36px_rgba(0,0,0,0.4)] leading-none p-0 flex items-center justify-center">
+                    {/* Card Image — Scaled 105% to completely fill container with no gaps */}
                     <img
                       src={card.image}
                       alt={card.title}
-                      className={`w-full h-full object-cover object-center block m-0 p-0 select-none transition-transform duration-700 ease-out ${
-                        isHovered ? 'scale-115' : 'scale-105'
-                      }`}
+                      className="w-full h-full object-cover object-center block m-0 p-0 select-none scale-105"
                       draggable={false}
                     />
-
-                    {/* Subtle Gradient Shadow at bottom */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60 pointer-events-none" />
                   </div>
                 </div>
               );

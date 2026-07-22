@@ -9,6 +9,29 @@ interface MascotLauncherProps {
 export default function MascotLauncher({ hidden = false, onClick }: MascotLauncherProps) {
   const modelHostRef = useRef<HTMLSpanElement>(null);
   const [isNearFooter, setIsNearFooter] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Scroll detection: Hide bubble during scroll, show when scroll stops
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling(true);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 350);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Auto-hide bubble when scroll reaches the footer area
   useEffect(() => {
@@ -63,10 +86,10 @@ export default function MascotLauncher({ hidden = false, onClick }: MascotLaunch
         }
       }}
     >
-      {/* Interactive Pill Badge - Hides when near footer or when chat panel is open */}
+      {/* Interactive Pill Badge - Hides when scrolling, near footer, or when chat panel is open */}
       <div 
         className={`flex h-[50px] md:h-[60px] items-center pl-[18px] pr-[20px] rounded-[20px] rounded-br-none bg-[#531717] border border-[#F9CE65] shadow-lg transition-all duration-500 ease-in-out cursor-pointer ${
-          hidden || isNearFooter ? 'opacity-0 scale-90 -translate-x-4 pointer-events-none' : 'opacity-100 scale-100 translate-x-0 pointer-events-auto'
+          hidden || isNearFooter || isScrolling ? 'opacity-0 scale-90 -translate-x-4 pointer-events-none' : 'opacity-100 scale-100 translate-x-0 pointer-events-auto'
         }`}
       >
         <span className="relative mr-[10px] flex h-[11px] w-[11px]">

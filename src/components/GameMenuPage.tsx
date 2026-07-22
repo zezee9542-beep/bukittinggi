@@ -223,8 +223,23 @@ export function GameMenuPage() {
   return (
     <div
       className="relative min-h-screen w-full font-poppins overflow-x-clip"
-      style={{ backgroundColor: MAROON }}
+      style={{ backgroundColor: '#faf8f7' }}
     >
+      {/* ── Latar gradien maroon (Figma: IMAGE-SVG #1071:2123, gradient merah ke transparan) ── */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 pointer-events-none"
+        style={{
+          height: 560,
+          background: `linear-gradient(180deg,
+            ${MAROON} 0%,
+            ${MAROON}e8 15%,
+            ${MAROON}c0 45%,
+            ${MAROON}60 68%,
+            transparent 100%)`,
+          zIndex: 0,
+        }}
+      />
 
       {/* ── Ornamen blur kuning kiri atas (seperti leaf nodes di Figma) ── */}
       <div
@@ -345,7 +360,7 @@ export function GameMenuPage() {
             transition: 'opacity 0.8s ease 700ms',
           }}
         >
-          <p className="font-poppins text-sm text-white/80">
+          <p className="font-poppins text-sm" style={{ color: `${DARK}70` }}>
             {DAFTAR_GAME.filter((g) => g.status === 'tersedia').length} permainan tersedia
             {DAFTAR_GAME.filter((g) => g.status === 'segera').length > 0 &&
               ` · ${DAFTAR_GAME.filter((g) => g.status === 'segera').length} segera hadir`}
