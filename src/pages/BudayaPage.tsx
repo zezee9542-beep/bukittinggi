@@ -5,7 +5,7 @@ import segitigaSvg from '../assets/segitiga.webp';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import mapsSvg from '../assets/maps.webp';
 import tigaSvg from '../assets/tiga.webp';
-import budaya4kVideo from '../assets/Budaya_720p.mp4';
+import budaya4kVideo from '../assets/Budaya_720p.webm';
 import { BudayaSkeleton } from '../components/ui/PageSkeletons';
 
 // Custom left/right navigation cursors shown once the intro scroll-through is complete
