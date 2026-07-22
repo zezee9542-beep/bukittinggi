@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, type MouseEvent as ReactMouseEvent } from 'react';
 import frameSvg from '../assets/frame.webp';
-import gadangSvg from '../assets/gadang.webp';
 import segitigaSvg from '../assets/segitiga.webp';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import mapsSvg from '../assets/maps.webp';
@@ -23,14 +22,15 @@ import grid4 from '../assets/04.webp';
 import grid5 from '../assets/05.webp';
 import grid6 from '../assets/06.webp';
 
-// Carousel slide images
-import rect2 from "../assets/Rectangle 1385 (2).webp";
-import rect3 from "../assets/Rectangle 1385 (3).webp";
-import rect4 from "../assets/Rectangle 1385 (4).webp";
-import rect5 from "../assets/Rectangle 1385 (5).webp";
-import rect6 from "../assets/Rectangle 1385 (6).webp";
-import rect7 from "../assets/Rectangle 1385 (7).webp";
-import rect8 from "../assets/Rectangle 1385 (8).webp";
+// Carousel slide images — High-resolution Minangkabau culture assets
+import rumahImg from '../assets/budaya/Rectangle 1385 (1).png';
+import piringImg from '../assets/budaya/Rectangle 1385 (1).svg';
+import talempongImg from '../assets/budaya/Rectangle 1385 (2).svg';
+import randaiImg from '../assets/budaya/Rectangle 1385 (3).svg';
+import saluangImg from '../assets/budaya/Rectangle 1385 (9).svg';
+import silekImg from '../assets/budaya/Rectangle 1385 (5).svg';
+import merantauImg from '../assets/budaya/Rectangle 1385 (6).svg';
+import baralekImg from '../assets/budaya/Rectangle 1385 (8).svg';
 
 interface SlideData {
   id: number;
@@ -46,7 +46,7 @@ const slides: SlideData[] = [
     id: 1,
     label: 'CIEK ( 1 )',
     title: 'Rumah Gadang',
-    img: gadangSvg,
+    img: rumahImg,
     lead: 'Rumah adat masyarakat Minangkabau yang menjadi simbol persatuan, kebersamaan, dan warisan leluhur.',
     bullets: [
       'Dikenali dari atap bergonjong yang menyerupai tanduk kerbau, ikon khas budaya Minangkabau.',
@@ -58,7 +58,7 @@ const slides: SlideData[] = [
     id: 2,
     label: 'DUO ( 2 )',
     title: 'Tari Piring',
-    img: rect2,
+    img: piringImg,
     lead: 'Tarian tradisional Minangkabau yang melambangkan rasa syukur, kegembiraan, dan semangat kebersamaan masyarakat. Gerakannya terinspirasi dari kehidupan agraris dan tradisi masyarakat Minang.',
     bullets: [
       'Penari membawakan dua piring di kedua tangan dengan gerakan cepat, lincah, dan penuh keseimbangan.',
@@ -70,7 +70,7 @@ const slides: SlideData[] = [
     id: 3,
     label: 'TIGO ( 3 )',
     title: 'Talempong',
-    img: rect3,
+    img: talempongImg,
     lead: 'Alat musik tradisional Minangkabau yang menghadirkan harmoni melalui dentingan nada yang khas dan merdu. Talempong menjadi bagian penting dalam berbagai upacara adat dan pertunjukan budaya.',
     bullets: [
       'Terdiri dari beberapa gong kecil berbahan logam yang dimainkan dengan cara dipukul menggunakan pemukul kayu.',
@@ -82,7 +82,7 @@ const slides: SlideData[] = [
     id: 4,
     label: 'AMPEK ( 4 )',
     title: 'Randai',
-    img: rect4,
+    img: randaiImg,
     lead: 'Seni pertunjukan khas Minangkabau yang memadukan cerita, musik, tari, dan gerakan silat dalam satu panggung yang hidup. Randai menjadi media untuk menyampaikan nilai-nilai adat, nasihat, dan kisah rakyat dari generasi ke generasi.',
     bullets: [
       'Dibawakan secara berkelompok dalam formasi melingkar, melambangkan persatuan dan kebersamaan masyarakat Minangkabau.',
@@ -94,7 +94,7 @@ const slides: SlideData[] = [
     id: 5,
     label: 'LIMO ( 5 )',
     title: 'Saluang',
-    img: rect5,
+    img: saluangImg,
     lead: 'Alunan seruling khas Minangkabau yang menghadirkan suasana syahdu, menjadi pengiring cerita, nasihat, dan ungkapan perasaan masyarakat sejak dahulu.',
     bullets: [
       'Terbuat dari bambu tipis atau talang, menghasilkan nada lembut yang khas dan mudah dikenali.',
@@ -106,7 +106,7 @@ const slides: SlideData[] = [
     id: 6,
     label: 'ANAM ( 6 )',
     title: 'Silek Minang',
-    img: rect6,
+    img: silekImg,
     lead: 'Seni bela diri tradisional Minangkabau yang mengajarkan ketangkasan, kedisiplinan, dan penghormatan terhadap adat. Silek menjadi bagian penting dalam pembentukan karakter masyarakat Minang.',
     bullets: [
       'Berawal sebagai bekal untuk menjaga diri dan melindungi nagari, sekaligus menjadi sarana pembentukan budi pekerti dan kepribadian.',
@@ -118,7 +118,7 @@ const slides: SlideData[] = [
     id: 7,
     label: 'TUJUAH ( 7 )',
     title: 'Merantau',
-    img: rect7,
+    img: merantauImg,
     lead: 'Tradisi yang mengajarkan keberanian untuk meninggalkan kampung halaman demi mencari ilmu, pengalaman, dan kehidupan yang lebih baik. Bagi masyarakat Minangkabau, merantau merupakan bagian dari proses pendewasaan diri.',
     bullets: [
       'Menumbuhkan kemandirian, kemampuan beradaptasi, serta semangat untuk terus belajar dari lingkungan yang baru.',
@@ -130,7 +130,7 @@ const slides: SlideData[] = [
     id: 8,
     label: 'LAPAN ( 8 )',
     title: 'Baralek Adat',
-    img: rect8,
+    img: baralekImg,
     lead: 'Perayaan pernikahan adat Minangkabau yang menjadi simbol persatuan dua keluarga besar, sekaligus wujud penghormatan terhadap adat dan tradisi yang diwariskan turun-temurun.',
     bullets: [
       'Bukan sekadar pesta, tetapi sebuah peristiwa adat yang melibatkan keluarga, kaum, dan masyarakat dalam semangat kebersamaan.',
@@ -173,6 +173,66 @@ const gridItems = [
   },
 ];
 
+function SlideImage({ src, alt, priority }: { src: string; alt: string; priority: boolean }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <div className="relative w-full md:w-[480px] lg:w-[540px] h-[280px] md:h-[420px] lg:h-[460px] rounded-[24px] overflow-hidden flex-shrink-0 bg-[#2D0606] shadow-[0_16px_56px_rgba(0,0,0,0.45)]">
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 bg-[#4A1212] animate-pulse flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-[#F9CE65] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      <img
+        src={hasError ? rumahImg : src}
+        alt={alt}
+        loading={priority ? 'eager' : 'lazy'}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => {
+          setHasError(true);
+          setIsLoaded(true);
+        }}
+        className={`w-full h-full object-cover rounded-[24px] transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+      />
+    </div>
+  );
+}
+
+function GridCardImage({ src, alt }: { src: string; alt: string }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <>
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 bg-[#3A0D0D] animate-pulse z-0 flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-[#F9CE65] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      <img
+        src={hasError ? rumahImg : src}
+        alt={alt}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => {
+          setHasError(true);
+          setIsLoaded(true);
+        }}
+        className={`absolute pointer-events-none select-none max-w-none transition-all duration-700 ease-out group-hover:scale-[1.04] ${isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        style={{
+          width: '120.0%',
+          height: 'auto',
+          top: '-6.00%',
+          left: '-9.50%',
+        }}
+        loading="lazy"
+        draggable={false}
+      />
+    </>
+  );
+}
 
 export function BudayaPage() {
   const { ref: heroRef, isVisible: heroVisible } = useScrollReveal<HTMLElement>();
@@ -246,7 +306,7 @@ export function BudayaPage() {
   }, [isLoading]);
 
   const activeSlideInt = Math.min(slides.length - 1, Math.round(activeSlide));
-  const slideProgress  = Math.max(0, Math.min(1, activeSlide / (slides.length - 1)));
+  const slideProgress = Math.max(0, Math.min(1, activeSlide / (slides.length - 1)));
   const progressPercent = ((activeSlide + 1) / slides.length) * 100;
 
   const goToSlide = (next: number) => {
@@ -330,13 +390,13 @@ export function BudayaPage() {
               const v = e.currentTarget;
               if (v.duration && v.currentTime >= v.duration - 0.25) {
                 v.currentTime = 0;
-                void v.play().catch(() => {});
+                void v.play().catch(() => { });
               }
             }}
             onEnded={(e) => {
               const v = e.currentTarget;
               v.currentTime = 0;
-              void v.play().catch(() => {});
+              void v.play().catch(() => { });
             }}
           />
         )}
@@ -354,9 +414,8 @@ export function BudayaPage() {
         />
 
         <div
-          className={`relative z-30 flex flex-col items-center justify-center text-center w-full px-6 transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            heroVisible ? 'translate-y-0 opacity-100 scale-100 blur-none' : 'translate-y-10 opacity-0 scale-[0.98] blur-[3px]'
-          }`}
+          className={`relative z-30 flex flex-col items-center justify-center text-center w-full px-6 transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${heroVisible ? 'translate-y-0 opacity-100 scale-100 blur-none' : 'translate-y-10 opacity-0 scale-[0.98] blur-[3px]'
+            }`}
           style={{ minHeight: '90svh' }}
         >
           <h1
@@ -414,87 +473,80 @@ export function BudayaPage() {
               onMouseLeave={handleSlideAreaMouseLeave}
               onClick={handleSlideAreaClick}
             >
-            <div
-              className="flex"
-              style={{
-                transform: `translateX(-${slideProgress * 100 * (slides.length - 1)}%)`,
-                transition: 'none',
-                willChange: 'transform',
-              }}
-            >
-              {slides.map((slide, idx) => (
-                <article
-                  key={slide.id}
-                  className="w-full flex-shrink-0 flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 items-start justify-start px-4 md:px-12"
-                  style={{ width: '100%' }}
-                >
-                  {/* ── LEFT Image (Static - No scroll entrance animation) ── */}
-                  <img
-                    src={slide.img}
-                    alt={slide.title}
-                    className="w-full md:w-[480px] lg:w-[540px] h-auto md:h-[420px] lg:h-[460px] object-cover rounded-[24px] shadow-[0_16px_56px_rgba(0,0,0,0.45)] flex-shrink-0"
-                    loading={idx === 0 ? 'eager' : 'lazy'}
-                  />
+              <div
+                className="flex"
+                style={{
+                  transform: `translateX(-${slideProgress * 100 * (slides.length - 1)}%)`,
+                  transition: 'none',
+                  willChange: 'transform',
+                }}
+              >
+                {slides.map((slide, idx) => (
+                  <article
+                    key={slide.id}
+                    className="w-full flex-shrink-0 flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 items-start justify-start px-4 md:px-12"
+                    style={{ width: '100%' }}
+                  >
+                    {/* ── LEFT Image (Static - With Skeleton Loading & Error Fallback) ── */}
+                    <SlideImage src={slide.img} alt={slide.title} priority={idx === 0} />
 
-                  {/* ── RIGHT Content (Animated Text & Elements on Scroll) ── */}
-                  <div className={`flex-1 flex flex-col justify-start min-w-0 pt-1 md:pt-2 gap-4 md:gap-5 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    featureVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                  }`}>
-                    <p
-                      className="font-poppins uppercase tracking-[0.28em]"
-                      style={{ color: '#F9CE65', fontSize: 11, fontWeight: 500 }}
-                    >
-                      {slide.label}
-                    </p>
-
-                    <h2
-                      id={idx === activeSlideInt ? 'carousel-title-label' : undefined}
-                      className="font-cormorant font-bold text-white leading-tight"
-                      style={{ fontSize: 'clamp(28px, 3.5vw, 44px)' }}
-                    >
-                      {slide.title}
-                    </h2>
-
-                    <div className="flex gap-4 my-1">
-                      <div className="flex-shrink-0 w-[2px] rounded-full" style={{ background: '#F9CE65' }} />
+                    {/* ── RIGHT Content (Animated Text & Elements on Scroll) ── */}
+                    <div className={`flex-1 flex flex-col justify-start min-w-0 pt-1 md:pt-2 gap-4 md:gap-5 transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${featureVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                      }`}>
                       <p
-                        className="font-poppins italic text-white/95 leading-relaxed"
-                        style={{ fontSize: 'clamp(13px, 1.2vw, 15px)' }}
+                        className="font-poppins uppercase tracking-[0.28em]"
+                        style={{ color: '#F9CE65', fontSize: 11, fontWeight: 500 }}
                       >
-                        {slide.lead}
+                        {slide.label}
                       </p>
-                    </div>
 
-                    <ul className="space-y-3 mt-1">
-                      {slide.bullets.map((detail, i) => (
-                        <li key={i} className="flex items-start gap-3.5">
-                          <img
-                            src={segitigaSvg}
-                            alt=""
-                            aria-hidden="true"
-                            className="flex-shrink-0 mt-[5px]"
-                            style={{ width: 13, height: 15 }}
-                          />
-                          <span
-                            className="font-poppins italic text-white/90 leading-relaxed"
-                            style={{ fontSize: 'clamp(11.5px, 1vw, 13.5px)' }}
-                          >
-                            {detail}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-              ))}
-            </div>
+                      <h2
+                        id={idx === activeSlideInt ? 'carousel-title-label' : undefined}
+                        className="font-cormorant font-bold text-white leading-tight"
+                        style={{ fontSize: 'clamp(28px, 3.5vw, 44px)' }}
+                      >
+                        {slide.title}
+                      </h2>
+
+                      <div className="flex gap-4 my-1">
+                        <div className="flex-shrink-0 w-[2px] rounded-full" style={{ background: '#F9CE65' }} />
+                        <p
+                          className="font-poppins italic text-white/95 leading-relaxed"
+                          style={{ fontSize: 'clamp(13px, 1.2vw, 15px)' }}
+                        >
+                          {slide.lead}
+                        </p>
+                      </div>
+
+                      <ul className="space-y-3 mt-1">
+                        {slide.bullets.map((detail, i) => (
+                          <li key={i} className="flex items-start gap-3.5">
+                            <img
+                              src={segitigaSvg}
+                              alt=""
+                              aria-hidden="true"
+                              className="flex-shrink-0 mt-[5px]"
+                              style={{ width: 13, height: 15 }}
+                            />
+                            <span
+                              className="font-poppins italic text-white/90 leading-relaxed"
+                              style={{ fontSize: 'clamp(11.5px, 1vw, 13.5px)' }}
+                            >
+                              {detail}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
 
             {/* ── Progress Bar + Controls ── */}
             <div
-              className={`w-full max-w-[1160px] mx-auto mt-16 md:mt-24 flex items-center gap-5 px-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                featureVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
-              }`}
+              className={`w-full max-w-[1160px] mx-auto mt-16 md:mt-24 flex items-center gap-5 px-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${featureVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+                }`}
             >
               <span
                 className="font-poppins font-medium flex-shrink-0 select-none tabular-nums"
@@ -537,9 +589,8 @@ export function BudayaPage() {
         aria-labelledby="budaya-panduan"
       >
         <div
-          className={`w-full max-w-[1160px] bg-[#652626] rounded-[32px] md:rounded-[48px] px-4 py-6 md:px-8 md:pt-8 md:pb-6 flex flex-col justify-start transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            gridVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
-          }`}
+          className={`w-full max-w-[1160px] bg-[#652626] rounded-[32px] md:rounded-[48px] px-4 py-6 md:px-8 md:pt-8 md:pb-6 flex flex-col justify-start transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${gridVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
+            }`}
         >
           {/* Guide Pill Button Container */}
           <div className="w-full max-w-[1100px] mx-auto flex flex-col items-start mb-3 md:mb-4">
@@ -588,9 +639,8 @@ export function BudayaPage() {
         className="relative mx-auto w-full max-w-5xl px-6 pt-16 pb-32 text-center"
       >
         <div
-          className={`transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            footerVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
-          }`}
+          className={`transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${footerVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-[0.98]'
+            }`}
         >
           <h2
             className="font-corinthia font-bold leading-none select-none whitespace-normal md:whitespace-nowrap overflow-visible"
@@ -647,20 +697,8 @@ function GridCard({
       }}
       onClick={() => setMobileOpen((v) => !v)}
     >
-      {/* Background photo (Static - No scroll entrance animation) */}
-      <img
-        src={item.img}
-        alt={item.title}
-        className="absolute pointer-events-none select-none max-w-none transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-        style={{
-          width: '120.0%',
-          height: 'auto',
-          top: '-6.00%',
-          left: '-9.50%',
-        }}
-        loading="lazy"
-        draggable={false}
-      />
+      {/* Background photo (Static - With Skeleton Loading & Error Fallback) */}
+      <GridCardImage src={item.img} alt={item.title} />
 
       {/* ── Resting Gradient Overlay: matching #8A1A1A background but transparent enough to see the photo ── */}
       <div
@@ -683,13 +721,12 @@ function GridCard({
       />
 
       {/* ── Content: Title + Gold Line + Description (Animated Text on Scroll) ── */}
-      <div 
-        className={`absolute inset-x-[8%] bottom-[7%] z-10 flex flex-col items-start text-left pointer-events-none w-[84%] transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
-        }`}
+      <div
+        className={`absolute inset-x-[8%] bottom-[7%] z-10 flex flex-col items-start text-left pointer-events-none w-[84%] transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+          }`}
         style={{ transitionDelay: `${index * 150}ms` }}
       >
-        
+
         {/* Title — Cormorant Garamond Bold Italic */}
         <h3
           className="font-cormorant font-bold italic text-white leading-tight"
