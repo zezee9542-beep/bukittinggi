@@ -34,17 +34,16 @@ export const AITravelPlannerPromoCard: React.FC = () => {
       </div>
 
       {/* ── Main Dark Red Container & Floating Badge Wrapper ── */}
-      <div
-        className={`relative w-full max-w-[1020px] transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
-      >
+      <div className="relative w-full max-w-[1020px]">
         {/* Dark Red Rounded Card (#5F1712 / #531717) */}
         <div
           className="relative w-full min-h-[440px] lg:h-[470px] rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row items-center justify-between shadow-[0_25px_65px_rgba(0,0,0,0.4)] overflow-visible"
           style={{ backgroundColor: '#5F1712' }}
         >
           {/* ── Left Side: Stacked Document (ss.webp) & Calendar (Calendar.webp) ── */}
-          <div className="relative w-full lg:w-[490px] h-[320px] sm:h-[370px] lg:h-[400px] flex items-center justify-center flex-shrink-0 mb-8 lg:mb-0">
+          <div className={`relative w-full lg:w-[490px] h-[320px] sm:h-[370px] lg:h-[400px] flex items-center justify-center flex-shrink-0 mb-8 lg:mb-0 transition-all duration-1000 ease-out ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             {/* 1. Paper Document Screenshot (ss.webp) — Straight */}
             <div className="absolute left-0 top-0 sm:top-2 w-[85%] sm:w-[88%] lg:w-[90%] h-auto z-10">
               <img
@@ -67,7 +66,9 @@ export const AITravelPlannerPromoCard: React.FC = () => {
           </div>
 
           {/* ── Right Side: 5 Step Items List ── */}
-          <div className="flex-1 flex flex-col justify-center items-start gap-5 sm:gap-6 lg:pl-10 text-left w-full">
+          <div className={`flex-1 flex flex-col justify-center items-start gap-5 sm:gap-6 lg:pl-10 text-left w-full transition-all duration-1000 delay-150 ease-out ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             {steps.map((step) => (
               <div key={step.num} className="flex items-center gap-4 group cursor-pointer select-none">
                 {/* Step Circle: #F9CE65 background, #531717 text */}
@@ -89,14 +90,18 @@ export const AITravelPlannerPromoCard: React.FC = () => {
           <img
             src={pdfPng}
             alt="PDF"
-            className="absolute right-[-35px] sm:right-[-50px] lg:right-[-70px] top-[14%] sm:top-[12%] w-[110px] sm:w-[130px] lg:w-[155px] h-auto object-contain z-30 select-none pointer-events-none animate-float-vertical drop-shadow-[0_8px_20px_rgba(0,0,0,0.3)]"
+            className={`absolute right-[-35px] sm:right-[-50px] lg:right-[-70px] top-[14%] sm:top-[12%] w-[110px] sm:w-[130px] lg:w-[155px] h-auto object-contain z-30 select-none pointer-events-none animate-float-vertical drop-shadow-[0_8px_20px_rgba(0,0,0,0.3)] transition-all duration-1000 delay-300 ease-out ${
+              isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+            }`}
             draggable={false}
             style={{ transform: 'rotate(6deg)', animationDuration: '3.2s' }}
           />
         </div>
 
         {/* ── Bottom Right CTA Button: Mulai → ── */}
-        <div className="w-full flex justify-end mt-6">
+        <div className={`w-full flex justify-end mt-6 transition-all duration-1000 delay-200 ease-out ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+        }`}>
           <button
             onClick={() => navigate('/travel-planner')}
             className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-[14px] font-poppins font-medium text-[16px] text-white hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-xl cursor-pointer select-none"

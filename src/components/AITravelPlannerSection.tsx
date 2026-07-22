@@ -28,20 +28,23 @@ export const AITravelPlannerSection: React.FC = () => {
       {/* ════ Floating Premium Card: Heart Of Minangkabau (menara.webp) ════ */}
       <div className="w-full max-w-[1000px] px-4 sm:px-6 relative z-30 -mb-[80px] sm:-mb-[160px] md:-mb-[240px]">
         <div
-          className={`relative w-full min-h-[440px] sm:min-h-[490px] lg:h-[520px] rounded-[28px] sm:rounded-[38px] shadow-[0_22px_55px_rgba(0,0,0,0.35)] overflow-visible transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-            }`}
+          className="relative w-full min-h-[440px] sm:min-h-[490px] lg:h-[520px] rounded-[28px] sm:rounded-[38px] shadow-[0_22px_55px_rgba(0,0,0,0.35)] overflow-visible"
           style={{ backgroundColor: '#5C1616' }}
         >
           {/* Decorative Earth Image in bottom-right corner */}
           <img
             src={earthPng}
             alt=""
-            className="absolute bottom-0 right-0 w-[110%] sm:w-[95%] lg:w-[88%] h-auto object-contain pointer-events-none opacity-65 z-0 rounded-br-[28px] sm:rounded-br-[38px] select-none scale-105 origin-bottom-right"
+            className={`absolute bottom-0 right-0 w-[110%] sm:w-[95%] lg:w-[88%] h-auto object-contain pointer-events-none z-0 rounded-br-[28px] sm:rounded-br-[38px] select-none origin-bottom-right transition-all duration-1000 ease-out ${
+              isVisible ? 'opacity-65 scale-105' : 'opacity-0 scale-95'
+            }`}
             draggable={false}
           />
 
           {/* ── Left Image: Jam Gadang Tower (menara.webp) — Background layer on mobile (<md), full on desktop (md+) ── */}
-          <div className="absolute left-[-25px] sm:left-[-32px] lg:left-[-42px] bottom-0 z-0 md:z-30 pointer-events-none flex items-end opacity-25 md:opacity-100">
+          <div className={`absolute left-[-25px] sm:left-[-32px] lg:left-[-42px] bottom-0 z-0 md:z-30 pointer-events-none flex items-end opacity-25 md:opacity-100 transition-all duration-1000 ease-out ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             <img
               src={menaraWebp}
               alt="Jam Gadang Bukittinggi"
@@ -52,7 +55,9 @@ export const AITravelPlannerSection: React.FC = () => {
           </div>
 
           {/* ── Right Content Area ── */}
-          <div className="relative z-20 flex flex-col justify-center items-start h-full min-h-[inherit] pt-8 pb-7 sm:pt-10 sm:pb-9 px-6 sm:px-10 md:pl-[250px] lg:pl-[290px] md:pr-10 lg:pr-12 text-left">
+          <div className={`relative z-20 flex flex-col justify-center items-start h-full min-h-[inherit] pt-8 pb-7 sm:pt-10 sm:pb-9 px-6 sm:px-10 md:pl-[250px] lg:pl-[290px] md:pr-10 lg:pr-12 text-left transition-all duration-1000 delay-150 ease-out ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             <div className="mb-2 sm:mb-2.5">
               <img
                 src={bukittinggiSvg}

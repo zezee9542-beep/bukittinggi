@@ -38,24 +38,16 @@ export function HomePage() {
       </ScrollSection>
 
       {/* AI Travel Planner Section */}
-      <ScrollSection>
-        <AITravelPlannerSection />
-      </ScrollSection>
+      <AITravelPlannerSection />
 
       {/* Bukittinggi Map Section */}
-      <ScrollSection>
-        <BukittinggiMapSection />
-      </ScrollSection>
+      <BukittinggiMapSection />
 
       {/* AI Travel Planner Promo Card */}
-      <ScrollSection>
-        <AITravelPlannerPromoCard />
-      </ScrollSection>
+      <AITravelPlannerPromoCard />
 
       {/* Heritage Section */}
-      <ScrollSection>
-        <HeritageSection />
-      </ScrollSection>
+      <HeritageSection />
     </div>
   );
 }
